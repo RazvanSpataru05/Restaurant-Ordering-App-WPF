@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RestaurantOrderingApp.Layers.EntityLayer
+﻿namespace RestaurantOrderingApp.Layers.EntityLayer
 {
     public class Product
     {
@@ -15,5 +9,6 @@ namespace RestaurantOrderingApp.Layers.EntityLayer
         public decimal TotalQuantity { get; set; }
         public int CategoryId { get; set; }
         public bool IsAvailable { get; set; }
+        public string CategoryName { get; set; }
     }
 }

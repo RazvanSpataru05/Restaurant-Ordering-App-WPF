@@ -18,7 +18,7 @@ namespace RestaurantOrderingApp.Utils
             return password.Length >= 8 &&
                 password.Any(char.IsUpper) &&
                 password.Any(char.IsLower) &&
-                !password.Any(char.IsAsciiLetterOrDigit);
+                password.Any(c => char.IsAsciiLetterOrDigit(c) == false);
         }
         public static bool IsPhoneValid(string phone)
         {

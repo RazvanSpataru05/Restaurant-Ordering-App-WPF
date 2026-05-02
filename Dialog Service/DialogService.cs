@@ -42,15 +42,13 @@ namespace RestaurantOrderingApp.Dialog_Service
         {
             var loginVM = _serviceProvider.GetRequiredService<LoginVM>();
             var window = new LoginWindow(loginVM);
-            window.DataContext = loginVM;
             window.Show();
         }
 
         public void ShowRestaurantWindow()
         {
             var restaurantVM = _serviceProvider.GetRequiredService<RestaurantVM>();
-            var window = new RestaurantWindow();
-            window.DataContext = restaurantVM;
+            var window = new RestaurantWindow(restaurantVM);
             window.Show();
         }
     }

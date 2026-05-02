@@ -177,6 +177,7 @@ namespace RestaurantOrderingApp.ViewModels
                 MessageBox.Show("Account has been created successfully", "Inforamtion",
                  MessageBoxButton.OK,
                  MessageBoxImage.Information);
+                ClearFields();
                 _onBackToLogin();
             }
             else
@@ -187,6 +188,17 @@ namespace RestaurantOrderingApp.ViewModels
         private void BackToLogin()
         {
             _onBackToLogin();
+        }
+        private void ClearFields()
+        {
+            FirstName = "";
+            LastName = "";
+            Email = "";
+            Phone = "";
+            Password = "";
+            ConfirmPassword = "";
+            DeliveryAddress = "";
+            ErrorMessage = "";
         }
     }
 }

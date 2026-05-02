@@ -18,5 +18,19 @@ namespace RestaurantOrderingApp.Views
                 vm.Password = ((PasswordBox)sender).Password;
             }
         }
+        private void RegisterPasswordBox_PasswordChanged(object sender, EventArgs e)
+        {
+            if (DataContext is LoginVM vm)
+            {
+                vm.RegisterVM.Password = ((PasswordBox)sender).Password;
+            }
+        }
+        private void RegisterConfirmPasswordBox_PasswordChanged(object sender, EventArgs e)
+        {
+            if (DataContext is LoginVM vm)
+            {
+                vm.RegisterVM.ConfirmPassword = ((PasswordBox)sender).Password;
+            }
+        }
     }
 }
