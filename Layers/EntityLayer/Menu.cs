@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RestaurantOrderingApp.DBObjects
+namespace RestaurantOrderingApp.Layers.EntityLayer
 {
     public class Menu
     {

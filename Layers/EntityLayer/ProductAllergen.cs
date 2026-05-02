@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RestaurantOrderingApp.DBObjects
+namespace RestaurantOrderingApp.Layers.EntityLayer
 {
-    public class ProductImages
+    public class ProductAllergen
     {
-        public int ImageId { get; set; }
         public int ProductId { get; set; }
-        public string ImagePath { get; set; }
+        public int AllergenId { get; set; }
     }
 }

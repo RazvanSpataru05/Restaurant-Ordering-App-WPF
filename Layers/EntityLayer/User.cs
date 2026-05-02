@@ -5,7 +5,7 @@ using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RestaurantOrderingApp.DBObjects
+namespace RestaurantOrderingApp.Layers.EntityLayer
 {
     public class User
     {
