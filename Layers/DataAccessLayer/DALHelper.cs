@@ -7,12 +7,6 @@ namespace RestaurantOrderingApp.Layers.DataAccessLayer
     {
         private static readonly string connectionString = ConfigurationManager.ConnectionStrings["myConStr"].ConnectionString;
 
-        public static SqlConnection Connection
-        {
-            get
-            {
-                return new SqlConnection(connectionString);
-            }
-        }
+        public static SqlConnection Connection => new SqlConnection(connectionString);
     }
 }

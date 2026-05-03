@@ -8,6 +8,16 @@
         WindowStartupLocation="CenterScreen"
         Title="RestaurantWindow" Height="450" Width="800">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="125"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0">
+            <Button DockPanel.Dock="Left" Content="Menu"
+                    Command="{Binding OpenMenuCommand}"/>
+            <TextBlock DockPanel.Dock="Right" Text="{Binding DisplayName}"/>
+            <TextBlock Text="Sapori d'Italia" HorizontalAlignment="Center"/>
+        </DockPanel>
     </Grid>
 </Window>

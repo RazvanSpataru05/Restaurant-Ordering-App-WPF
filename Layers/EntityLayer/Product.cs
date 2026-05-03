@@ -1,4 +1,6 @@
-﻿namespace RestaurantOrderingApp.Layers.EntityLayer
+﻿using System.Collections.ObjectModel;
+
+namespace RestaurantOrderingApp.Layers.EntityLayer
 {
     public class Product
     {
@@ -10,5 +12,6 @@
         public int CategoryId { get; set; }
         public bool IsAvailable { get; set; }
         public string CategoryName { get; set; }
+        public ObservableCollection<Allergen> Allergens { get; set; }
     }
 }

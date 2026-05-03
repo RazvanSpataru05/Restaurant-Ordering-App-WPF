@@ -2,90 +2,120 @@
 using RestaurantOrderingApp.Layers.BusinessLogicLayer;
 using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 
 namespace RestaurantOrderingApp.ViewModels
 {
     public class RestaurantVM : BaseViewModel
     {
         private readonly CurrentUserSession _currentUserSession;
-        private readonly ProductBLL _productBLL;
-        private readonly CategoryBLL _categoryBLL;
         private readonly IDialogService _dialogService;
 
-        private ObservableCollection<CategoryWithProducts> _fullMenu;
-        private ObservableCollection<CategoryWithProducts> _filteredMenu;
-        private string _searchText;
+        private MenuVM _menuVM;
+        private CartVM _cartVM;   
 
-        public RelayCommand SearchCommand { get; set; }
-        public RelayCommand PlaceOrderCommand { get; set; }
+        private bool _isMenuOpen;
+        private bool _isCartOpen;
+        private bool _isWelcomeVisible;
 
-        public ObservableCollection<CategoryWithProducts> FullMenu
+
+        public CurrentUserSession CurrentUserSession
         {
-            get { return _fullMenu; }
+            get => _currentUserSession;
+        }
+
+        public string DisplayName => _currentUserSession.CurrentUser != null ?
+            $"{_currentUserSession.CurrentUser.FirstName} {_currentUserSession.CurrentUser.LastName}" : "Guest";
+
+        public MenuVM MenuVM
+        {
+            get => _menuVM;
             set
             {
-                if (_fullMenu != value)
+                if (_menuVM != value)
                 {
-                    _fullMenu = value;
-                    OnPropertyChanged(nameof(FullMenu));
+                    _menuVM = value;
+                    OnPropertyChanged(nameof(MenuVM)); 
+                }
+            }
+        }
+        public CartVM CartVM
+        {
+            get => _cartVM;
+            set
+            {
+                if (_cartVM != value)
+                {
+                    _cartVM = value;
+                    OnPropertyChanged(nameof(CartVM));
                 }
             }
         }
 
-        public ObservableCollection<CategoryWithProducts> FilteredMenu
+        public bool IsMenuOpen
         {
-            get { return _filteredMenu; }
+            get => _isMenuOpen;
             set
             {
-                if (_filteredMenu != value)
+                if (_isMenuOpen != value)
                 {
-                    _filteredMenu = value;
-                    OnPropertyChanged(nameof(FilteredMenu));
+                    _isMenuOpen = value;
+                    OnPropertyChanged(nameof(IsMenuOpen));
+                }
+            }
+        }
+        public bool IsCartOpen
+        {
+            get => _isCartOpen;
+            set
+            {
+                if (_isCartOpen != value)
+                {
+                    _isCartOpen = value;
+                    OnPropertyChanged(nameof(IsCartOpen));
+                }
+            }
+        }
+        public bool IsWelcomeVisible
+        {
+            get => _isWelcomeVisible;
+            set
+            {
+                if (_isWelcomeVisible != value)
+                {
+                    _isWelcomeVisible = value;
+                    OnPropertyChanged(nameof(IsWelcomeVisible));
                 }
             }
         }
 
-        public string SearchText
-        {
-            get { return _searchText; }
-            set
-            {
-                if (_searchText != value)
-                {
-                    _searchText = value;
-                    OnPropertyChanged(nameof(SearchText));
-                }
-            }
-        }
-        public RestaurantVM(CurrentUserSession currentUserSession, ProductBLL productBLL, CategoryBLL categoryBLL, IDialogService dialogService)
+        public RelayCommand OpenMenuCommand { get; set; }
+        public RelayCommand OpenCartCommand { get; set; }
+
+        public RestaurantVM(CurrentUserSession currentUserSession, IDialogService dialogService, MenuVM menuVM, CartVM cartVM)
         {
             _currentUserSession = currentUserSession;
-            _productBLL = productBLL;
-            _categoryBLL = categoryBLL;
             _dialogService = dialogService;
-            _fullMenu = [];
-            _filteredMenu = [];
+            _menuVM = menuVM;
+            _cartVM = cartVM;
+            
+            IsWelcomeVisible = true;
+            IsMenuOpen = false;
+            IsCartOpen = false;
 
-            var allProducts = _productBLL.GetAllProucts();
-            var grouped = allProducts
-                .GroupBy(p => p.CategoryName)
-                .Select(g => new CategoryWithProducts(
-                    category: g.Key,
-                    products: new(g.ToList())));
-            _fullMenu = new(grouped);
-
-            SearchCommand = new(_ => Search());
-            PlaceOrderCommand = new(_ => PlaceOrder());
+            OpenMenuCommand = new(_ => OpenMenu());
+            OpenCartCommand = new(_ => OpenCart());
         }
-        private void Search()
+        private void OpenMenu()
         {
-
+            IsMenuOpen = true;
+            IsCartOpen = false;
+            IsWelcomeVisible = false;
         }
-        private void PlaceOrder()
+        private void OpenCart()
         {
-
+            IsCartOpen = true;
+            IsMenuOpen = false;
+            IsWelcomeVisible = false;
         }
     }
 }
