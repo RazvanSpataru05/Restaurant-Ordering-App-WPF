@@ -10,6 +10,11 @@ namespace RestaurantOrderingApp.Views
         {
             InitializeComponent();
             DataContext = loginVM;
+            loginVM.RegisterVM.OnClearPasswords += () =>
+            {
+                RegisterPasswordBox.Clear();
+                RegisterConfirmPasswordBox.Clear();
+            };
         }
         private void PasswordBox_PasswordChanged(object sender, EventArgs e)
         {

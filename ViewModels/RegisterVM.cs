@@ -21,6 +21,8 @@ namespace RestaurantOrderingApp.ViewModels
         private string _deliveryAddress;
         private string _errorMessage;
 
+        public event Action OnClearPasswords;
+
         public string FirstName
         {
             get => _firstName;
@@ -199,6 +201,7 @@ namespace RestaurantOrderingApp.ViewModels
             ConfirmPassword = "";
             DeliveryAddress = "";
             ErrorMessage = "";
+            OnClearPasswords?.Invoke();
         }
     }
 }
