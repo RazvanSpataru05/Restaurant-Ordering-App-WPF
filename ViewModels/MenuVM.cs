@@ -2,6 +2,14 @@
 using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
 using System.Collections.ObjectModel;
+using System.IO;
+
+public enum AllergenFilter
+{
+    None,
+    With,
+    Without
+};
 
 namespace RestaurantOrderingApp.ViewModels
 {
@@ -10,10 +18,28 @@ namespace RestaurantOrderingApp.ViewModels
         private readonly ProductBLL _productBLL;
         private readonly CategoryBLL _categoryBLL;
         private readonly AllergenBLL _allergenBLL;
+        private readonly MenuBLL _menuBLL;
 
+        private AllergenFilter _allergenFilter;
         private string _searchText;
         private ObservableCollection<CategoryWithProducts> _fullMenu;
         private ObservableCollection<CategoryWithProducts> _filteredMenu;
+        private ObservableCollection<Allergen> _allAlergens;
+        private ObservableCollection<Allergen> _selectedAllergens;
+
+        public AllergenFilter AllergenFilter
+        {
+            get => _allergenFilter;
+            set
+            {
+                if (_allergenFilter != value)
+                {
+                    _allergenFilter = value;
+                    OnPropertyChanged(nameof(AllergenFilter));
+                }
+            }
+        }
+
         public string SearchText
         {
             get => _searchText;
@@ -50,14 +76,47 @@ namespace RestaurantOrderingApp.ViewModels
                 }
             }
         }
+        public ObservableCollection<Allergen> AllAllergens
+        {
+            get => _allAlergens;
+            set
+            {
+                if (_allAlergens != value)
+                {
+                    _allAlergens = value;
+                    OnPropertyChanged(nameof(AllAllergens));
+                }
+            }
+        }
+        public ObservableCollection<Allergen> SelectedAllergens
+        {
+            get => _selectedAllergens;
+            set
+            {
+                if (_selectedAllergens != value)
+                {
+                    _selectedAllergens = value;
+                    OnPropertyChanged(nameof(SelectedAllergens));
+                }
+            }
+        }
+
         public RelayCommand SearchCommand { get; set; }
-        public MenuVM(ProductBLL productBLL, CategoryBLL categoryBLL, AllergenBLL allergenBLL)
+        public RelayCommand ToggleWithCommand { get; set; }
+        public RelayCommand ToggleWithoutCommand { get; set; }
+        public RelayCommand ToggleAllergenCommand { get; set; }
+
+        public MenuVM(ProductBLL productBLL, CategoryBLL categoryBLL, AllergenBLL allergenBLL, MenuBLL menuBLL)
         {
             _productBLL = productBLL;
             _categoryBLL = categoryBLL;
             _allergenBLL = allergenBLL;
+            _menuBLL = menuBLL;
+
             FullMenu = [];
             FilteredMenu = [];
+            AllAllergens = allergenBLL.GetAllAllergens();
+            SelectedAllergens = [];
 
             var allProducts = _productBLL.GetAllProucts();
             var grouped = allProducts
@@ -66,6 +125,7 @@ namespace RestaurantOrderingApp.ViewModels
                     category: g.Key,
                     products: new(g.ToList())));
             FullMenu = new(grouped);
+            FilteredMenu = FullMenu;
 
             var allergenMap = _allergenBLL.GetAllProductAllergens();
             foreach (var category in _fullMenu)
@@ -80,10 +140,67 @@ namespace RestaurantOrderingApp.ViewModels
             }
 
             SearchCommand = new(_ => Search());
+            ToggleWithCommand = new(_ => ToggleWith());
+            ToggleWithoutCommand = new(_ => ToggleWithout());
+            ToggleAllergenCommand = new(param => ToggleAllergen(param as Allergen));
         }
         private void Search()
         {
+            if (string.IsNullOrEmpty(SearchText)) return;
 
+            SearchText = SearchText.Trim();
+            var result = new ObservableCollection<CategoryWithProducts>();
+            foreach (var category in _fullMenu)
+            {
+                var filteredProducts = category.Products
+                    .Where(p => p.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+                if (SelectedAllergens.Any())
+                {
+                    if (AllergenFilter == AllergenFilter.With)
+                    {
+                        filteredProducts = filteredProducts
+                            .Where(p => p.Allergens != null &&
+                            SelectedAllergens.All(a => p.Allergens.Any(pa => pa.AllergenId == a.AllergenId)));
+                    }
+                    else if (AllergenFilter == AllergenFilter.Without)
+                    {
+                        filteredProducts = filteredProducts
+                            .Where(p => p.Allergens == null ||
+                            SelectedAllergens.Any(a => p.Allergens.Any(pa => pa.AllergenId == a.AllergenId)));
+                    }
+                }
+
+                if (filteredProducts.Any())
+                {
+                    result.Add(new CategoryWithProducts(category.Category, new(filteredProducts)));
+                }
+            }
+            FilteredMenu = result;
+        }
+        private void ToggleWith()
+        {
+            if (AllergenFilter == AllergenFilter.With)
+                AllergenFilter = AllergenFilter.None;
+            else
+                AllergenFilter = AllergenFilter.With;
+        }
+        private void ToggleWithout()
+        {
+            if (AllergenFilter == AllergenFilter.Without)
+                AllergenFilter = AllergenFilter.None;
+            else
+                AllergenFilter = AllergenFilter.Without;
+        }
+        private void ToggleAllergen(Allergen? allergen)
+        {
+            if (allergen == null) return;
+
+            if (SelectedAllergens.Contains(allergen))
+            {
+                SelectedAllergens.Remove(allergen);
+            }
+            else
+                SelectedAllergens.Add(allergen);
         }
     }
 }

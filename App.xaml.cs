@@ -29,6 +29,8 @@ namespace RestaurantOrderingApp
                 services.AddSingleton<CategoryBLL>();
                 services.AddSingleton<AllergenDAL>();
                 services.AddSingleton<AllergenBLL>();
+                services.AddSingleton<ProductDAL>();
+                services.AddSingleton<ProductBLL>();
                 services.AddSingleton<IDialogService, DialogService>();
 
                 services.AddTransient<LoginWindow>();
