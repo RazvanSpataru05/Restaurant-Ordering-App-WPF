@@ -1,6 +1,4 @@
 ﻿using RestaurantOrderingApp.Dialog_Service;
-using RestaurantOrderingApp.Layers.BusinessLogicLayer;
-using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
 
 namespace RestaurantOrderingApp.ViewModels
@@ -11,12 +9,11 @@ namespace RestaurantOrderingApp.ViewModels
         private readonly IDialogService _dialogService;
 
         private MenuVM _menuVM;
-        private CartVM _cartVM;   
+        private CartVM _cartVM;
 
         private bool _isMenuOpen;
         private bool _isCartOpen;
         private bool _isWelcomeVisible;
-
 
         public CurrentUserSession CurrentUserSession
         {
@@ -34,7 +31,7 @@ namespace RestaurantOrderingApp.ViewModels
                 if (_menuVM != value)
                 {
                     _menuVM = value;
-                    OnPropertyChanged(nameof(MenuVM)); 
+                    OnPropertyChanged(nameof(MenuVM));
                 }
             }
         }
@@ -97,7 +94,7 @@ namespace RestaurantOrderingApp.ViewModels
             _dialogService = dialogService;
             _menuVM = menuVM;
             _cartVM = cartVM;
-            
+
             IsWelcomeVisible = true;
             IsMenuOpen = false;
             IsCartOpen = false;

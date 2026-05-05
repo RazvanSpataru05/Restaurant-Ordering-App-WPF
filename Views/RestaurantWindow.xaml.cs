@@ -1,11 +1,6 @@
 ﻿using RestaurantOrderingApp.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace RestaurantOrderingApp.Views
 {
@@ -16,5 +11,10 @@ namespace RestaurantOrderingApp.Views
             InitializeComponent();
             DataContext = restaurantVM;
         }
+        private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
+     
 }

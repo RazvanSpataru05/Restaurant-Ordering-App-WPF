@@ -2,7 +2,6 @@
 using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
 using System.Collections.ObjectModel;
-using System.IO;
 
 public enum AllergenFilter
 {
@@ -19,6 +18,7 @@ namespace RestaurantOrderingApp.ViewModels
         private readonly CategoryBLL _categoryBLL;
         private readonly AllergenBLL _allergenBLL;
         private readonly MenuBLL _menuBLL;
+        private readonly CartService _cartService;
 
         private AllergenFilter _allergenFilter;
         private string _searchText;
@@ -49,6 +49,7 @@ namespace RestaurantOrderingApp.ViewModels
                 {
                     _searchText = value;
                     OnPropertyChanged(nameof(SearchText));
+                    Search();
                 }
             }
         }
@@ -105,13 +106,15 @@ namespace RestaurantOrderingApp.ViewModels
         public RelayCommand ToggleWithCommand { get; set; }
         public RelayCommand ToggleWithoutCommand { get; set; }
         public RelayCommand ToggleAllergenCommand { get; set; }
+        public RelayCommand AddProductToCartCommand { get; set; }
 
-        public MenuVM(ProductBLL productBLL, CategoryBLL categoryBLL, AllergenBLL allergenBLL, MenuBLL menuBLL)
+        public MenuVM(ProductBLL productBLL, CategoryBLL categoryBLL, AllergenBLL allergenBLL, MenuBLL menuBLL, CartService cartService)
         {
             _productBLL = productBLL;
             _categoryBLL = categoryBLL;
             _allergenBLL = allergenBLL;
             _menuBLL = menuBLL;
+            _cartService = cartService;
 
             FullMenu = [];
             FilteredMenu = [];
@@ -143,6 +146,7 @@ namespace RestaurantOrderingApp.ViewModels
             ToggleWithCommand = new(_ => ToggleWith());
             ToggleWithoutCommand = new(_ => ToggleWithout());
             ToggleAllergenCommand = new(param => ToggleAllergen(param as Allergen));
+            AddProductToCartCommand = new(param => AddProductToCart(param as Product));
         }
         private void Search()
         {
@@ -201,6 +205,13 @@ namespace RestaurantOrderingApp.ViewModels
             }
             else
                 SelectedAllergens.Add(allergen);
+            Search();
+        }
+        private void AddProductToCart(Product? product)
+        {
+            if (product == null) return; 
+
+            _cartService.AddCartItem(product);
         }
     }
 }

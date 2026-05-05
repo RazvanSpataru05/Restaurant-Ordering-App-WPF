@@ -1,23 +1,120 @@
 ﻿<Window x:Class="RestaurantOrderingApp.Views.RestaurantWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RestaurantOrderingApp.Views"
-        mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="RestaurantWindow" Height="450" Width="800">
+        WindowState="Maximized"
+        WindowStyle="None"
+        Title="Sapori d'Italia" Height="700" Width="1100"
+        Background="#1C1C1C">
+    <Window.InputBindings>
+        <KeyBinding Key="Esc" Command="ApplicationCommands.Close"/>
+    </Window.InputBindings>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Close"
+                        Executed="CloseCommand_Executed"/>
+    </Window.CommandBindings>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
+        <Style x:Key="HeaderButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#C9A84C"/>
+            <Setter Property="BorderBrush" Value="#C9A84C"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="18,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontFamily" Value="Georgia"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="2"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#C9A84C"/>
+                                <Setter Property="Foreground" Value="#1C1C1C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="125"/>
+            <RowDefinition Height="70"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <DockPanel Grid.Row="0">
-            <Button DockPanel.Dock="Left" Content="Menu"
-                    Command="{Binding OpenMenuCommand}"/>
-            <TextBlock DockPanel.Dock="Right" Text="{Binding DisplayName}"/>
-            <TextBlock Text="Sapori d'Italia" HorizontalAlignment="Center"/>
-        </DockPanel>
+        <Border Grid.Row="0" Background="#141414" 
+                BorderBrush="#2A2A2A" BorderThickness="0 0 0 1">
+            <Grid Margin="30,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Content="☰  Menu"
+                        Style="{StaticResource HeaderButtonStyle}"
+                        Command="{Binding OpenMenuCommand}"
+                        VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Column="1" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Sapori d'Italia"
+                               Foreground="#C9A84C"
+                               FontFamily="Georgia"
+                               FontSize="20"
+                               FontStyle="Italic"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="· Cucina Autentica Italiana ·"
+                               Foreground="#666666"
+                               FontFamily="Georgia"
+                               FontSize="10"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <Button Grid.Column="2"
+                        Command="{Binding OpenCartCommand}"
+                        Style="{StaticResource HeaderButtonStyle}"
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="👤  " FontSize="14"/>
+                        <TextBlock Text="{Binding DisplayName}" FontSize="13"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1">
+
+            <local:WelcomeView 
+                Visibility="{Binding IsWelcomeVisible, 
+                Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+            <local:MenuView 
+                DataContext="{Binding MenuVM}"
+                Visibility="{Binding DataContext.IsMenuOpen,
+                RelativeSource={RelativeSource AncestorType=Window},
+                Converter={StaticResource BoolToVisibilityConverter}}"/>
+            
+            <local:CartView 
+                DataContext="{Binding CartVM}"
+                Visibility="{Binding DataContext.IsCartOpen,
+                RelativeSource={RelativeSource AncestorType=Window},
+                Converter={StaticResource BoolToVisibilityConverter}}"/>
+        </Grid>
     </Grid>
 </Window>

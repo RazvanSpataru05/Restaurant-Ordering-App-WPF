@@ -23,15 +23,24 @@ namespace RestaurantOrderingApp
                 services.AddSingleton<CurrentUserSession>();
                 services.AddSingleton<UserDAL>();
                 services.AddSingleton<UserBLL>();
+
                 services.AddSingleton<ProductDAL>();
                 services.AddSingleton<ProductBLL>();
+
                 services.AddSingleton<CategoryDAL>();
                 services.AddSingleton<CategoryBLL>();
+
                 services.AddSingleton<AllergenDAL>();
                 services.AddSingleton<AllergenBLL>();
+
                 services.AddSingleton<ProductDAL>();
                 services.AddSingleton<ProductBLL>();
+
+                services.AddSingleton<MenuDAL>();
+                services.AddSingleton<MenuBLL>();
+
                 services.AddSingleton<IDialogService, DialogService>();
+                services.AddSingleton<CartService>();
 
                 services.AddTransient<LoginWindow>();
                 services.AddTransient<LoginVM>();

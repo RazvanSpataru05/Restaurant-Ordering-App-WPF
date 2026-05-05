@@ -14,16 +14,15 @@ namespace RestaurantOrderingApp.Layers.DataAccessLayer
             cmd.CommandType = CommandType.StoredProcedure;
             con.Open();
             ObservableCollection<Category> result = [];
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
             {
-                while (reader.Read())
+                result.Add(new Category()
                 {
-                    result.Add(new Category()
-                    {
-                        CategoryId = (int)reader["CategoryId"],
-                        Name = (string)reader["Name"],
-                    });
-                }
+                    CategoryId = (int)reader["CategoryId"],
+                    Name = (string)reader["Name"],
+                });
             }
             return result;
         }
