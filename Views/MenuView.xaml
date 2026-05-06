@@ -1,12 +1,70 @@
 ﻿<UserControl x:Class="RestaurantOrderingApp.Views.MenuView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:RestaurantOrderingApp.Views"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             Background="#1C1C1C"
+             Foreground="#E0E0E0">
     <Grid>
-            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0">
+            <TextBlock Text="Search "/>
+            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="0 5">
+            </TextBox>
+            <CheckBox Content="With Allergens"
+                      Command="{Binding ToggleWithCommand}">
+            </CheckBox>
+            <CheckBox Content="Without Allergens"
+                      Command="{Binding ToggleWithoutCommand}">
+            </CheckBox>
+            <ItemsControl ItemsSource="{Binding AllAllergens}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding Name}"
+                                Command="{Binding DataContext.ToggleAllergenCommand,
+                                         RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                CommandParameter="{Binding}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock Text="{Binding LeftPageNumber, StringFormat='Left page number: {0}'}" Foreground="#E0E0E0"/>
+            <TextBlock Text="{Binding RightPageNumber, StringFormat='Right page number: {0}'}" Foreground="#E0E0E0"/>
+            <TextBlock Text="{Binding CurrentPage, StringFormat='Current page: {0}'}" Foreground="#E0E0E0"/>
+            <Button Content="Next Page" Command="{Binding NextPageCommand}" IsEnabled="{Binding CanGoNext}"/>
+            <Button Content="Prev Page" Command="{Binding PrevPageCommand}" IsEnabled="{Binding CanGoPrev}"/>
+
+        </StackPanel>
+
+        <ScrollViewer Grid.Column="1">
+            <ItemsControl ItemsSource="{Binding LeftPageProducts}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}"/>
+                            <TextBlock Text="{Binding Price}"/>
+                            <TextBlock Text="{Binding PortionQuantity}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <ScrollViewer Grid.Column="2">
+            <ItemsControl ItemsSource="{Binding RightPageProducts}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}"/>
+                            <TextBlock Text="{Binding Price}"/>
+                            <TextBlock Text="{Binding PortionQuantity}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>
