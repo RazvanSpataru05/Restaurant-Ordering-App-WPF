@@ -31,6 +31,19 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+
+            <ItemsControl ItemsSource="{Binding AllCategories}" Margin="0 20 0 0">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding Name}"
+                                Command="{Binding DataContext.NavigateToCategoryCommand,
+                            RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                CommandParameter="{Binding}">
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            
             <TextBlock Text="{Binding LeftPageNumber, StringFormat='Left page number: {0}'}" Foreground="#E0E0E0"/>
             <TextBlock Text="{Binding RightPageNumber, StringFormat='Right page number: {0}'}" Foreground="#E0E0E0"/>
             <TextBlock Text="{Binding CurrentPage, StringFormat='Current page: {0}'}" Foreground="#E0E0E0"/>

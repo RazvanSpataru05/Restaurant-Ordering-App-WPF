@@ -21,6 +21,8 @@ namespace RestaurantOrderingApp.ViewModels
         private readonly AllergenBLL _allergenBLL;
         private readonly MenuBLL _menuBLL;
         private readonly CartService _cartService;
+        private readonly int _totalPages;
+        private readonly ObservableCollection<Category> _allCategories;
 
         private AllergenFilter _allergenFilter;
         private string _searchText;
@@ -32,13 +34,12 @@ namespace RestaurantOrderingApp.ViewModels
         private int _currentPage;
         private int _leftPageNumber;
         private int _rightPageNumber;
-        private int _totalPages;
+
         private ObservableCollection<Product> _leftPageProducts;
         private ObservableCollection<Product> _rightPageProducts;
         private bool _isFirstPage;
         private bool _canGoNext;
         private bool _canGoPrev;
-        private ObservableCollection<Category> _allCategories;
 
         public AllergenFilter AllergenFilter
         {
@@ -244,11 +245,13 @@ namespace RestaurantOrderingApp.ViewModels
 
             var allProducts = _productBLL.GetAllProucts();
             TotalPages = (int)Math.Ceiling(allProducts.Count / (double)(PRODUCTS_PER_PAGE) * 2);
+
             var grouped = allProducts
-                .GroupBy(p => p.CategoryName)
+                .GroupBy(p => p.CategoryId)
                 .Select(g => new CategoryWithProducts(
-                    category: g.Key,
+                    category: AllCategories.First(c => c.CategoryId == g.Key),
                     products: new(g.ToList())));
+
             FullMenu = new(grouped);
             FilteredMenu = FullMenu;
             GeneratePages();
@@ -366,11 +369,11 @@ namespace RestaurantOrderingApp.ViewModels
             RightPageProducts = [];
             LeftPageNumber = (CurrentPage * 2) - 1;
             RightPageNumber = CurrentPage * 2;
-            CanGoNext = CurrentPage < TotalPages / 2 + TotalPages % 2;
+            CanGoNext = RightPageNumber < TotalPages / 2 + TotalPages % 2;
             CanGoPrev = CurrentPage > 1;
             IsFirstPage = CurrentPage == 1;
 
-            int startIndex = (CurrentPage - 1) * PRODUCTS_PER_PAGE;
+            int startIndex = (LeftPageNumber - 1) * PRODUCTS_PER_PAGE;
             var allProducts = FilteredMenu.SelectMany(c => c.Products).ToList();
 
             if (!IsFirstPage)
@@ -391,7 +394,13 @@ namespace RestaurantOrderingApp.ViewModels
         {
             if (category == null) return;
 
+            var allProducts = FullMenu.SelectMany(p => p.Products).ToList();
+            var firstProduct = FilteredMenu.FirstOrDefault(c => c.Category.CategoryId == category.CategoryId)?.Products.FirstOrDefault();
+            if (firstProduct == null) return;
 
+            int productIndex = allProducts.IndexOf(firstProduct);
+            CurrentPage = productIndex / (PRODUCTS_PER_PAGE * 2) + 1;
+            GeneratePages();
         }
     }
 }
