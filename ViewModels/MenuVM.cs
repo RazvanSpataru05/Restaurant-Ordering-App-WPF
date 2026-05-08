@@ -2,7 +2,6 @@
 using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
 using System.Collections.ObjectModel;
-using System.Reflection;
 
 public enum AllergenFilter
 {
@@ -35,8 +34,8 @@ namespace RestaurantOrderingApp.ViewModels
         private int _leftPageNumber;
         private int _rightPageNumber;
 
-        private ObservableCollection<Product> _leftPageProducts;
-        private ObservableCollection<Product> _rightPageProducts;
+        private ObservableCollection<ProductDisplay> _leftPageProducts;
+        private ObservableCollection<ProductDisplay> _rightPageProducts;
         private bool _isFirstPage;
         private bool _canGoNext;
         private bool _canGoPrev;
@@ -151,7 +150,7 @@ namespace RestaurantOrderingApp.ViewModels
                 }
             }
         }
-        public ObservableCollection<Product> LeftPageProducts
+        public ObservableCollection<ProductDisplay> LeftPageProducts
         {
             get => _leftPageProducts;
             set
@@ -163,7 +162,7 @@ namespace RestaurantOrderingApp.ViewModels
                 }
             }
         }
-        public ObservableCollection<Product> RightPageProducts
+        public ObservableCollection<ProductDisplay> RightPageProducts
         {
             get => _rightPageProducts;
             set
@@ -219,12 +218,15 @@ namespace RestaurantOrderingApp.ViewModels
         public RelayCommand ToggleWithCommand { get; set; }
         public RelayCommand ToggleWithoutCommand { get; set; }
         public RelayCommand ToggleAllergenCommand { get; set; }
-        public RelayCommand AddProductToCartCommand { get; set; }
+        public RelayCommand AddToCartCommand { get; set; }
         public RelayCommand NextPageCommand { get; set; }
         public RelayCommand PrevPageCommand { get; set; }
         public RelayCommand NavigateToCategoryCommand { get; set; }
+        public RelayCommand IncreaseCommand { get; set; }
+        public RelayCommand DecreaseCommand { get; set; }
 
-        public MenuVM(ProductBLL productBLL, CategoryBLL categoryBLL, AllergenBLL allergenBLL, MenuBLL menuBLL, CartService cartService)
+        public MenuVM(ProductBLL productBLL, CategoryBLL categoryBLL, AllergenBLL allergenBLL, 
+            MenuBLL menuBLL, CartService cartService)
         {
             _productBLL = productBLL;
             _categoryBLL = categoryBLL;
@@ -250,7 +252,7 @@ namespace RestaurantOrderingApp.ViewModels
                 .GroupBy(p => p.CategoryId)
                 .Select(g => new CategoryWithProducts(
                     category: AllCategories.First(c => c.CategoryId == g.Key),
-                    products: new(g.ToList())));
+                    products: new(g.Select(p => new ProductDisplay(p)))));
 
             FullMenu = new(grouped);
             FilteredMenu = FullMenu;
@@ -259,11 +261,11 @@ namespace RestaurantOrderingApp.ViewModels
             var allergenMap = _allergenBLL.GetAllProductAllergens();
             foreach (var category in FullMenu)
             {
-                foreach (var product in category.Products)
+                foreach (var displayedProduct in category.Products)
                 {
-                    if (allergenMap.TryGetValue(product.ProductId, out ObservableCollection<Allergen>? value))
+                    if (allergenMap.TryGetValue(displayedProduct.Product.ProductId, out ObservableCollection<Allergen>? value))
                     {
-                        product.Allergens = value;
+                        displayedProduct.Product.Allergens = value;
                     }
                 }
             }
@@ -272,10 +274,12 @@ namespace RestaurantOrderingApp.ViewModels
             ToggleWithCommand = new(_ => ToggleWith());
             ToggleWithoutCommand = new(_ => ToggleWithout());
             ToggleAllergenCommand = new(param => ToggleAllergen(param as Allergen));
-            AddProductToCartCommand = new(param => AddProductToCart(param as Product));
+            AddToCartCommand = new(param => AddToCart(param as ProductDisplay));
             NextPageCommand = new(_ => NextPage());
             PrevPageCommand = new(_ => PrevPage());
             NavigateToCategoryCommand = new(param => NavigateToCategory(param as Category));
+            IncreaseCommand = new(param => Increase(param as ProductDisplay), param => CanInrease(param as ProductDisplay));
+            DecreaseCommand = new(param => Decrease(param as ProductDisplay), param => CanDecrease(param as ProductDisplay));
         }
         private void Search()
         {
@@ -290,20 +294,19 @@ namespace RestaurantOrderingApp.ViewModels
             foreach (var category in _fullMenu)
             {
                 var filteredProducts = category.Products
-                    .Where(p => p.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+                    .Where(p => p.Product.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+
                 if (SelectedAllergens.Any())
                 {
                     if (AllergenFilter == AllergenFilter.With)
                     {
-                        filteredProducts = filteredProducts
-                            .Where(p => p.Allergens != null &&
-                            SelectedAllergens.All(a => p.Allergens.Any(pa => pa.AllergenId == a.AllergenId)));
+                        filteredProducts = Enumerable.Where(filteredProducts, p => p.Product.Allergens != null &&
+                            SelectedAllergens.All(a => p.Product.Allergens.Any(pa => pa.AllergenId == a.AllergenId)));
                     }
                     else if (AllergenFilter == AllergenFilter.Without)
                     {
-                        filteredProducts = filteredProducts
-                            .Where(p => p.Allergens == null ||
-                            SelectedAllergens.Any(a => p.Allergens.Any(pa => pa.AllergenId == a.AllergenId)));
+                        filteredProducts = Enumerable.Where(filteredProducts, p => p.Product.Allergens == null ||
+                            SelectedAllergens.Any(a => p.Product.Allergens.Any(pa => pa.AllergenId == a.AllergenId)));
                     }
                 }
 
@@ -343,11 +346,12 @@ namespace RestaurantOrderingApp.ViewModels
                 SelectedAllergens.Add(allergen);
             Search();
         }
-        private void AddProductToCart(Product? product)
+        private void AddToCart(ProductDisplay? productDisplay)
         {
-            if (product == null) return;
+            if (productDisplay == null) return;
 
-            _cartService.AddCartItem(product);
+            _cartService.AddCartItem(productDisplay.Product, productDisplay.SelectedQuantity);
+            productDisplay.SelectedQuantity = 1;
         }
         private void NextPage()
         {
@@ -401,6 +405,26 @@ namespace RestaurantOrderingApp.ViewModels
             int productIndex = allProducts.IndexOf(firstProduct);
             CurrentPage = productIndex / (PRODUCTS_PER_PAGE * 2) + 1;
             GeneratePages();
+        }
+        private void Increase(ProductDisplay? productDisplay)
+        {
+            if (productDisplay == null) return;
+            productDisplay.SelectedQuantity++;
+        }
+        private bool CanInrease(ProductDisplay? productDisplay)
+        {
+            if (productDisplay == null) return false;
+            return productDisplay.SelectedQuantity < _cartService.GetAvailableProducts(productDisplay.Product);
+        }
+        private void Decrease(ProductDisplay? productDisplay) 
+        {
+            if (productDisplay == null) return;
+            productDisplay.SelectedQuantity--;
+        }
+        private bool CanDecrease(ProductDisplay? productDisplay)
+        {
+            if (productDisplay == null) return false;
+            return productDisplay.SelectedQuantity > 1;
         }
     }
 }

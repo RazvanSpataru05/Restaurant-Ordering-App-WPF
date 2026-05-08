@@ -57,9 +57,22 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <TextBlock Text="{Binding Name}"/>
-                            <TextBlock Text="{Binding Price}"/>
-                            <TextBlock Text="{Binding PortionQuantity}"/>
+                            <TextBlock Text="{Binding Product.Name}"/>
+                            <TextBlock Text="{Binding Product.Price}"/>
+                            <TextBlock Text="{Binding Product.PortionQuantity}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="&lt;" Command="{Binding DataContext.DecreaseCommand, 
+                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"/>
+                                <TextBlock Text="{Binding SelectedQuantity}" 
+                                        VerticalAlignment="Center" Margin="5,0"/>
+                                <Button Content="&gt;" Command="{Binding DataContext.IncreaseCommand, 
+                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"/>
+                            </StackPanel>
+                            <Button Content="Add to Cart" Command="{Binding DataContext.AddToCartCommand, 
+                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                    CommandParameter="{Binding}"/>
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -71,9 +84,22 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <TextBlock Text="{Binding Name}"/>
-                            <TextBlock Text="{Binding Price}"/>
-                            <TextBlock Text="{Binding PortionQuantity}"/>
+                            <TextBlock Text="{Binding Product.Name}"/>
+                            <TextBlock Text="{Binding Product.Price}"/>
+                            <TextBlock Text="{Binding Product.PortionQuantity}"/>
+                            <StackPanel Orientation="Horizontal">
+                            <Button Content="&lt;" Command="{Binding DataContext.DecreaseCommand, 
+                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                     CommandParameter="{Binding}"/>
+                            <TextBlock Text="{Binding SelectedQuantity}" 
+                                        VerticalAlignment="Center" Margin="5,0"/>
+                            <Button Content="&gt;" Command="{Binding DataContext.IncreaseCommand, 
+                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                    CommandParameter="{Binding}"/>
+                            </StackPanel>
+                            <Button Content="Add to Cart" Command="{Binding DataContext.AddToCartCommand, 
+                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                    CommandParameter="{Binding}"/>
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -81,3 +107,4 @@
         </ScrollViewer>
     </Grid>
 </UserControl>
+    

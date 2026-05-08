@@ -1,9 +1,4 @@
 ﻿using RestaurantOrderingApp.Layers.EntityLayer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RestaurantOrderingApp.Utils
 {
@@ -13,11 +8,11 @@ namespace RestaurantOrderingApp.Utils
         public Product Product { get; set; }
         public decimal TotalPrice { get; set; }
 
-        public CartItem(Product product)
+        public CartItem(Product product, int quantity)
         {
             Product = product;
-            Quantity = 1;
-            TotalPrice = Product.Price;
+            Quantity = quantity;
+            TotalPrice = Product.Price * Quantity;
         }
         public void UpdatePrice()
         {
