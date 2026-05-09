@@ -1,21 +1,24 @@
-﻿using RestaurantOrderingApp.Layers.EntityLayer;
+﻿using RestaurantOrderingApp.Layers.BusinessLogicLayer;
+using RestaurantOrderingApp.Layers.EntityLayer;
 using System.Collections.ObjectModel;
 
 namespace RestaurantOrderingApp.Utils
 {
     public class CartService
     {
+        private readonly MenuBLL _menuBLL;
         public ObservableCollection<CartItem> Items { get; set; }
 
-        public CartService() 
+        public CartService(MenuBLL menuBLL) 
         {
+            _menuBLL = menuBLL;
             Items = [];
         }
+
 
        public void AddCartItem(Product product, int selectedQuantity)
         {
             var existingItem = Items.FirstOrDefault(p => p.Product.ProductId == product.ProductId);
-
             if (existingItem != null)
             {
                 existingItem.Quantity += selectedQuantity;
@@ -23,16 +26,50 @@ namespace RestaurantOrderingApp.Utils
             }
             else
             {
-                Items.Add(new CartItem(product, selectedQuantity));
+                Items.Add(new CartItem(product, selectedQuantity, product.Price));
             }
         }
-        public int GetAvailableProducts(Product product)
+        public int GetAvailablePortions(Product product)
         {
-            int totalPortions = (int)product.TotalQuantity / ParsePortionQuantity(product.PortionQuantity);
-            var cartItem = Items.FirstOrDefault(p => p.Product.ProductId == product.ProductId);
+            int totalPortions = ComputeTotalPortions(product.PortionQuantity, product.TotalQuantity);
+            var cartItem = Items.FirstOrDefault(p => p.Product?.ProductId == product.ProductId);
             int alreadyInCart = cartItem?.Quantity ?? 0;
             return totalPortions - alreadyInCart;
         }
+        public int GetAvailablePortions(Menu menu)
+        {
+            var menuProducts = _menuBLL.GetMenuProducts(menu.MenuId);
+            int minimumPortions = int.MaxValue;
+            foreach (var menuProduct in menuProducts)
+            {
+                int totalProductPortions = ComputeTotalPortions(menuProduct.PortionQuantity, menuProduct.TotalQuantity);
+                var productCartItem = Items.FirstOrDefault(i => i.Product?.ProductId == menuProduct.ProductId);
+                int usedByProducts = productCartItem != null
+                    ? productCartItem.Quantity * ParsePortionQuantity(productCartItem.Product!.PortionQuantity)
+                    : 0;
+
+                int usedByMenus = 0;
+                foreach (var cartItem in Items.Where(i => i.Menu != null))
+                {
+                    var menuProductInCart = _menuBLL.GetMenuProducts(cartItem.Menu!.MenuId);
+                    var match = menuProductInCart.FirstOrDefault(mp => mp.ProductId == menuProduct.ProductId);
+                    if (match != null)
+                    {
+                        usedByMenus += cartItem.Quantity * ParsePortionQuantity(match.PortionQuantity);
+                    }
+                }
+
+                int remaining = (int)(menuProduct.TotalQuantity - (decimal)(usedByProducts + usedByMenus));
+                int availableMenus = (int)(remaining / ParsePortionQuantity(menuProduct.PortionQuantity));
+
+                if (availableMenus < minimumPortions)
+                {
+                    minimumPortions = availableMenus;
+                }
+            }
+            return Math.Max(0, minimumPortions);
+        }
+
         private int ParsePortionQuantity(string portionQuantity)
         {
             int number = 0;
@@ -43,6 +80,10 @@ namespace RestaurantOrderingApp.Utils
                 number = number * 10 + (portionQuantity[index] - '0');
             }
             return number;
+        }
+        private int ComputeTotalPortions(string portionQuantity, decimal totalQuantity)
+        {
+            return (int)totalQuantity / ParsePortionQuantity(portionQuantity);
         }
     }
 }

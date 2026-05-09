@@ -13,6 +13,17 @@ namespace RestaurantOrderingApp.Dialog_Service
         {
             _serviceProvider = serviceProvider;
         }
+        public void CloseGuestWarningWindow()
+        { 
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is GuestWarningWindow)
+                {
+                    window.Close();
+                    break;
+                }
+            }
+        }
 
         public void CloseLoginWindow()
         {
@@ -22,6 +33,18 @@ namespace RestaurantOrderingApp.Dialog_Service
                 {
                     window.Close();
                     return;
+                }
+            }
+        }
+
+        public void CloseRestaurantWindow()
+        {
+            foreach(Window window in Application.Current.Windows)
+            {
+                if (window is RestaurantWindow)
+                {
+                    window.Close();
+                    break;
                 }
             }
         }
@@ -38,18 +61,32 @@ namespace RestaurantOrderingApp.Dialog_Service
                 MessageBoxImage.Information) == MessageBoxResult.OK;
         }
 
+        public void ShowGuestWarningWindow()
+        {
+            var vm = _serviceProvider.GetService<GuestWarningVM>();
+            var window = new GuestWarningWindow(vm);
+            window.Show();
+        }
+
         public void ShowLoginWindow()
         {
             var loginVM = _serviceProvider.GetRequiredService<LoginVM>();
             var window = new LoginWindow(loginVM);
             window.Show();
         }
-
         public void ShowRestaurantWindow()
         {
             var restaurantVM = _serviceProvider.GetRequiredService<RestaurantVM>();
             var window = new RestaurantWindow(restaurantVM);
             window.Show();
+        }
+
+        public void ShowWelcomeView()
+        {
+            var restaurantVM = _serviceProvider.GetService<RestaurantVM>();
+            restaurantVM.IsWelcomeVisible = true;
+            restaurantVM.IsCartOpen = false;
+            restaurantVM.IsMenuOpen = false;
         }
     }
 }

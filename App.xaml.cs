@@ -39,6 +39,9 @@ namespace RestaurantOrderingApp
                 services.AddSingleton<MenuDAL>();
                 services.AddSingleton<MenuBLL>();
 
+                services.AddSingleton<OrderDAL>();
+                services.AddSingleton<OrderBLL>();
+
                 services.AddSingleton<IDialogService, DialogService>();
                 services.AddSingleton<CartService>();
 
@@ -47,8 +50,11 @@ namespace RestaurantOrderingApp
 
                 services.AddTransient<MenuVM>();
                 services.AddTransient<CartVM>();
-                services.AddTransient<RestaurantWindow>();
                 services.AddTransient<RestaurantVM>();
+                services.AddTransient<RestaurantWindow>();
+
+                services.AddSingleton<GuestWarningVM>();
+                services.AddTransient<GuestWarningWindow>();
             }
             ).Build();
 

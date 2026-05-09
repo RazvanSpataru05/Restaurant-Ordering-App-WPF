@@ -1,7 +1,9 @@
-﻿using RestaurantOrderingApp.Layers.BusinessLogicLayer;
+﻿using RestaurantOrderingApp.Dialog_Service;
+using RestaurantOrderingApp.Layers.BusinessLogicLayer;
 using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
 using System.Collections.ObjectModel;
+using System.Data;
 
 public enum AllergenFilter
 {
@@ -15,13 +17,13 @@ namespace RestaurantOrderingApp.ViewModels
     public class MenuVM : BaseViewModel
     {
         private readonly int PRODUCTS_PER_PAGE = 3;
+        private readonly CurrentUserSession _currentUserSession;
+        private readonly IDialogService _dialogService;
         private readonly ProductBLL _productBLL;
         private readonly CategoryBLL _categoryBLL;
         private readonly AllergenBLL _allergenBLL;
         private readonly MenuBLL _menuBLL;
         private readonly CartService _cartService;
-        private readonly int _totalPages;
-        private readonly ObservableCollection<Category> _allCategories;
 
         private AllergenFilter _allergenFilter;
         private string _searchText;
@@ -226,13 +228,16 @@ namespace RestaurantOrderingApp.ViewModels
         public RelayCommand DecreaseCommand { get; set; }
 
         public MenuVM(ProductBLL productBLL, CategoryBLL categoryBLL, AllergenBLL allergenBLL, 
-            MenuBLL menuBLL, CartService cartService)
+            MenuBLL menuBLL, CartService cartService, CurrentUserSession currentUserSession,
+            IDialogService dialogService)
         {
             _productBLL = productBLL;
             _categoryBLL = categoryBLL;
             _allergenBLL = allergenBLL;
             _menuBLL = menuBLL;
             _cartService = cartService;
+            _currentUserSession = currentUserSession;
+            _dialogService = dialogService;
 
             FullMenu = [];
             FilteredMenu = [];
@@ -349,6 +354,11 @@ namespace RestaurantOrderingApp.ViewModels
         private void AddToCart(ProductDisplay? productDisplay)
         {
             if (productDisplay == null) return;
+            if (_currentUserSession.CurrentUser == null)
+            {
+                _dialogService.ShowGuestWarningWindow();
+                return;
+            }
 
             _cartService.AddCartItem(productDisplay.Product, productDisplay.SelectedQuantity);
             productDisplay.SelectedQuantity = 1;
@@ -414,7 +424,7 @@ namespace RestaurantOrderingApp.ViewModels
         private bool CanInrease(ProductDisplay? productDisplay)
         {
             if (productDisplay == null) return false;
-            return productDisplay.SelectedQuantity < _cartService.GetAvailableProducts(productDisplay.Product);
+            return productDisplay.SelectedQuantity < _cartService.GetAvailablePortions(productDisplay.Product);
         }
         private void Decrease(ProductDisplay? productDisplay) 
         {

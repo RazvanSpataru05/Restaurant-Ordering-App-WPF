@@ -27,22 +27,23 @@ namespace RestaurantOrderingApp.Layers.DataAccessLayer
             }
             return result;
         }
-        public ObservableCollection<Product> GetMenuProducts(int menuId)
+        public ObservableCollection<MenuProduct> GetMenuProducts(int menuId)
         {
             using SqlConnection con = DALHelper.Connection;
             SqlCommand cmd = new("sp_GetMenuProducts", con);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@MenuId", menuId);
             con.Open();
-            ObservableCollection<Product> result = [];
+            ObservableCollection<MenuProduct> result = [];
             using SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                result.Add(new Product()
+                result.Add(new MenuProduct()
                 {
+                    MenuId = (int)reader["MenuId"],
                     ProductId = (int)reader["ProductId"],
-                    Name = (string)reader["Name"],
                     PortionQuantity = (string)reader["PortionQuantity"],
+                    TotalQuantity = (decimal)reader["TotalQuantity"],
                     Price = (decimal)reader["Price"]
                 });
             }

@@ -1,0 +1,69 @@
+﻿<Window x:Class="RestaurantOrderingApp.Views.GuestWarningWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="" Height="220" Width="400"
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="False"
+        WindowStyle="None"
+        Background="#1C1C1C"
+        ResizeMode="NoResize">
+    <Window.Resources>
+        <Style x:Key="HeaderButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#C9A84C"/>
+            <Setter Property="BorderBrush" Value="#C9A84C"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="18 8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontFamily" Value="Georgia"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="2"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#C9A84C"/>
+                                <Setter Property="Foreground" Value="#1C1C1C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Border BorderBrush="#C9A84C" BorderThickness="1">
+        <StackPanel Margin="30" VerticalAlignment="Center">
+            <TextBlock Text="⚠" FontSize="28" 
+                       Foreground="#C9A84C"
+                       HorizontalAlignment="Center"
+                       Margin="0 0 0 15"/>
+            <TextBlock Text="{Binding InfoMessage}"
+                       Foreground="#E0E0E0"
+                       FontFamily="Georgia"
+                       FontSize="13"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"
+                       Margin="0 0 0 25"/>
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Center">
+                <Button Content="Log In"
+                        Command="{Binding LoginCommand}"
+                        Style="{StaticResource HeaderButtonStyle}"
+                        Margin="5 0"/>
+                <Button Content="Cancel"
+                        Command="{Binding CancelCommand}"
+                        Style="{StaticResource HeaderButtonStyle}"
+                        Margin="5 0"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

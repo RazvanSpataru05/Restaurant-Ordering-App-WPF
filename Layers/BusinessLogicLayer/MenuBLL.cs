@@ -14,7 +14,7 @@ namespace RestaurantOrderingApp.Layers.BusinessLogicLayer
         {
             return _menuDAL.GetAllMenus();
         }
-        public ObservableCollection<Product> GetMenuProducts(int menuId)
+        public ObservableCollection<MenuProduct> GetMenuProducts(int menuId)
         {
             return _menuDAL.GetMenuProducts(menuId);
         }

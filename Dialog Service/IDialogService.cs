@@ -5,6 +5,10 @@
         void ShowLoginWindow();
         void ShowRestaurantWindow();
         void CloseLoginWindow();
+        void CloseRestaurantWindow(); 
         bool ShowConfirmationDialog(string message);
+        void ShowGuestWarningWindow();
+        void CloseGuestWarningWindow();
+        void ShowWelcomeView();
     }
 }
