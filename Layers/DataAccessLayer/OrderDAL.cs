@@ -7,7 +7,7 @@ namespace RestaurantOrderingApp.Layers.DataAccessLayer
 {
     public class OrderDAL
     {
-        public int CreateOrder(int userId, DateTime estimatedDeliveryTime, decimal totalPrice, decimal deliveryCost)
+        public (int, string) CreateOrder(int userId, DateTime estimatedDeliveryTime, decimal totalPrice, decimal deliveryCost)
         {
             using SqlConnection con = DALHelper.Connection;
             SqlCommand cmd = new("sp_CreateOrder", con);
@@ -18,12 +18,15 @@ namespace RestaurantOrderingApp.Layers.DataAccessLayer
             cmd.Parameters.AddWithValue("@DeliveryCost", deliveryCost);
 
             SqlParameter outputId = new("@OrderId", SqlDbType.Int);
+            SqlParameter outputCode = new("@OrderCode", SqlDbType.NVarChar, 50);
             outputId.Direction = ParameterDirection.Output;
+            outputCode.Direction = ParameterDirection.Output;
             cmd.Parameters.Add(outputId);
+            cmd.Parameters.Add(outputCode);
 
             con.Open();
             cmd.ExecuteNonQuery();
-            return (int)outputId.Value;
+            return ((int)outputId.Value, outputCode.Value.ToString());
         }
         public ObservableCollection<Order> GetOrdersByUser(int userId)
         {

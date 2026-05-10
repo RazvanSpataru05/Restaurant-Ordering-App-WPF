@@ -4,7 +4,6 @@ using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
 using System.Collections.ObjectModel;
 using System.Data;
-
 public enum AllergenFilter
 {
     None,
@@ -279,7 +278,7 @@ namespace RestaurantOrderingApp.ViewModels
             ToggleWithCommand = new(_ => ToggleWith());
             ToggleWithoutCommand = new(_ => ToggleWithout());
             ToggleAllergenCommand = new(param => ToggleAllergen(param as Allergen));
-            AddToCartCommand = new(param => AddToCart(param as ProductDisplay));
+            AddToCartCommand = new(param => AddToCart(param as ProductDisplay), param => CanAddToCart(param as ProductDisplay));
             NextPageCommand = new(_ => NextPage());
             PrevPageCommand = new(_ => PrevPage());
             NavigateToCategoryCommand = new(param => NavigateToCategory(param as Category));
@@ -362,6 +361,12 @@ namespace RestaurantOrderingApp.ViewModels
 
             _cartService.AddCartItem(productDisplay.Product, productDisplay.SelectedQuantity);
             productDisplay.SelectedQuantity = 1;
+        }
+        private bool CanAddToCart(ProductDisplay? productDisplay)
+        {
+            if (productDisplay == null) return false;
+
+            return _cartService.GetAvailablePortions(productDisplay.Product) > 0;
         }
         private void NextPage()
         {

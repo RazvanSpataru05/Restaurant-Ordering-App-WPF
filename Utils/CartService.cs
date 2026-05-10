@@ -9,14 +9,14 @@ namespace RestaurantOrderingApp.Utils
         private readonly MenuBLL _menuBLL;
         public ObservableCollection<CartItem> Items { get; set; }
 
-        public CartService(MenuBLL menuBLL) 
+        public CartService(MenuBLL menuBLL)
         {
             _menuBLL = menuBLL;
             Items = [];
         }
 
 
-       public void AddCartItem(Product product, int selectedQuantity)
+        public void AddCartItem(Product product, int selectedQuantity)
         {
             var existingItem = Items.FirstOrDefault(p => p.Product.ProductId == product.ProductId);
             if (existingItem != null)
@@ -29,10 +29,10 @@ namespace RestaurantOrderingApp.Utils
                 Items.Add(new CartItem(product, selectedQuantity, product.Price));
             }
         }
-        public int GetAvailablePortions(Product product)
+        public int GetAvailablePortions(Product product, CartItem? excludeItem = null)
         {
             int totalPortions = ComputeTotalPortions(product.PortionQuantity, product.TotalQuantity);
-            var cartItem = Items.FirstOrDefault(p => p.Product?.ProductId == product.ProductId);
+            var cartItem = Items.FirstOrDefault(p => p.Product?.ProductId == product.ProductId && p != excludeItem);
             int alreadyInCart = cartItem?.Quantity ?? 0;
             return totalPortions - alreadyInCart;
         }
@@ -70,14 +70,14 @@ namespace RestaurantOrderingApp.Utils
             return Math.Max(0, minimumPortions);
         }
 
-        private int ParsePortionQuantity(string portionQuantity)
+        public int ParsePortionQuantity(string portionQuantity)
         {
             int number = 0;
             int index = 0;
             while (char.IsDigit(portionQuantity[index]))
             {
-                ++index;
                 number = number * 10 + (portionQuantity[index] - '0');
+                ++index;
             }
             return number;
         }

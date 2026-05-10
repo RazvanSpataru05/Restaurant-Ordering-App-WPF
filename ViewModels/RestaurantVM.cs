@@ -1,5 +1,6 @@
 ﻿using RestaurantOrderingApp.Dialog_Service;
 using RestaurantOrderingApp.Utils;
+using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantOrderingApp.ViewModels
 {
@@ -113,6 +114,13 @@ namespace RestaurantOrderingApp.ViewModels
             IsCartOpen = true;
             IsMenuOpen = false;
             IsWelcomeVisible = false;
+            foreach (var menuItem in _menuVM.FullMenu)
+            {
+                foreach (var product in menuItem.Products)
+                {
+                    product.SelectedQuantity = 1;
+                }
+            }
         }
     }
 }

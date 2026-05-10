@@ -10,5 +10,7 @@
         void ShowGuestWarningWindow();
         void CloseGuestWarningWindow();
         void ShowWelcomeView();
+        void ShowOrderConfirmationWindow(string orderCode, string estimatedDeliveryTime);
+        void CloseOrderConfirmationWindow();
     }
 }

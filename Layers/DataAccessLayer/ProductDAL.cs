@@ -64,5 +64,15 @@ namespace RestaurantOrderingApp.Layers.DataAccessLayer
             }
             return result;
         }
+        public void UpdateProductQuantity(int productId, decimal totalQuantity)
+        {
+            using SqlConnection con = DALHelper.Connection;
+            SqlCommand cmd = new("sp_UpdateProductQuantity", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@ProductId", productId);
+            cmd.Parameters.AddWithValue("@TotalQuantity", totalQuantity);
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
     }
 }

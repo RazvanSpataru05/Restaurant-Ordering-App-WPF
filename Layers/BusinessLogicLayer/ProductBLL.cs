@@ -1,6 +1,4 @@
-﻿
-
-using RestaurantOrderingApp.Layers.DataAccessLayer;
+﻿using RestaurantOrderingApp.Layers.DataAccessLayer;
 using RestaurantOrderingApp.Layers.EntityLayer;
 using System.Collections.ObjectModel;
 
@@ -19,6 +17,10 @@ namespace RestaurantOrderingApp.Layers.BusinessLogicLayer
         public ObservableCollection<Product> GetProductsByCategory(int categoryId)
         {
             return _productDAL.GetProductsByCategory(categoryId);
+        }
+        public void UpdateProductQuantity(int productId, decimal totalQuantity)
+        {
+            _productDAL.UpdateProductQuantity(productId, totalQuantity);
         }
     }
 }

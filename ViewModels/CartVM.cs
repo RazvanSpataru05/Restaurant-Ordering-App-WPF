@@ -2,8 +2,11 @@
 using RestaurantOrderingApp.Layers.BusinessLogicLayer;
 using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
+using System.Collections.ObjectModel;
 using System.Configuration;
-using System.Security.Policy;
+using System.Runtime.CompilerServices;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media.Animation;
 
 namespace RestaurantOrderingApp.ViewModels
 {
@@ -12,6 +15,8 @@ namespace RestaurantOrderingApp.ViewModels
         private readonly Random _random = new();
         private readonly IDialogService _dialogService;
         private readonly OrderBLL _orderBLL;
+        private readonly ProductBLL _productBLL;
+        private readonly MenuBLL _menuBLL;
         private readonly CurrentUserSession _currentUserSession;
         private readonly CartService _cartService;
         private readonly int _menuDiscount;
@@ -22,13 +27,14 @@ namespace RestaurantOrderingApp.ViewModels
         private readonly int _freeDeliveryThreshold;
         private readonly int _configDeliveryCost;
 
-
         private bool _isCartEmpty;
         private string _cartMessage;
         private decimal _subtotal;
         private decimal _discountAmount;
         private int _deliveryCost;
         private decimal _total;
+
+        public ObservableCollection<CartItem> CartItems => _cartService.Items;
 
         public bool IsCartEmpty
         {
@@ -108,12 +114,16 @@ namespace RestaurantOrderingApp.ViewModels
         public RelayCommand RemoveFromCartCommand { get; set; }
         public RelayCommand IncreaseCommand { get; set; }
         public RelayCommand DecreaseCommand { get; set; }
-        public CartVM(IDialogService dialogService, OrderBLL orderBLL, CurrentUserSession currentUserSession, CartService cartService)
+        public CartVM(IDialogService dialogService, OrderBLL orderBLL, ProductBLL productBLL, MenuBLL menuBLL,
+            CurrentUserSession currentUserSession, CartService cartService)
         {
             _dialogService = dialogService;
             _orderBLL = orderBLL;
+            _productBLL = productBLL;
+            _menuBLL = menuBLL;
             _currentUserSession = currentUserSession;
             _cartService = cartService;
+
             _menuDiscount = Convert.ToInt32(ConfigurationManager.AppSettings["MenuDiscount"]);
             _orderDiscountThreshold = Convert.ToInt32(ConfigurationManager.AppSettings["OrderDiscountThreshold"]);
             _frequencyDays = Convert.ToInt32(ConfigurationManager.AppSettings["FrequencyDays"]);
@@ -123,7 +133,14 @@ namespace RestaurantOrderingApp.ViewModels
             _configDeliveryCost = Convert.ToInt32(ConfigurationManager.AppSettings["DeliveryCost"]);
 
             IsCartEmpty = _cartService.Items.Count == 0;
-            if (IsCartEmpty) CartMessage = "Your cart is currently empty.";
+            CartMessage = IsCartEmpty ? "Your cart is currently empty" : string.Empty;
+
+            _cartService.Items.CollectionChanged += (s, e) =>
+            {
+                IsCartEmpty = _cartService.Items.Count == 0;
+                CartMessage = IsCartEmpty ? "Your cart is currently empty" : string.Empty;
+                ComputeTotal();
+            };
 
             ComputeTotal();
             PlaceOrderCommand = new(_ => PlaceOrder());
@@ -135,12 +152,48 @@ namespace RestaurantOrderingApp.ViewModels
         private void PlaceOrder()
         {
             if (IsCartEmpty || _currentUserSession.CurrentUser == null) return;
-            int orderId = _orderBLL.CreateOrder(_currentUserSession.CurrentUser.UserId, GenerateDateTime(), Total, _configDeliveryCost);
+
+            DateTime estimatedDeliveryTime = GenerateDateTime();
+            (int orderId, string orderCode) = _orderBLL.CreateOrder
+                (_currentUserSession.CurrentUser.UserId, estimatedDeliveryTime, Total, _configDeliveryCost);
+            Dictionary<int, decimal> quantitiesToUpdate = [];
+
             foreach (var item in _cartService.Items)
             {
                 _orderBLL.AddOrderItem(orderId, item.Product?.ProductId, item.Menu?.MenuId, item.Quantity, item.TotalPrice);
+                if (item.Product != null)
+                {
+                    decimal remainingQuantity = item.Product.TotalQuantity - item.Quantity
+                        * _cartService.ParsePortionQuantity(item.Product.PortionQuantity);
+                    quantitiesToUpdate.Add(item.Product.ProductId, remainingQuantity);
+                }
+                else if (item.Menu != null)
+                {
+                    var menuProducts = _menuBLL.GetMenuProducts(item.Menu.MenuId);
+                    foreach (var menuProduct in menuProducts)
+                    {
+                        decimal used = item.Quantity * _cartService.ParsePortionQuantity(menuProduct.PortionQuantity);
+                        if (quantitiesToUpdate.ContainsKey(menuProduct.ProductId))
+                        {
+                            quantitiesToUpdate[menuProduct.ProductId] -= used;
+                        }
+                        else
+                        {
+                            quantitiesToUpdate.Add(menuProduct.ProductId, menuProduct.TotalQuantity - used);
+                        }
+                    }
+                }
+            }
+            foreach (var key in quantitiesToUpdate.Keys)
+            {
+                _productBLL.UpdateProductQuantity(key, quantitiesToUpdate[key]);
             }
             _cartService.Items.Clear();
+            Subtotal = 0;
+            DeliveryCost = 0;
+            Total = 0;
+            DiscountAmount = 0;
+            _dialogService.ShowOrderConfirmationWindow(orderCode, estimatedDeliveryTime.ToString("HH:mm"));
         }
         private DateTime GenerateDateTime()
         {
@@ -157,26 +210,28 @@ namespace RestaurantOrderingApp.ViewModels
             if (cartItem == null) return;
 
             _cartService.Items.Remove(cartItem);
-            ComputeTotal();
         }
         private void Increase(CartItem? cartItem)
         {
             if (cartItem == null) return;
 
             cartItem.Quantity += 1;
+            cartItem.UpdatePrice();
             ComputeTotal();
         }
         private bool CanIncrease(CartItem? cartItem)
         {
             if (cartItem == null) return false;
 
-            return cartItem.Quantity < _cartService.GetAvailablePortions(cartItem.Product);
+            if (cartItem.Product != null) return cartItem.Quantity < _cartService.GetAvailablePortions(cartItem.Product, cartItem);
+            return cartItem.Quantity < _cartService.GetAvailablePortions(cartItem.Menu);
         }
         private void Decrease(CartItem? cartItem)
         {
             if (cartItem == null) return;
 
             cartItem.Quantity -= 1;
+            cartItem.UpdatePrice();
             ComputeTotal();
         }
         private bool CanDecrease(CartItem? cartItem)
@@ -187,18 +242,21 @@ namespace RestaurantOrderingApp.ViewModels
         }
         private void ComputeTotal()
         {
+            if (IsCartEmpty) return;
+
             Subtotal = _cartService.Items.Sum(i => i.TotalPrice);
             Total = Subtotal;
             DeliveryCost = IsDeliveryFree() ? 0 : _configDeliveryCost;
             if (Subtotal >= _orderDiscountThreshold || IsFrequencyDiscountEligible())
-            {
+            {   
                 DiscountAmount = (_frequencyDiscount / 100) * Subtotal;
                 Total = Subtotal - (_frequencyDiscount / 100) * Subtotal;
             }
-            if (!IsDeliveryFree())
+            else
             {
-                Total += _configDeliveryCost;
+                DiscountAmount = 0;
             }
+            Total += DeliveryCost;
         }
         private bool IsFrequencyDiscountEligible()
         {

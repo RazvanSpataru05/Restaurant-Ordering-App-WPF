@@ -10,7 +10,7 @@ namespace RestaurantOrderingApp.Layers.BusinessLogicLayer
 
         public OrderBLL() { }
 
-        public int CreateOrder(int userId, DateTime estimatedDeliveryTime, decimal totalPrice, decimal deliveryCost)
+        public (int, string) CreateOrder(int userId, DateTime estimatedDeliveryTime, decimal totalPrice, decimal deliveryCost)
         {
             return _orderDAL.CreateOrder(userId, estimatedDeliveryTime, totalPrice, deliveryCost);
         }

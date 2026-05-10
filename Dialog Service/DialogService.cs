@@ -14,7 +14,7 @@ namespace RestaurantOrderingApp.Dialog_Service
             _serviceProvider = serviceProvider;
         }
         public void CloseGuestWarningWindow()
-        { 
+        {
             foreach (Window window in Application.Current.Windows)
             {
                 if (window is GuestWarningWindow)
@@ -37,9 +37,21 @@ namespace RestaurantOrderingApp.Dialog_Service
             }
         }
 
+        public void CloseOrderConfirmationWindow()
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is OrderConfirmationWindow)
+                {
+                    window.Close();
+                    break;
+                }
+            }
+        }
+
         public void CloseRestaurantWindow()
         {
-            foreach(Window window in Application.Current.Windows)
+            foreach (Window window in Application.Current.Windows)
             {
                 if (window is RestaurantWindow)
                 {
@@ -65,7 +77,7 @@ namespace RestaurantOrderingApp.Dialog_Service
         {
             var vm = _serviceProvider.GetService<GuestWarningVM>();
             var window = new GuestWarningWindow(vm);
-            window.Show();
+            window.ShowDialog();
         }
 
         public void ShowLoginWindow()
@@ -74,6 +86,15 @@ namespace RestaurantOrderingApp.Dialog_Service
             var window = new LoginWindow(loginVM);
             window.Show();
         }
+
+        public void ShowOrderConfirmationWindow(string orderCode, string estimatedDeliveryTime)
+        {
+            var vm = new OrderConfirmationVM(_serviceProvider.GetRequiredService<IDialogService>(),
+                orderCode, estimatedDeliveryTime);
+            var window = new OrderConfirmationWindow(vm);
+            window.ShowDialog();
+        }
+
         public void ShowRestaurantWindow()
         {
             var restaurantVM = _serviceProvider.GetRequiredService<RestaurantVM>();
