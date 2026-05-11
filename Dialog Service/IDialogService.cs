@@ -7,7 +7,7 @@
         void CloseLoginWindow();
         void CloseRestaurantWindow(); 
         bool ShowConfirmationDialog(string message);
-        void ShowGuestWarningWindow();
+        void ShowGuestWarningWindow(string infoMessage);
         void CloseGuestWarningWindow();
         void ShowWelcomeView();
         void ShowOrderConfirmationWindow(string orderCode, string estimatedDeliveryTime);

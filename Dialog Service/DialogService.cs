@@ -73,9 +73,9 @@ namespace RestaurantOrderingApp.Dialog_Service
                 MessageBoxImage.Information) == MessageBoxResult.OK;
         }
 
-        public void ShowGuestWarningWindow()
+        public void ShowGuestWarningWindow(string infoMessage)
         {
-            var vm = _serviceProvider.GetService<GuestWarningVM>();
+            var vm = new GuestWarningVM(_serviceProvider.GetRequiredService<IDialogService>(), infoMessage);
             var window = new GuestWarningWindow(vm);
             window.ShowDialog();
         }
@@ -105,9 +105,7 @@ namespace RestaurantOrderingApp.Dialog_Service
         public void ShowWelcomeView()
         {
             var restaurantVM = _serviceProvider.GetService<RestaurantVM>();
-            restaurantVM.IsWelcomeVisible = true;
-            restaurantVM.IsCartOpen = false;
-            restaurantVM.IsMenuOpen = false;
+            restaurantVM.CurrentView = null;
         }
     }
 }

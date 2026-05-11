@@ -1,11 +1,12 @@
 ﻿<Window x:Class="RestaurantOrderingApp.Views.RestaurantWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:RestaurantOrderingApp.ViewModels"
         xmlns:local="clr-namespace:RestaurantOrderingApp.Views"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         WindowStyle="None"
-        Title="Sapori d'Italia" Height="700" Width="1100"
+        Title="Sapori d'Italia"
         Background="#1C1C1C">
     <Window.InputBindings>
         <KeyBinding Key="Esc" Command="ApplicationCommands.Close"/>
@@ -86,8 +87,8 @@
                                HorizontalAlignment="Center"/>
                 </StackPanel>
 
-                <Button Grid.Column="2"
-                        Command="{Binding OpenCartCommand}"
+                <Button Grid.Column="2" x:Name="ProfileButton"
+                        Command="{Binding ToggleProfileMenuCommand}"
                         Style="{StaticResource HeaderButtonStyle}"
                         VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal">
@@ -95,26 +96,50 @@
                         <TextBlock Text="{Binding DisplayName}" FontSize="13"/>
                     </StackPanel>
                 </Button>
+
+                <Popup IsOpen="{Binding IsProfileMenuOpen}"
+                       PlacementTarget="{Binding ElementName=ProfileButton}"
+                       Placement="Bottom"
+                       StaysOpen="False"
+                       HorizontalOffset="-16.5">
+                    <Border Background="#141414" BorderBrush="#C9A84C" BorderThickness="1">
+                        <StackPanel>
+                            <Button Content="View Cart" Command="{Binding OpenCartCommand}"
+                                    Style="{StaticResource HeaderButtonStyle}"
+                                    BorderThickness="0"/>
+                            <Button Content="View My Orders" Command="{Binding OpenOrderHistoryCommand}"
+                                    Style="{StaticResource HeaderButtonStyle}"
+                                    BorderThickness="0"/>
+                        </StackPanel>
+                    </Border>
+                </Popup>
             </Grid>
         </Border>
 
         <Grid Grid.Row="1">
+            <local:WelcomeView>
+                <local:WelcomeView.Style>
+                    <Style TargetType="local:WelcomeView">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CurrentView}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </local:WelcomeView.Style>
+            </local:WelcomeView>
 
-            <local:WelcomeView 
-                Visibility="{Binding IsWelcomeVisible, 
-                Converter={StaticResource BoolToVisibilityConverter}}"/>
-
-            <local:MenuView 
-                DataContext="{Binding MenuVM}"
-                Visibility="{Binding DataContext.IsMenuOpen,
-                RelativeSource={RelativeSource AncestorType=Window},
-                Converter={StaticResource BoolToVisibilityConverter}}"/>
-            
-            <local:CartView 
-                DataContext="{Binding CartVM}"
-                Visibility="{Binding DataContext.IsCartOpen,
-                RelativeSource={RelativeSource AncestorType=Window},
-                Converter={StaticResource BoolToVisibilityConverter}}"/>
+            <ContentControl Content="{Binding CurrentView}">
+                <ContentControl.Resources>
+                    <DataTemplate DataType="{x:Type vm:MenuVM}">
+                        <local:MenuView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:CartVM}">
+                        <local:CartView/>
+                    </DataTemplate>
+                </ContentControl.Resources>
+            </ContentControl>
         </Grid>
     </Grid>
 </Window>

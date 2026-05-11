@@ -8,8 +8,6 @@ namespace RestaurantOrderingApp.Layers.BusinessLogicLayer
     {
         private readonly AllergenDAL _allergenDAL = new();
 
-        public AllergenBLL() { }
-
         public ObservableCollection<Allergen> GetAllAllergens()
         {
             return _allergenDAL.GetAllAllergens();

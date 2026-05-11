@@ -8,8 +8,6 @@ namespace RestaurantOrderingApp.Layers.BusinessLogicLayer
     {
         private readonly MenuDAL _menuDAL = new();
 
-        public MenuBLL() { }
-
         public ObservableCollection<Menu> GetAllMenus()
         {
             return _menuDAL.GetAllMenus();

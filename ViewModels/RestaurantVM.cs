@@ -1,6 +1,5 @@
 ﻿using RestaurantOrderingApp.Dialog_Service;
 using RestaurantOrderingApp.Utils;
-using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantOrderingApp.ViewModels
 {
@@ -8,13 +7,11 @@ namespace RestaurantOrderingApp.ViewModels
     {
         private readonly CurrentUserSession _currentUserSession;
         private readonly IDialogService _dialogService;
+        private readonly MenuVM _menuVM;
+        private readonly CartVM _cartVM;
 
-        private MenuVM _menuVM;
-        private CartVM _cartVM;
-
-        private bool _isMenuOpen;
-        private bool _isCartOpen;
-        private bool _isWelcomeVisible;
+        private bool _isProfileMenuOpen;
+        private BaseViewModel? _currentView;
 
         public CurrentUserSession CurrentUserSession
         {
@@ -24,70 +21,36 @@ namespace RestaurantOrderingApp.ViewModels
         public string DisplayName => _currentUserSession.CurrentUser != null ?
             $"{_currentUserSession.CurrentUser.FirstName} {_currentUserSession.CurrentUser.LastName}" : "Guest";
 
-        public MenuVM MenuVM
+        public bool IsProfileMenuOpen
         {
-            get => _menuVM;
+            get => _isProfileMenuOpen;
             set
             {
-                if (_menuVM != value)
+                if (_isProfileMenuOpen != value)
                 {
-                    _menuVM = value;
-                    OnPropertyChanged(nameof(MenuVM));
-                }
-            }
-        }
-        public CartVM CartVM
-        {
-            get => _cartVM;
-            set
-            {
-                if (_cartVM != value)
-                {
-                    _cartVM = value;
-                    OnPropertyChanged(nameof(CartVM));
+                    _isProfileMenuOpen = value;
+                    OnPropertyChanged(nameof(IsProfileMenuOpen));
                 }
             }
         }
 
-        public bool IsMenuOpen
+        public BaseViewModel? CurrentView
         {
-            get => _isMenuOpen;
+            get => _currentView;
             set
             {
-                if (_isMenuOpen != value)
+                if (_currentView != value)
                 {
-                    _isMenuOpen = value;
-                    OnPropertyChanged(nameof(IsMenuOpen));
-                }
-            }
-        }
-        public bool IsCartOpen
-        {
-            get => _isCartOpen;
-            set
-            {
-                if (_isCartOpen != value)
-                {
-                    _isCartOpen = value;
-                    OnPropertyChanged(nameof(IsCartOpen));
-                }
-            }
-        }
-        public bool IsWelcomeVisible
-        {
-            get => _isWelcomeVisible;
-            set
-            {
-                if (_isWelcomeVisible != value)
-                {
-                    _isWelcomeVisible = value;
-                    OnPropertyChanged(nameof(IsWelcomeVisible));
+                    _currentView = value;
+                    OnPropertyChanged(nameof(CurrentView));
                 }
             }
         }
 
         public RelayCommand OpenMenuCommand { get; set; }
         public RelayCommand OpenCartCommand { get; set; }
+        public RelayCommand OpenOrderHistoryCommand { get; set; }
+        public RelayCommand ToggleProfileMenuCommand { get; set; }
 
         public RestaurantVM(CurrentUserSession currentUserSession, IDialogService dialogService, MenuVM menuVM, CartVM cartVM)
         {
@@ -95,25 +58,21 @@ namespace RestaurantOrderingApp.ViewModels
             _dialogService = dialogService;
             _menuVM = menuVM;
             _cartVM = cartVM;
-
-            IsWelcomeVisible = true;
-            IsMenuOpen = false;
-            IsCartOpen = false;
+            IsProfileMenuOpen = false;
 
             OpenMenuCommand = new(_ => OpenMenu());
             OpenCartCommand = new(_ => OpenCart());
+            OpenOrderHistoryCommand = new(_ => OpenOrderHistory());
+            ToggleProfileMenuCommand = new(_ => ToggleProfileMenu());
+            
         }
         private void OpenMenu()
         {
-            IsMenuOpen = true;
-            IsCartOpen = false;
-            IsWelcomeVisible = false;
+            CurrentView = _menuVM;
         }
         private void OpenCart()
         {
-            IsCartOpen = true;
-            IsMenuOpen = false;
-            IsWelcomeVisible = false;
+            CurrentView = _cartVM;
             foreach (var menuItem in _menuVM.FullMenu)
             {
                 foreach (var product in menuItem.Products)
@@ -121,6 +80,18 @@ namespace RestaurantOrderingApp.ViewModels
                     product.SelectedQuantity = 1;
                 }
             }
+        }
+        private void OpenOrderHistory()
+        {
+            if (_currentUserSession.CurrentUser == null)
+            {
+                _dialogService.ShowGuestWarningWindow("You must be logged in to see your order history!");
+                return;
+            }
+        }
+        private void ToggleProfileMenu()
+        {
+            IsProfileMenuOpen = !IsProfileMenuOpen;
         }
     }
 }

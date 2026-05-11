@@ -7,39 +7,15 @@ namespace RestaurantOrderingApp.ViewModels
     {
         private readonly IDialogService _dialogService;
 
-        private string _orderCode;
-        private string _estiamtedDelivery;
+        public string OrderCode { get; set; }
+        public string EstimatedDelivery { get; set; }
 
-        public string OrderCode
-        {
-            get => _orderCode;
-            set
-            {
-                if (_orderCode != value)
-                {
-                    _orderCode = value;
-                    OnPropertyChanged(nameof(OrderCode));
-                }
-            }
-        }
-        public string EstimatedDelivery
-        {
-            get => _estiamtedDelivery;
-            set
-            {
-                if (_estiamtedDelivery != value)
-                {
-                    _estiamtedDelivery = value;
-                    OnPropertyChanged(nameof(EstimatedDelivery));
-                }
-            }
-        }
         public RelayCommand CloseCommand { get; set; }
 
         public OrderConfirmationVM(IDialogService dialogService, string orderCode, string estimatedDelivery)
         {
             _dialogService = dialogService;
-            OrderCode = "ORD-" + orderCode.Substring(0, 9);
+            OrderCode = "ORD-" + orderCode.Substring(0, 8);
             EstimatedDelivery = estimatedDelivery;
 
             CloseCommand = new(_ => Close());

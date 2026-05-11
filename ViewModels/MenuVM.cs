@@ -355,7 +355,7 @@ namespace RestaurantOrderingApp.ViewModels
             if (productDisplay == null) return;
             if (_currentUserSession.CurrentUser == null)
             {
-                _dialogService.ShowGuestWarningWindow();
+                _dialogService.ShowGuestWarningWindow("You must be logged in to add products to your cart!");
                 return;
             }
 

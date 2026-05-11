@@ -8,8 +8,6 @@ namespace RestaurantOrderingApp.Layers.BusinessLogicLayer
     {
         private readonly OrderDAL _orderDAL = new();
 
-        public OrderBLL() { }
-
         public (int, string) CreateOrder(int userId, DateTime estimatedDeliveryTime, decimal totalPrice, decimal deliveryCost)
         {
             return _orderDAL.CreateOrder(userId, estimatedDeliveryTime, totalPrice, deliveryCost);
@@ -28,6 +26,10 @@ namespace RestaurantOrderingApp.Layers.BusinessLogicLayer
         public void AddOrderItem(int orderId, int? productId, int? menuId, int quantity, decimal unitPrice)
         {
             _orderDAL.AddOrderItem(orderId, productId, menuId, quantity, unitPrice);
+        }
+        public ObservableCollection<OrderItem> GetOrderItems(int orderId)
+        {
+            return _orderDAL.GetOrderItems(orderId);
         }
     }
 }

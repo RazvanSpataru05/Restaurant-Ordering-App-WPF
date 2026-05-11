@@ -1,12 +1,8 @@
 ﻿using RestaurantOrderingApp.Dialog_Service;
 using RestaurantOrderingApp.Layers.BusinessLogicLayer;
-using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
 using System.Collections.ObjectModel;
 using System.Configuration;
-using System.Runtime.CompilerServices;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media.Animation;
 
 namespace RestaurantOrderingApp.ViewModels
 {
@@ -143,7 +139,7 @@ namespace RestaurantOrderingApp.ViewModels
             };
 
             ComputeTotal();
-            PlaceOrderCommand = new(_ => PlaceOrder());
+            PlaceOrderCommand = new(_ => PlaceOrder(), _ => IsCartEmpty == false);
             CancelCommand = new(_ => Cancel());
             RemoveFromCartCommand = new(param => RemoveFromCart(param as CartItem));
             IncreaseCommand = new(param => Increase(param as CartItem), param => CanIncrease(param as CartItem));
@@ -224,7 +220,7 @@ namespace RestaurantOrderingApp.ViewModels
             if (cartItem == null) return false;
 
             if (cartItem.Product != null) return cartItem.Quantity < _cartService.GetAvailablePortions(cartItem.Product, cartItem);
-            return cartItem.Quantity < _cartService.GetAvailablePortions(cartItem.Menu);
+            return cartItem.Quantity < _cartService.GetAvailablePortions(cartItem.Menu!);
         }
         private void Decrease(CartItem? cartItem)
         {
