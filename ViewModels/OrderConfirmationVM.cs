@@ -18,11 +18,7 @@ namespace RestaurantOrderingApp.ViewModels
             OrderCode = "ORD-" + orderCode.Substring(0, 8);
             EstimatedDelivery = estimatedDelivery;
 
-            CloseCommand = new(_ => Close());
-        }
-        private void Close()
-        {
-            _dialogService.CloseOrderConfirmationWindow();
+            CloseCommand = new(_ => _dialogService.CloseOrderConfirmationWindow());
         }
     }
 }

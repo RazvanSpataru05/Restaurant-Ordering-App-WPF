@@ -9,14 +9,13 @@ namespace RestaurantOrderingApp.ViewModels
         private readonly IDialogService _dialogService;
         private readonly MenuVM _menuVM;
         private readonly CartVM _cartVM;
+        private readonly OrderHistoryVM _orderHistoryVM;
 
         private bool _isProfileMenuOpen;
         private BaseViewModel? _currentView;
 
-        public CurrentUserSession CurrentUserSession
-        {
-            get => _currentUserSession;
-        }
+        public CurrentUserSession CurrentUserSession { get; }
+        public bool IsAdmin => _currentUserSession.CurrentUser?.Role == "Employee";
 
         public string DisplayName => _currentUserSession.CurrentUser != null ?
             $"{_currentUserSession.CurrentUser.FirstName} {_currentUserSession.CurrentUser.LastName}" : "Guest";
@@ -51,24 +50,19 @@ namespace RestaurantOrderingApp.ViewModels
         public RelayCommand OpenCartCommand { get; set; }
         public RelayCommand OpenOrderHistoryCommand { get; set; }
         public RelayCommand ToggleProfileMenuCommand { get; set; }
+        public RelayCommand OpenAdminCommand { get; set; }
 
-        public RestaurantVM(CurrentUserSession currentUserSession, IDialogService dialogService, MenuVM menuVM, CartVM cartVM)
+        public RestaurantVM(CurrentUserSession currentUserSession, IDialogService dialogService, MenuVM menuVM,
+            CartVM cartVM, OrderHistoryVM orderHistoryVM)
         {
             _currentUserSession = currentUserSession;
             _dialogService = dialogService;
             _menuVM = menuVM;
             _cartVM = cartVM;
+            _orderHistoryVM = orderHistoryVM;
             IsProfileMenuOpen = false;
 
-            OpenMenuCommand = new(_ => OpenMenu());
-            OpenCartCommand = new(_ => OpenCart());
-            OpenOrderHistoryCommand = new(_ => OpenOrderHistory());
-            ToggleProfileMenuCommand = new(_ => ToggleProfileMenu());
-            
-        }
-        private void OpenMenu()
-        {
-            CurrentView = _menuVM;
+            InitializeCommands();
         }
         private void OpenCart()
         {
@@ -88,10 +82,15 @@ namespace RestaurantOrderingApp.ViewModels
                 _dialogService.ShowGuestWarningWindow("You must be logged in to see your order history!");
                 return;
             }
+            _orderHistoryVM.LoadOrders();
+            CurrentView = _orderHistoryVM;
         }
-        private void ToggleProfileMenu()
+        private void InitializeCommands()
         {
-            IsProfileMenuOpen = !IsProfileMenuOpen;
+            OpenMenuCommand = new(_ => CurrentView = _menuVM);
+            OpenCartCommand = new(_ => OpenCart());
+            OpenOrderHistoryCommand = new(_ => OpenOrderHistory());
+            ToggleProfileMenuCommand = new(_ => IsProfileMenuOpen = !IsProfileMenuOpen);
         }
     }
 }

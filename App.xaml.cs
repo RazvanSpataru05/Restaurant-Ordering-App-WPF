@@ -24,9 +24,6 @@ namespace RestaurantOrderingApp
                 services.AddSingleton<UserDAL>();
                 services.AddSingleton<UserBLL>();
 
-                services.AddSingleton<ProductDAL>();
-                services.AddSingleton<ProductBLL>();
-
                 services.AddSingleton<CategoryDAL>();
                 services.AddSingleton<CategoryBLL>();
 
@@ -55,8 +52,10 @@ namespace RestaurantOrderingApp
                 services.AddTransient<RestaurantWindow>();
 
                 services.AddTransient<GuestWarningWindow>();
-
                 services.AddTransient<OrderConfirmationWindow>();
+
+                services.AddTransient<OrderDetailsVM>();
+                services.AddTransient<OrderDetailsWindow>();
             }
             ).Build();
 
@@ -64,5 +63,4 @@ namespace RestaurantOrderingApp
             loginWindow.Show();
         }
     }
-
 }

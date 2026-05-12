@@ -240,7 +240,7 @@ namespace RestaurantOrderingApp.ViewModels
 
             FullMenu = [];
             FilteredMenu = [];
-            AllAllergens = allergenBLL.GetAllAllergens();
+            AllAllergens = _allergenBLL.GetAllAllergens();
             AllCategories = _categoryBLL.GetAllCategories();
             SelectedAllergens = [];
 
@@ -249,41 +249,10 @@ namespace RestaurantOrderingApp.ViewModels
             LeftPageNumber = (CurrentPage * 2) - 1;
             RightPageNumber = CurrentPage * 2;
 
-            var allProducts = _productBLL.GetAllProucts();
-            TotalPages = (int)Math.Ceiling(allProducts.Count / (double)(PRODUCTS_PER_PAGE) * 2);
-
-            var grouped = allProducts
-                .GroupBy(p => p.CategoryId)
-                .Select(g => new CategoryWithProducts(
-                    category: AllCategories.First(c => c.CategoryId == g.Key),
-                    products: new(g.Select(p => new ProductDisplay(p)))));
-
-            FullMenu = new(grouped);
-            FilteredMenu = FullMenu;
+            InitializeMenu();
+            InitializeAllergens();
+            InitializeCommands();
             GeneratePages();
-
-            var allergenMap = _allergenBLL.GetAllProductAllergens();
-            foreach (var category in FullMenu)
-            {
-                foreach (var displayedProduct in category.Products)
-                {
-                    if (allergenMap.TryGetValue(displayedProduct.Product.ProductId, out ObservableCollection<Allergen>? value))
-                    {
-                        displayedProduct.Product.Allergens = value;
-                    }
-                }
-            }
-
-            SearchCommand = new(_ => Search());
-            ToggleWithCommand = new(_ => ToggleWith());
-            ToggleWithoutCommand = new(_ => ToggleWithout());
-            ToggleAllergenCommand = new(param => ToggleAllergen(param as Allergen));
-            AddToCartCommand = new(param => AddToCart(param as ProductDisplay), param => CanAddToCart(param as ProductDisplay));
-            NextPageCommand = new(_ => NextPage());
-            PrevPageCommand = new(_ => PrevPage());
-            NavigateToCategoryCommand = new(param => NavigateToCategory(param as Category));
-            IncreaseCommand = new(param => Increase(param as ProductDisplay), param => CanInrease(param as ProductDisplay));
-            DecreaseCommand = new(param => Decrease(param as ProductDisplay), param => CanDecrease(param as ProductDisplay));
         }
         private void Search()
         {
@@ -440,6 +409,47 @@ namespace RestaurantOrderingApp.ViewModels
         {
             if (productDisplay == null) return false;
             return productDisplay.SelectedQuantity > 1;
+        }
+        private void InitializeMenu()
+        {
+            var allProducts = _productBLL.GetAllProucts();
+            TotalPages = (int)Math.Ceiling(allProducts.Count / (double)(PRODUCTS_PER_PAGE) * 2);
+
+            var grouped = allProducts
+                .GroupBy(p => p.CategoryId)
+                .Select(g => new CategoryWithProducts(
+                    category: AllCategories.First(c => c.CategoryId == g.Key),
+                    products: new(g.Select(p => new ProductDisplay(p)))));
+
+            FullMenu = new(grouped);
+            FilteredMenu = FullMenu;
+        }
+        private void InitializeAllergens()
+        {
+            var allergenMap = _allergenBLL.GetAllProductAllergens();
+            foreach (var category in FullMenu)
+            {
+                foreach (var displayedProduct in category.Products)
+                {
+                    if (allergenMap.TryGetValue(displayedProduct.Product.ProductId, out ObservableCollection<Allergen>? value))
+                    {
+                        displayedProduct.Product.Allergens = value;
+                    }
+                }
+            }
+        }
+        private void InitializeCommands()
+        {
+            SearchCommand = new(_ => Search());
+            ToggleWithCommand = new(_ => ToggleWith());
+            ToggleWithoutCommand = new(_ => ToggleWithout());
+            ToggleAllergenCommand = new(param => ToggleAllergen(param as Allergen));
+            AddToCartCommand = new(param => AddToCart(param as ProductDisplay), param => CanAddToCart(param as ProductDisplay));
+            NextPageCommand = new(_ => NextPage());
+            PrevPageCommand = new(_ => PrevPage());
+            NavigateToCategoryCommand = new(param => NavigateToCategory(param as Category));
+            IncreaseCommand = new(param => Increase(param as ProductDisplay), param => CanInrease(param as ProductDisplay));
+            DecreaseCommand = new(param => Decrease(param as ProductDisplay), param => CanDecrease(param as ProductDisplay));
         }
     }
 }

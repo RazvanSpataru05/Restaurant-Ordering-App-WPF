@@ -100,14 +100,23 @@
                 <Popup IsOpen="{Binding IsProfileMenuOpen}"
                        PlacementTarget="{Binding ElementName=ProfileButton}"
                        Placement="Bottom"
-                       StaysOpen="False"
-                       HorizontalOffset="-16.5">
+                       StaysOpen="False">
                     <Border Background="#141414" BorderBrush="#C9A84C" BorderThickness="1">
                         <StackPanel>
                             <Button Content="View Cart" Command="{Binding OpenCartCommand}"
                                     Style="{StaticResource HeaderButtonStyle}"
                                     BorderThickness="0"/>
                             <Button Content="View My Orders" Command="{Binding OpenOrderHistoryCommand}"
+                                    Style="{StaticResource HeaderButtonStyle}"
+                                    BorderThickness="0"/>
+                            <Button Content="Settings" Command="{Binding OpenSettingsCommand}"
+                                    Style="{StaticResource HeaderButtonStyle}"
+                                    BorderThickness="0"/>
+                            <Button Content="Admin" Command="{Binding OpenAdminCommand}"
+                                    Style="{StaticResource HeaderButtonStyle}"
+                                    BorderThickness="0"
+                                    Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <Button Content="Log out" Command="{Binding LogoutCommand}"
                                     Style="{StaticResource HeaderButtonStyle}"
                                     BorderThickness="0"/>
                         </StackPanel>
@@ -137,6 +146,9 @@
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type vm:CartVM}">
                         <local:CartView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:OrderHistoryVM}">
+                        <local:OrderHistoryView/>
                     </DataTemplate>
                 </ContentControl.Resources>
             </ContentControl>

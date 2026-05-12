@@ -130,8 +130,7 @@ namespace RestaurantOrderingApp.ViewModels
             _userBLL = userBLL;
             _onBackToLogin = onBackToLogin;
 
-            RegisterCommand = new(_ => Register());
-            BackToLoginCommand = new(_ => BackToLogin());
+            InitializeCommands();
         }
 
         private void Register()
@@ -179,7 +178,7 @@ namespace RestaurantOrderingApp.ViewModels
                 MessageBox.Show("Account has been created successfully", "Inforamtion",
                  MessageBoxButton.OK,
                  MessageBoxImage.Information);
-                ClearFields();
+                 ClearFields();
                 _onBackToLogin();
             }
             else
@@ -202,6 +201,11 @@ namespace RestaurantOrderingApp.ViewModels
             DeliveryAddress = "";
             ErrorMessage = "";
             OnClearPasswords?.Invoke();
+        }
+        private void InitializeCommands()
+        {
+            RegisterCommand = new(_ => Register());
+            BackToLoginCommand = new(_ => BackToLogin());
         }
     }
 }

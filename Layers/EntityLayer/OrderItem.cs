@@ -10,5 +10,7 @@
         public decimal UnitPrice { get; set; }
         public string? ProductName { get; set; }
         public string? MenuName { get; set; }
+        public string? ProductImagePath { get; set; }
+        public string? MenuImagePath { get; set; }
     }
 }

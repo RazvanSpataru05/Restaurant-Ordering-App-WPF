@@ -41,6 +41,7 @@ namespace RestaurantOrderingApp.Layers.DataAccessLayer
             {
                 result.Add(new Order
                 {
+                    OrderId = (int)reader["OrderId"],
                     OrderCode = (string)reader["OrderCode"],
                     OrderDate = (DateTime)reader["OrderDate"],
                     EstimatedDeliveryTime = (DateTime)reader["EstimatedDeliveryTime"],
@@ -91,7 +92,9 @@ namespace RestaurantOrderingApp.Layers.DataAccessLayer
                     ProductId = reader["ProductId"] == DBNull.Value ? null : (int)reader["ProductId"],
                     ProductName = reader["ProductName"] == DBNull.Value ? null : (string)reader["ProductName"],
                     MenuId = reader["MenuId"] == DBNull.Value ? null : (int)reader["MenuId"],
-                    MenuName = reader["MenuName"] == DBNull.Value ? null : (string)reader["MenuName"]   
+                    MenuName = reader["MenuName"] == DBNull.Value ? null : (string)reader["MenuName"],
+                    ProductImagePath = reader["ProductImagePath"] == DBNull.Value ? null : (string)reader["ProductImagePath"],
+                    MenuImagePath = reader["MenuImagePath"] == DBNull.Value ? null : (string)reader["MenuImagePath"]
                 });
             }
             return result;

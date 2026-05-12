@@ -8,6 +8,7 @@ namespace RestaurantOrderingApp.Layers.BusinessLogicLayer
     {
         private readonly OrderDAL _orderDAL = new();
 
+        public OrderBLL() { }
         public (int, string) CreateOrder(int userId, DateTime estimatedDeliveryTime, decimal totalPrice, decimal deliveryCost)
         {
             return _orderDAL.CreateOrder(userId, estimatedDeliveryTime, totalPrice, deliveryCost);

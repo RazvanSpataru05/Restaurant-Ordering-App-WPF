@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using RestaurantOrderingApp.Layers.BusinessLogicLayer;
+using RestaurantOrderingApp.Utils;
 using RestaurantOrderingApp.ViewModels;
 using RestaurantOrderingApp.Views;
 using System.Windows;
@@ -49,6 +51,18 @@ namespace RestaurantOrderingApp.Dialog_Service
             }
         }
 
+        public void CloseOrderDetailsWindow()
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is OrderDetailsWindow)
+                {
+                    window.Close();
+                    break;
+                }
+            }
+        }
+
         public void CloseRestaurantWindow()
         {
             foreach (Window window in Application.Current.Windows)
@@ -64,13 +78,6 @@ namespace RestaurantOrderingApp.Dialog_Service
         public object? GetService(Type serviceType)
         {
             throw new NotImplementedException();
-        }
-
-        public bool ShowConfirmationDialog(string message)
-        {
-            return MessageBox.Show(message, "Notice",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information) == MessageBoxResult.OK;
         }
 
         public void ShowGuestWarningWindow(string infoMessage)
@@ -93,6 +100,22 @@ namespace RestaurantOrderingApp.Dialog_Service
                 orderCode, estimatedDeliveryTime);
             var window = new OrderConfirmationWindow(vm);
             window.ShowDialog();
+        }
+
+        public void ShowOrderDetailsWindow(OrderDisplay orderDisplay)
+        {
+            var vm = new OrderDetailsVM(_serviceProvider.GetRequiredService<IDialogService>(), orderDisplay);
+            var window = new OrderDetailsWindow(vm);
+            window.ShowDialog();
+        }
+
+        public void ShowOrderHistoryView()
+        {
+            var restaurantVM = _serviceProvider.GetRequiredService<RestaurantVM>();
+            var orderHistoryVM = new OrderHistoryVM(_serviceProvider.GetRequiredService<CurrentUserSession>(),
+                _serviceProvider.GetRequiredService<OrderBLL>(), _serviceProvider.GetRequiredService<IDialogService>());
+            orderHistoryVM.LoadOrders();
+            restaurantVM.CurrentView = orderHistoryVM;
         }
 
         public void ShowRestaurantWindow()

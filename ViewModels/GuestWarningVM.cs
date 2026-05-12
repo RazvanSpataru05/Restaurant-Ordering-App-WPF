@@ -12,9 +12,9 @@ namespace RestaurantOrderingApp.ViewModels
         public GuestWarningVM(IDialogService dialogService, string infoMessage)
         {
             _dialogService = dialogService;
-            LoginCommand = new(_ => Login());
-            CancelCommand = new(_ => Cancel());
             InfoMessage = infoMessage;
+
+            InitializeCommands();
         }
         private void Login()
         {
@@ -25,6 +25,11 @@ namespace RestaurantOrderingApp.ViewModels
         private void Cancel()
         {
             _dialogService.CloseGuestWarningWindow();
+        }
+        private void InitializeCommands()
+        {
+            LoginCommand = new(_ => Login());
+            CancelCommand = new(_ => Cancel());
         }
     }
 }

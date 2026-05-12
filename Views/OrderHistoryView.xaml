@@ -1,0 +1,208 @@
+﻿<UserControl x:Class="RestaurantOrderingApp.Views.OrderHistoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#1C1C1C"
+             TextElement.Foreground="#E0E0E0">
+    <UserControl.Resources>
+        <Style x:Key="CartButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#C9A84C"/>
+            <Setter Property="BorderBrush" Value="#C9A84C"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="FontFamily" Value="Georgia"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="2" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#C9A84C"/>
+                                <Setter Property="Foreground" Value="#1C1C1C"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="BorderBrush" Value="#444444"/>
+                                <Setter Property="Foreground" Value="#444444"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="StatusStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Georgia"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Style.Triggers>
+                <Trigger Property="Text" Value="Recorded">
+                    <Setter Property="Foreground" Value="#4A9EDB"/>
+                </Trigger>
+                <Trigger Property="Text" Value="Preparing">
+                    <Setter Property="Foreground" Value="#E8A838"/>
+                </Trigger>
+                <Trigger Property="Text" Value="On the way">
+                    <Setter Property="Foreground" Value="#9B59B6"/>
+                </Trigger>
+                <Trigger Property="Text" Value="Delivered">
+                    <Setter Property="Foreground" Value="#2ECC71"/>
+                </Trigger>
+                <Trigger Property="Text" Value="Canceled">
+                    <Setter Property="Foreground" Value="#E74C3C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="InfoButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#555555"/>
+            <Setter Property="BorderBrush" Value="#555555"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Width" Value="22"/>
+            <Setter Property="Height" Value="22"/>
+            <Setter Property="FontFamily" Value="Georgia"/>
+            <Setter Property="FontStyle" Value="Italic"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="11" Padding="2">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#C9A84C"/>
+                                <Setter Property="BorderBrush" Value="#C9A84C"/>
+                                <Setter Property="Foreground" Value="#1C1C1C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <ContentPresenter/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="40">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="MY ORDERS"
+                       FontFamily="Georgia" FontStyle="Italic"
+                       FontSize="22" Foreground="#C9A84C"
+                       HorizontalAlignment="Center"/>
+            <TextBlock Text="· Your Order History ·"
+                       FontFamily="Georgia" FontSize="11"
+                       Foreground="#555555" HorizontalAlignment="Center"
+                       Margin="0,4,0,0"/>
+            <Rectangle Height="1" Fill="#2A2A2A" Margin="0,12,0,0"/>
+        </StackPanel>
+
+        
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ListBox ItemsSource="{Binding OrdersDisplayed}"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     SelectedItem="{Binding SelectedOrder}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="#2A2A2A" BorderThickness="0,0,0,1" 
+                                Padding="0,18" Margin="0,0,0,2">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="22"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock FontFamily="Consolas" FontSize="16"
+                                               Foreground="#C9A84C" FontWeight="Bold"
+                                               Margin="0,0,0,6">
+                                        <Run Text="ORD-"/>
+                                        <Run Text="{Binding Order.OrderCode}"/>
+                                    </TextBlock>
+
+                                    <TextBlock FontFamily="Georgia" FontSize="12" 
+                                               Foreground="#888888" Margin="0,2">
+                                        <Run Text="Placed: "/>
+                                        <Run Text="{Binding Order.OrderDate, StringFormat={}{0:dd MMM yyyy · HH:mm}}"
+                                             Foreground="#E0E0E0"/>
+                                    </TextBlock>
+
+                                    <TextBlock FontFamily="Georgia" FontSize="12" 
+                                               Foreground="#888888" Margin="0,2">
+                                        <Run Text="ETA: "/>
+                                        <Run Text="{Binding Order.EstimatedDeliveryTime, StringFormat={}{0:HH:mm}}"
+                                             Foreground="#E0E0E0"/>
+                                    </TextBlock>
+
+                                    <TextBlock FontFamily="Georgia" FontSize="12" 
+                                               Foreground="#888888" Margin="0,2">
+                                        <Run Text="Total: "/>
+                                        <Run Text="{Binding Order.TotalPrice, StringFormat={}{0:F2}}"
+                                             Foreground="#C9A84C"/>
+                                        <Run Text=" RON" Foreground="#C9A84C"/>
+                                    </TextBlock>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" 
+                                            HorizontalAlignment="Right" Margin="20,0">
+                                    <TextBlock Text="{Binding Order.Status}"
+                                               Style="{StaticResource StatusStyle}"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,0,0,10"/>
+                                </StackPanel>
+
+                                <Button Grid.Column="2" Content="i"
+                                        Style="{StaticResource InfoButtonStyle}"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding DataContext.ShowOrderDetailsCommand,
+                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+
+        <Grid Grid.Row="2" Margin="0,15,0,0">
+            <Button Content="← Close"
+                    Style="{StaticResource CartButtonStyle}"
+                    HorizontalAlignment="Left"  
+                    Command="{Binding CloseCommand}"/>
+            <Button Content="Cancel Order"
+                    Style="{StaticResource CartButtonStyle}"
+                    Command="{Binding CancelOrderCommand}"
+                    CommandParameter="{Binding SelectedOrder}"
+                    HorizontalAlignment="Right"/>
+        </Grid>
+    </Grid>
+</UserControl>

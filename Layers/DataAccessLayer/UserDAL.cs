@@ -14,23 +14,21 @@ namespace RestaurantOrderingApp.Layers.DataAccessLayer
             cmd.Parameters.AddWithValue("@Email", email);
             cmd.Parameters.AddWithValue("@PasswordHash", passwordHash);
             con.Open();
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using SqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
             {
-                if (reader.Read())
+                User user = new()
                 {
-                    User user = new()
-                    {
-                        UserId = (int)reader["UserId"],
-                        FirstName = (string)reader["FirstName"],
-                        LastName = (string)reader["LastName"],
-                        Email = email,
-                        Phone = (string)reader["Phone"],
-                        DeliveryAddress = (string)reader["DeliveryAddress"],
-                        PasswordHash = passwordHash,
-                        Role = (string)reader["Role"]
-                    };
-                    return user;
-                }
+                    UserId = (int)reader["UserId"],
+                    FirstName = (string)reader["FirstName"],
+                    LastName = (string)reader["LastName"],
+                    Email = email,
+                    Phone = (string)reader["Phone"],
+                    DeliveryAddress = (string)reader["DeliveryAddress"],
+                    PasswordHash = passwordHash,
+                    Role = (string)reader["Role"]
+                };
+                return user;
             }
             return null;
         }
