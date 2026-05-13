@@ -1,0 +1,148 @@
+﻿<UserControl x:Class="RestaurantOrderingApp.Views.AdminOrdersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#1C1C1C"
+             TextElement.Foreground="#E0E0E0">
+
+    <Grid Margin="40">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="ADMIN PANEL"
+                       FontFamily="Georgia" FontStyle="Italic"
+                       FontSize="22" Foreground="#C9A84C"
+                       HorizontalAlignment="Center"/>
+            <TextBlock Text="· Order Management ·"
+                       FontFamily="Georgia" FontSize="11"
+                       Foreground="#555555" HorizontalAlignment="Center"
+                       Margin="0,4,0,0"/>
+            <Rectangle Height="1" Fill="#2A2A2A" Margin="0,12,0,0"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" 
+                    HorizontalAlignment="Center" Margin="0,0,0,20">
+            <Button Content="☰  All Orders"
+                    Style="{StaticResource ToggleButtonStyle}"
+                    Command="{Binding ToggleOrdersCommand}"
+                    Margin="0,0,8,0"/>
+            <Button Content="⚡  Active Only"
+                    Style="{StaticResource ToggleButtonStyle}"
+                    Command="{Binding ToggleOrdersCommand}"/>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding DisplayedOrders}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="#181818" BorderBrush="#2A2A2A" 
+                                BorderThickness="1" CornerRadius="4"
+                                Margin="0,0,0,12" Padding="20,16">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="0" Margin="0,0,0,10">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock FontFamily="Consolas" FontSize="15"
+                                                   Foreground="#C9A84C" FontWeight="Bold">
+                                            <Run Text="ORD-"/>
+                                            <Run Text="{Binding Order.OrderCode}"/>
+                                        </TextBlock>
+                                        <TextBlock Text=" · " Foreground="#333333" 
+                                                   FontSize="15" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Order.Status}"
+                                                   Style="{StaticResource StatusStyle}"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <Button HorizontalAlignment="Right"
+                                            Content="i"
+                                            Style="{StaticResource InfoButtonStyle}"
+                                            Command="{Binding DataContext.ShowDetailsCommand,
+                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding}"/>
+                                </Grid>
+
+                                <Grid Grid.Row="1" Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock FontFamily="Georgia" FontSize="12" Foreground="#888888">
+                                            <Run Text="👤  "/>
+                                            <Run Text="{Binding FirstName}"/>
+                                            <Run Text=" "/>
+                                            <Run Text="{Binding LastName}"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Georgia" FontSize="12" 
+                                                   Foreground="#888888" Margin="0,3">
+                                            <Run Text="📞  "/>
+                                            <Run Text="{Binding Phone}" Foreground="#E0E0E0"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Georgia" FontSize="12" 
+                                                   Foreground="#888888" Margin="0,3"
+                                                   TextWrapping="Wrap">
+                                            <Run Text="📍  "/>
+                                            <Run Text="{Binding DeliveryAddress}" Foreground="#E0E0E0"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                    
+                                    <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                                        <TextBlock FontFamily="Georgia" FontSize="12" Foreground="#888888">
+                                            <Run Text="🗓  "/>
+                                            <Run Text="{Binding Order.OrderDate, StringFormat={}{0:dd MMM yyyy · HH:mm}}"
+                                                 Foreground="#E0E0E0"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Georgia" FontSize="12" 
+                                                   Foreground="#888888" Margin="0,3">
+                                            <Run Text="⏱  ETA: "/>
+                                            <Run Text="{Binding Order.EstimatedDeliveryTime, StringFormat={}{0:HH:mm}}"
+                                                 Foreground="#E0E0E0"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Georgia" FontSize="12" 
+                                                   Foreground="#888888" Margin="0,3">
+                                            <Run Text="💰  Total: "/>
+                                            <Run Text="{Binding Order.TotalPrice, StringFormat={}{0:F2}}"
+                                                 Foreground="#C9A84C"/>
+                                            <Run Text=" RON" Foreground="#C9A84C"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+
+                                <StackPanel Grid.Row="2" Orientation="Horizontal">
+                                    <ComboBox Style="{StaticResource AdminComboBoxStyle}"
+                                              ItemsSource="{Binding DataContext.AvailableStatuses,
+                                                            RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                              SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
+                                              Width="160"
+                                              Margin="0,0,10,0"/>
+                                    <Button Content="Change Status"
+                                            Style="{StaticResource CartButtonStyle}"
+                                            Command="{Binding DataContext.ChangeStatusCommand,
+                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <Grid Grid.Row="3" Margin="0,15,0,0">
+            <Button Content="← Close"
+                    Style="{StaticResource CartButtonStyle}"
+                    HorizontalAlignment="Left"
+                    Command="{Binding CloseCommand}"/>
+        </Grid>
+    </Grid>
+</UserControl>

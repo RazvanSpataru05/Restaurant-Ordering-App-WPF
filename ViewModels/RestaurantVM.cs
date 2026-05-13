@@ -10,6 +10,7 @@ namespace RestaurantOrderingApp.ViewModels
         private readonly MenuVM _menuVM;
         private readonly CartVM _cartVM;
         private readonly OrderHistoryVM _orderHistoryVM;
+        private readonly AdminOrdersVM _adminOrdersVM;
 
         private bool _isProfileMenuOpen;
         private BaseViewModel? _currentView;
@@ -53,13 +54,14 @@ namespace RestaurantOrderingApp.ViewModels
         public RelayCommand OpenAdminCommand { get; set; }
 
         public RestaurantVM(CurrentUserSession currentUserSession, IDialogService dialogService, MenuVM menuVM,
-            CartVM cartVM, OrderHistoryVM orderHistoryVM)
+            CartVM cartVM, OrderHistoryVM orderHistoryVM, AdminOrdersVM adminOrdersVM)
         {
             _currentUserSession = currentUserSession;
             _dialogService = dialogService;
             _menuVM = menuVM;
             _cartVM = cartVM;
             _orderHistoryVM = orderHistoryVM;
+            _adminOrdersVM = adminOrdersVM;
             IsProfileMenuOpen = false;
 
             InitializeCommands();
@@ -89,6 +91,7 @@ namespace RestaurantOrderingApp.ViewModels
         {
             OpenMenuCommand = new(_ => CurrentView = _menuVM);
             OpenCartCommand = new(_ => OpenCart());
+            OpenAdminCommand = new(_ => CurrentView = _adminOrdersVM);
             OpenOrderHistoryCommand = new(_ => OpenOrderHistory());
             ToggleProfileMenuCommand = new(_ => IsProfileMenuOpen = !IsProfileMenuOpen);
         }

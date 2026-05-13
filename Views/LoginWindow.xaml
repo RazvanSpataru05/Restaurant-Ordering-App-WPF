@@ -8,7 +8,6 @@
     </Window.Resources>
     <StackPanel Margin="20">
 
-
         <StackPanel Visibility="{Binding IsLoginVisible, Converter={StaticResource BoolToVisibilityConverter}}">
             <TextBlock Text="Email"/>
             <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" Margin="0 5"/>

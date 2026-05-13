@@ -7,37 +7,7 @@
         WindowStyle="None"
         Background="#1C1C1C"
         ResizeMode="NoResize">
-    
-    <Window.Resources>
-        <Style x:Key="HeaderButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#C9A84C"/>
-            <Setter Property="BorderBrush" Value="#C9A84C"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="18,8"/>
-            <Setter Property="FontFamily" Value="Georgia"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="2" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#C9A84C"/>
-                                <Setter Property="Foreground" Value="#1C1C1C"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Resources>
-    
+
     <Border BorderBrush="#C9A84C" BorderThickness="1">
         <Grid Margin="30">
             <Grid.RowDefinitions>

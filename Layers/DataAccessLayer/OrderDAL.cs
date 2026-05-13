@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using RestaurantOrderingApp.Layers.EntityLayer;
+using RestaurantOrderingApp.Utils;
 using System.Collections.ObjectModel;
 using System.Data;
 
@@ -55,7 +56,7 @@ namespace RestaurantOrderingApp.Layers.DataAccessLayer
         {
             using SqlConnection con = DALHelper.Connection;
             SqlCommand cmd = new("sp_UpdateOrderStatus", con);
-            cmd.CommandType= CommandType.StoredProcedure;
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@OrderId", orderId);
             cmd.Parameters.AddWithValue("@Status", status);
             con.Open();
@@ -95,6 +96,38 @@ namespace RestaurantOrderingApp.Layers.DataAccessLayer
                     MenuName = reader["MenuName"] == DBNull.Value ? null : (string)reader["MenuName"],
                     ProductImagePath = reader["ProductImagePath"] == DBNull.Value ? null : (string)reader["ProductImagePath"],
                     MenuImagePath = reader["MenuImagePath"] == DBNull.Value ? null : (string)reader["MenuImagePath"]
+                });
+            }
+            return result;
+        }
+        public ObservableCollection<AdminOrderDisplay> GetAllOrders()
+        {
+            using SqlConnection con = DALHelper.Connection;
+            SqlCommand cmd = new("sp_GetAllOrders", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            con.Open();
+            ObservableCollection<AdminOrderDisplay> result = [];
+            using SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                result.Add(new AdminOrderDisplay
+                {
+                    Order = new Order
+                    {
+                        OrderId = (int)reader["OrderId"],
+                        OrderCode = (string)reader["OrderCode"],
+                        OrderDate = (DateTime)reader["OrderDate"],
+                        EstimatedDeliveryTime = (DateTime)reader["EstimatedDeliveryTime"],
+                        TotalPrice = (decimal)reader["TotalPrice"],
+                        DeliveryCost = (decimal)reader["DeliveryCost"],
+                        Status = (string)reader["Status"]
+                    },
+                    Items = [],
+                    FirstName = (string)reader["FirstName"],
+                    LastName = (string)reader["LastName"],
+                    Phone = (string)reader["Phone"],
+                    DeliveryAddress = (string)reader["DeliveryAddress"],
+                    SelectedStatus = string.Empty
                 });
             }
             return result;

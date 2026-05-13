@@ -25,6 +25,7 @@ namespace RestaurantOrderingApp.ViewModels
                 }
             }
         }
+
         public List<string> AvailableStatuses { get; } = new List<string>() { "Delivered", "Canceled" };
         public ObservableCollection<AdminOrderDisplay> DisplayedOrders
         {
@@ -42,26 +43,30 @@ namespace RestaurantOrderingApp.ViewModels
         public RelayCommand ToggleOrdersCommand { get; set; }
         public RelayCommand ChangeStatusCommand { get; set; }
         public RelayCommand ShowDetailsCommand { get; set; }
+        public RelayCommand CloseCommand { get; set; }
         public AdminOrdersVM(IDialogService dialogService, OrderBLL orderBLL)
         {
             _dialogService = dialogService;
             _orderBLL = orderBLL;
 
+            LoadOrders();
             InitializeCommands();
         }
         private void ChangeStatus(AdminOrderDisplay? adminOrderDisplay)
         {
             if (adminOrderDisplay == null) return;
 
-            _orderBLL.UpdateOrderStatus(adminOrderDisplay.OrderDisplay.Order.OrderId,
+            _orderBLL.UpdateOrderStatus(adminOrderDisplay.Order.OrderId,
                 adminOrderDisplay.SelectedStatus);
+            LoadOrders();
         }
         private bool CanChangeStatus(AdminOrderDisplay? adminOrderDisplay)
         {
             if (adminOrderDisplay == null) return false;
 
-            return adminOrderDisplay.OrderDisplay.Order.Status != "Canceled" &&
-                adminOrderDisplay.OrderDisplay.Order.Status != "Delivered";
+            return adminOrderDisplay.SelectedStatus != "Canceled" &&
+                adminOrderDisplay.SelectedStatus != "Delivered" &&
+                !string.IsNullOrEmpty(adminOrderDisplay.SelectedStatus);
         }
         private void ShowDetails(AdminOrderDisplay? adminOrderDisplay)
         {
@@ -69,10 +74,31 @@ namespace RestaurantOrderingApp.ViewModels
         }
         private void InitializeCommands()
         {
-            ToggleOrdersCommand = new(_ => ShowActiveOnly = !ShowActiveOnly);
+            ToggleOrdersCommand = new(_ =>
+            {
+                ShowActiveOnly = true;
+                LoadOrders();
+            });
             ChangeStatusCommand = new(param => ChangeStatus(param as AdminOrderDisplay),
                 param => CanChangeStatus(param as AdminOrderDisplay));
             ShowDetailsCommand = new(param => ShowDetails(param as AdminOrderDisplay));
+            CloseCommand = new(_ => _dialogService.ShowWelcomeView());
+        }
+        private void LoadOrders()
+        {
+            DisplayedOrders = [];
+            var orders = _orderBLL.GetAllOrders();
+            if (ShowActiveOnly)
+            {
+                orders = new(orders.Where(o => o.Order.Status != "Delivered" &&
+                o.Order.Status != "Canceled"));
+            }
+
+            foreach (var order in orders)
+            {
+                order.Items = _orderBLL.GetOrderItems(order.Order.OrderId);
+                DisplayedOrders.Add(order);
+            }
         }
     }
 }

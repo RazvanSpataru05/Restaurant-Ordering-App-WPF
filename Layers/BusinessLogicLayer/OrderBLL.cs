@@ -1,5 +1,6 @@
 ﻿using RestaurantOrderingApp.Layers.DataAccessLayer;
 using RestaurantOrderingApp.Layers.EntityLayer;
+using RestaurantOrderingApp.Utils;
 using System.Collections.ObjectModel;
 
 namespace RestaurantOrderingApp.Layers.BusinessLogicLayer
@@ -31,6 +32,10 @@ namespace RestaurantOrderingApp.Layers.BusinessLogicLayer
         public ObservableCollection<OrderItem> GetOrderItems(int orderId)
         {
             return _orderDAL.GetOrderItems(orderId);
+        }
+        public ObservableCollection<AdminOrderDisplay> GetAllOrders()
+        {
+            return _orderDAL.GetAllOrders();
         }
     }
 }

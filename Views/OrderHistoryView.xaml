@@ -3,107 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="#1C1C1C"
              TextElement.Foreground="#E0E0E0">
-    <UserControl.Resources>
-        <Style x:Key="CartButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#C9A84C"/>
-            <Setter Property="BorderBrush" Value="#C9A84C"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="12,6"/>
-            <Setter Property="FontFamily" Value="Georgia"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="2" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#C9A84C"/>
-                                <Setter Property="Foreground" Value="#1C1C1C"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="BorderBrush" Value="#444444"/>
-                                <Setter Property="Foreground" Value="#444444"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="StatusStyle" TargetType="TextBlock">
-            <Setter Property="FontFamily" Value="Georgia"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Style.Triggers>
-                <Trigger Property="Text" Value="Recorded">
-                    <Setter Property="Foreground" Value="#4A9EDB"/>
-                </Trigger>
-                <Trigger Property="Text" Value="Preparing">
-                    <Setter Property="Foreground" Value="#E8A838"/>
-                </Trigger>
-                <Trigger Property="Text" Value="On the way">
-                    <Setter Property="Foreground" Value="#9B59B6"/>
-                </Trigger>
-                <Trigger Property="Text" Value="Delivered">
-                    <Setter Property="Foreground" Value="#2ECC71"/>
-                </Trigger>
-                <Trigger Property="Text" Value="Canceled">
-                    <Setter Property="Foreground" Value="#E74C3C"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="InfoButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#555555"/>
-            <Setter Property="BorderBrush" Value="#555555"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Width" Value="22"/>
-            <Setter Property="Height" Value="22"/>
-            <Setter Property="FontFamily" Value="Georgia"/>
-            <Setter Property="FontStyle" Value="Italic"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="11" Padding="2">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#C9A84C"/>
-                                <Setter Property="BorderBrush" Value="#C9A84C"/>
-                                <Setter Property="Foreground" Value="#1C1C1C"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="ListBoxItem">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
-                        <ContentPresenter/>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </UserControl.Resources>
 
     <Grid Margin="40">
         <Grid.RowDefinitions>
@@ -124,7 +23,7 @@
             <Rectangle Height="1" Fill="#2A2A2A" Margin="0,12,0,0"/>
         </StackPanel>
 
-        
+
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <ListBox ItemsSource="{Binding OrdersDisplayed}"
                      Background="Transparent"
