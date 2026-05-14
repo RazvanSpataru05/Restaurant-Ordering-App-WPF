@@ -150,8 +150,8 @@
                     <DataTemplate DataType="{x:Type vm:OrderHistoryVM}">
                         <local:OrderHistoryView/>
                     </DataTemplate>
-                    <DataTemplate DataType="{x:Type vm:AdminOrdersVM}">
-                        <local:AdminOrdersView/>
+                    <DataTemplate DataType="{x:Type vm:AdminPanelVM}">
+                        <local:AdminPanelView/>
                     </DataTemplate>
                 </ContentControl.Resources>
             </ContentControl>

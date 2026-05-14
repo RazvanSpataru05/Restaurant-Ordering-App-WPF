@@ -23,7 +23,7 @@ namespace RestaurantOrderingApp.Utils
                 if (_selectedStatus != value)
                 {
                     _selectedStatus = value;
-                    OnPropertyChanged(nameof(OrderDisplay));
+                    OnPropertyChanged(nameof(SelectedStatus));
                     CommandManager.InvalidateRequerySuggested();
                 }
             }

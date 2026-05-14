@@ -15,6 +15,19 @@ namespace RestaurantOrderingApp.Dialog_Service
         {
             _serviceProvider = serviceProvider;
         }
+
+        public void CloseAddProductWindow()
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is AddProductWindow)
+                {
+                    window.Close();
+                    return;
+                }
+            }
+        }
+
         public void CloseGuestWarningWindow()
         {
             foreach (Window window in Application.Current.Windows)
@@ -22,7 +35,7 @@ namespace RestaurantOrderingApp.Dialog_Service
                 if (window is GuestWarningWindow)
                 {
                     window.Close();
-                    break;
+                    return;
                 }
             }
         }
@@ -32,6 +45,18 @@ namespace RestaurantOrderingApp.Dialog_Service
             foreach (Window window in Application.Current.Windows)
             {
                 if (window is LoginWindow)
+                {
+                    window.Close();
+                    return;
+                }
+            }
+        }
+
+        public void CloseManageMenuWindow()
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is ManageMenuWindow)
                 {
                     window.Close();
                     return;
@@ -80,6 +105,22 @@ namespace RestaurantOrderingApp.Dialog_Service
             throw new NotImplementedException();
         }
 
+        public void ShowAddProductWindow()
+        {
+            var vm = new AddProductVM(_serviceProvider.GetRequiredService<IDialogService>(),
+                _serviceProvider.GetRequiredService<ProductBLL>(), _serviceProvider.GetRequiredService<CategoryBLL>());
+            var window = new AddProductWindow(vm);
+            window.ShowDialog();
+        }
+
+        public void ShowAdminView()
+        {
+            var restaurantVM = _serviceProvider.GetRequiredService<RestaurantVM>();
+            var adminPanelVM = _serviceProvider.GetRequiredService<AdminPanelVM>();
+            adminPanelVM.LoadOrders();
+            restaurantVM.CurrentView = adminPanelVM;
+        }
+
         public void ShowGuestWarningWindow(string infoMessage)
         {
             var vm = new GuestWarningVM(_serviceProvider.GetRequiredService<IDialogService>(), infoMessage);
@@ -89,9 +130,18 @@ namespace RestaurantOrderingApp.Dialog_Service
 
         public void ShowLoginWindow()
         {
-            var loginVM = _serviceProvider.GetRequiredService<LoginVM>();
-            var window = new LoginWindow(loginVM);
+            var vm = _serviceProvider.GetRequiredService<LoginVM>();
+            var window = new LoginWindow(vm);
             window.Show();
+        }
+
+        public void ShowManageMenuWindow()
+        {
+            var vm = new ManageMenuVM(_serviceProvider.GetRequiredService<IDialogService>(),
+                _serviceProvider.GetRequiredService<MenuBLL>(),
+                _serviceProvider.GetRequiredService<ProductBLL>());
+            var window = new ManageMenuWindow(vm);
+            window.ShowDialog();
         }
 
         public void ShowOrderConfirmationWindow(string orderCode, string estimatedDeliveryTime)

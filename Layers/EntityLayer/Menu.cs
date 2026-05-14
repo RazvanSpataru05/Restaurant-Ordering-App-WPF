@@ -6,5 +6,6 @@
         public string Name { get; set; }
         public int CategoryId { get; set; }
         public decimal DiscountPercent { get; set; }
+        public string? ImagePath { get; set; }
     }
 }

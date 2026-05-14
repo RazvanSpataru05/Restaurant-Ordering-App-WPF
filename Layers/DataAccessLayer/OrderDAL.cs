@@ -3,6 +3,7 @@ using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Windows;
 
 namespace RestaurantOrderingApp.Layers.DataAccessLayer
 {
@@ -93,9 +94,7 @@ namespace RestaurantOrderingApp.Layers.DataAccessLayer
                     ProductId = reader["ProductId"] == DBNull.Value ? null : (int)reader["ProductId"],
                     ProductName = reader["ProductName"] == DBNull.Value ? null : (string)reader["ProductName"],
                     MenuId = reader["MenuId"] == DBNull.Value ? null : (int)reader["MenuId"],
-                    MenuName = reader["MenuName"] == DBNull.Value ? null : (string)reader["MenuName"],
-                    ProductImagePath = reader["ProductImagePath"] == DBNull.Value ? null : (string)reader["ProductImagePath"],
-                    MenuImagePath = reader["MenuImagePath"] == DBNull.Value ? null : (string)reader["MenuImagePath"]
+                    MenuName = reader["MenuName"] == DBNull.Value ? null : (string)reader["MenuName"]
                 });
             }
             return result;

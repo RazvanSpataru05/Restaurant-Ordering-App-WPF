@@ -48,7 +48,7 @@ namespace RestaurantOrderingApp
                 services.AddTransient<MenuVM>();
                 services.AddTransient<CartVM>();
                 services.AddTransient<OrderHistoryVM>();
-                services.AddTransient<AdminOrdersVM>();
+                services.AddTransient<AdminPanelVM>();
                 services.AddSingleton<RestaurantVM>();
                 services.AddTransient<RestaurantWindow>();
 
@@ -57,6 +57,14 @@ namespace RestaurantOrderingApp
 
                 services.AddTransient<OrderDetailsVM>();
                 services.AddTransient<OrderDetailsWindow>();
+
+                services.AddTransient<LowStockVM>();
+
+                services.AddTransient<AddProductVM>();
+                services.AddTransient<AddProductWindow>();
+
+                services.AddTransient<ManageMenuVM>();
+                services.AddTransient<ManageMenuWindow>();
             }
             ).Build();
 

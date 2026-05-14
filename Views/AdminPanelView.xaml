@@ -1,8 +1,12 @@
-﻿<UserControl x:Class="RestaurantOrderingApp.Views.AdminOrdersView"
+﻿<UserControl x:Class="RestaurantOrderingApp.Views.AdminPanelView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:RestaurantOrderingApp.Converters"
              Background="#1C1C1C"
              TextElement.Foreground="#E0E0E0">
+    <UserControl.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibility"/>
+    </UserControl.Resources>
 
     <Grid Margin="40">
         <Grid.RowDefinitions>
@@ -27,15 +31,70 @@
         <StackPanel Grid.Row="1" Orientation="Horizontal" 
                     HorizontalAlignment="Center" Margin="0,0,0,20">
             <Button Content="☰  All Orders"
-                    Style="{StaticResource ToggleButtonStyle}"
                     Command="{Binding ToggleOrdersCommand}"
-                    Margin="0,0,8,0"/>
+                    CommandParameter="False"
+                    Margin="0,0,8,0">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource ToggleButtonStyle}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ActiveView}" Value="Orders">
+                                <Setter Property="Foreground" Value="#C9A84C"/>
+                                <Setter Property="BorderBrush" Value="#C9A84C"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+
             <Button Content="⚡  Active Only"
-                    Style="{StaticResource ToggleButtonStyle}"
-                    Command="{Binding ToggleOrdersCommand}"/>
+                    Command="{Binding ToggleOrdersCommand}"
+                    CommandParameter="True"
+                    Margin="8 0 8 0">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource ToggleButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveView}" Value="ActiveOnly">
+                                    <Setter Property="Foreground" Value="#C9A84C"/>
+                                    <Setter Property="BorderBrush" Value="#C9A84C"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+            </Button>
+
+            <Button Content="⚠  Low Stock"
+                    Command="{Binding ShowLowStockCommand}"
+                    Margin="8 0 8 0">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource ToggleButtonStyle}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ActiveView}" Value="LowStock">
+                                <Setter Property="Foreground" Value="#C9A84C"/>
+                                <Setter Property="BorderBrush" Value="#C9A84C"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Content="Add Product"
+                    Command="{Binding AddProductCommand}"
+                    Margin="8 0 0 0">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource ToggleButtonStyle}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ActiveView}" Value="LowStock">
+                                <Setter Property="Foreground" Value="#C9A84C"/>
+                                <Setter Property="BorderBrush" Value="#C9A84C"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
         </StackPanel>
 
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="2"
+                      Visibility="{Binding CurrentAdminView, Converter={StaticResource NullToVisibility}, ConverterParameter=invert}"
+                      VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding DisplayedOrders}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -144,5 +203,9 @@
                     HorizontalAlignment="Left"
                     Command="{Binding CloseCommand}"/>
         </Grid>
+
+        <ContentControl Grid.Row="2"
+                        Content="{Binding CurrentAdminView}"
+                        Visibility="{Binding CurrentAdminView, Converter={StaticResource NullToVisibility}}"/>
     </Grid>
 </UserControl>

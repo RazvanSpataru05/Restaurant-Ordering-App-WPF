@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace RestaurantOrderingApp.Views
 {
     /// <summary>
-    /// Interaction logic for AdminOrdersView.xaml
+    /// Interaction logic for LowStockView.xaml
     /// </summary>
-    public partial class AdminOrdersView : UserControl
+    public partial class LowStockView : UserControl
     {
-        public AdminOrdersView()
+        public LowStockView()
         {
             InitializeComponent();
         }

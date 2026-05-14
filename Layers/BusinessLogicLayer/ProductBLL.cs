@@ -20,5 +20,14 @@ namespace RestaurantOrderingApp.Layers.BusinessLogicLayer
         {
             _productDAL.UpdateProductQuantity(productId, totalQuantity);
         }
+        public ObservableCollection<Product> GetLowStockProducts(decimal lowStock)
+        {
+            return _productDAL.GetLowStockProducts(lowStock);
+        }
+        public bool AddProduct(string name, int categoryId, string portionQuantity,
+            decimal totalQuantity, decimal price, string imagePath)
+        {
+            return _productDAL.AddProduct(name, categoryId, portionQuantity, totalQuantity, price, imagePath);
+        }
     }
 }

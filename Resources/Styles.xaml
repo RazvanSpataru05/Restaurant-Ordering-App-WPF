@@ -153,4 +153,26 @@
         </Setter>
     </Style>
 
+    <Style x:Key="ActiveToggleButtonStyle" TargetType="Button" BasedOn="{StaticResource ToggleButtonStyle}">
+        <Setter Property="Foreground" Value="#C9A84C"/>
+        <Setter Property="BorderBrush" Value="#C9A84C"/>
+    </Style>
+
+    <Style x:Key="FieldLabelStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Georgia"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Foreground" Value="#888888"/>
+        <Setter Property="Margin" Value="0,0,0,4"/>
+    </Style>
+    <Style x:Key="FieldBoxStyle" TargetType="TextBox">
+        <Setter Property="Background" Value="#252525"/>
+        <Setter Property="Foreground" Value="#E0E0E0"/>
+        <Setter Property="BorderBrush" Value="#333333"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FontFamily" Value="Georgia"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Padding" Value="8,6"/>
+        <Setter Property="Height" Value="34"/>
+    </Style>
+
 </ResourceDictionary>
