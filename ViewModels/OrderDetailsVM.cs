@@ -1,4 +1,5 @@
 ﻿using RestaurantOrderingApp.Dialog_Service;
+using RestaurantOrderingApp.Display;
 using RestaurantOrderingApp.Utils;
 
 namespace RestaurantOrderingApp.ViewModels

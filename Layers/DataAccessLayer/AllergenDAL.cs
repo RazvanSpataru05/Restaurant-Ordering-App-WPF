@@ -2,7 +2,6 @@
 using RestaurantOrderingApp.Layers.EntityLayer;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Windows;
 
 namespace RestaurantOrderingApp.Layers.DataAccessLayer
 {

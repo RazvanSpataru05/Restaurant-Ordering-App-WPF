@@ -1,4 +1,5 @@
 ﻿using RestaurantOrderingApp.Dialog_Service;
+using RestaurantOrderingApp.Display;
 using RestaurantOrderingApp.Layers.BusinessLogicLayer;
 using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
@@ -9,7 +10,7 @@ namespace RestaurantOrderingApp.ViewModels
 {
     public class CartVM : BaseViewModel
     {
-        private readonly int _menuDiscount = Convert.ToInt32(ConfigurationManager.AppSettings["MenuDiscount"]);
+        private readonly decimal _menuDiscount = Convert.ToDecimal(ConfigurationManager.AppSettings["MenuDiscount"]);
         private readonly int _orderDiscountThreshold = Convert.ToInt32(ConfigurationManager.AppSettings["OrderDiscountThreshold"]);
         private readonly int _frequencyDays = Convert.ToInt32(ConfigurationManager.AppSettings["FrequencyDays"]);
         private readonly int _frequencyOrderCount = Convert.ToInt32(ConfigurationManager.AppSettings["FrequencyOrderCount"]);
@@ -37,74 +38,32 @@ namespace RestaurantOrderingApp.ViewModels
         public bool IsCartEmpty
         {
             get => _isCartEmpty;
-            set
-            {
-                if (_isCartEmpty != value)
-                {
-                    _isCartEmpty = value;
-                    OnPropertyChanged(nameof(IsCartEmpty));
-                }
-            }
+            set { _isCartEmpty = value; OnPropertyChanged(nameof(IsCartEmpty)); }
         }
         public string CartMessage
         {
             get => _cartMessage;
-            set
-            {
-                if (_cartMessage != value)
-                {
-                    _cartMessage = value;
-                    OnPropertyChanged(nameof(CartMessage));
-                }
-            }
+            set { _cartMessage = value; OnPropertyChanged(nameof(CartMessage)); }
         }
         public decimal Subtotal
         {
             get => _subtotal;
-            set
-            {
-                if (_subtotal != value)
-                {
-                    _subtotal = value;
-                    OnPropertyChanged(nameof(Subtotal));
-                }
-            }
+            set { _subtotal = value; OnPropertyChanged(nameof(Subtotal)); }
         }
         public decimal DiscountAmount
         {
             get => _discountAmount;
-            set
-            {
-                if (_discountAmount != value)
-                {
-                    _discountAmount = value;
-                    OnPropertyChanged(nameof(DiscountAmount));
-                }
-            }
+            set { _discountAmount = value; OnPropertyChanged(nameof(DiscountAmount)); }
         }
         public int DeliveryCost
         {
             get => _deliveryCost;
-            set
-            {
-                if (_deliveryCost != value)
-                {
-                    _deliveryCost = value;
-                    OnPropertyChanged(nameof(DeliveryCost));
-                }
-            }
+            set { _deliveryCost = value; OnPropertyChanged(nameof(DeliveryCost)); }
         }
         public decimal Total
         {
             get => _total;
-            set
-            {
-                if (_total != value)
-                {
-                    _total = value;
-                    OnPropertyChanged(nameof(Total));
-                }
-            }
+            set { _total = value; OnPropertyChanged(nameof(Total)); }
         }
 
         public RelayCommand PlaceOrderCommand { get; set; }
@@ -182,10 +141,6 @@ namespace RestaurantOrderingApp.ViewModels
             int randomMinutes = _random.Next(1, 61);
             return DateTime.Now.AddMinutes(randomHours * 60 + randomMinutes);
         }
-        private void Cancel()
-        {
-            _dialogService.ShowWelcomeView();
-        }
         private void RemoveFromCart(CartItem? cartItem)
         {
             if (cartItem == null) return;
@@ -229,7 +184,7 @@ namespace RestaurantOrderingApp.ViewModels
             Total = Subtotal;
             DeliveryCost = IsDeliveryFree() ? 0 : _configDeliveryCost;
             if (Subtotal >= _orderDiscountThreshold || IsFrequencyDiscountEligible())
-            {   
+            {
                 DiscountAmount = (_frequencyDiscount / 100) * Subtotal;
                 Total = Subtotal - (_frequencyDiscount / 100) * Subtotal;
             }
@@ -254,7 +209,7 @@ namespace RestaurantOrderingApp.ViewModels
         private void InitializeCommands()
         {
             PlaceOrderCommand = new(_ => PlaceOrder(), _ => IsCartEmpty == false);
-            CancelCommand = new(_ => Cancel());
+            CancelCommand = new(_ => _dialogService.ShowWelcomeView());
             RemoveFromCartCommand = new(param => RemoveFromCart(param as CartItem));
             IncreaseCommand = new(param => Increase(param as CartItem), param => CanIncrease(param as CartItem));
             DecreaseCommand = new(param => Decrease(param as CartItem), param => CanDecrease(param as CartItem));

@@ -1,11 +1,12 @@
 ﻿using RestaurantOrderingApp.Dialog_Service;
+using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
 
 namespace RestaurantOrderingApp.ViewModels
 {
     public class RestaurantVM : BaseViewModel
     {
-        private readonly CurrentUserSession _currentUserSession;
+        private CurrentUserSession _currentUserSession;
         private readonly IDialogService _dialogService;
         private readonly MenuVM _menuVM;
         private readonly CartVM _cartVM;
@@ -14,8 +15,9 @@ namespace RestaurantOrderingApp.ViewModels
         private bool _isProfileMenuOpen;
         private BaseViewModel? _currentView;
 
-        public CurrentUserSession CurrentUserSession { get; }
+        public bool IsLoggedIn => _currentUserSession.CurrentUser != null;
         public bool IsAdmin => _currentUserSession.CurrentUser?.Role == "Employee";
+        public CurrentUserSession CurrentUserSession { get; }
 
         public string DisplayName => _currentUserSession.CurrentUser != null ?
             $"{_currentUserSession.CurrentUser.FirstName} {_currentUserSession.CurrentUser.LastName}" : "Guest";
@@ -23,31 +25,18 @@ namespace RestaurantOrderingApp.ViewModels
         public bool IsProfileMenuOpen
         {
             get => _isProfileMenuOpen;
-            set
-            {
-                if (_isProfileMenuOpen != value)
-                {
-                    _isProfileMenuOpen = value;
-                    OnPropertyChanged(nameof(IsProfileMenuOpen));
-                }
-            }
+            set { _isProfileMenuOpen = value; OnPropertyChanged(nameof(IsProfileMenuOpen)); }
         }
 
         public BaseViewModel? CurrentView
         {
             get => _currentView;
-            set
-            {
-                if (_currentView != value)
-                {
-                    _currentView = value;
-                    OnPropertyChanged(nameof(CurrentView));
-                }
-            }
+            set { _currentView = value; OnPropertyChanged(nameof(CurrentView)); }
         }
 
         public RelayCommand OpenMenuCommand { get; set; }
         public RelayCommand OpenCartCommand { get; set; }
+        public RelayCommand OpenLogoutCommand { get; set; }
         public RelayCommand OpenOrderHistoryCommand { get; set; }
         public RelayCommand ToggleProfileMenuCommand { get; set; }
         public RelayCommand OpenAdminCommand { get; set; }
@@ -89,6 +78,7 @@ namespace RestaurantOrderingApp.ViewModels
         {
             OpenMenuCommand = new(_ => CurrentView = _menuVM);
             OpenCartCommand = new(_ => OpenCart());
+            OpenLogoutCommand = new(_ => _dialogService.ShowLogoutWindow());
             OpenAdminCommand = new(_ => _dialogService.ShowAdminView());
             OpenOrderHistoryCommand = new(_ => OpenOrderHistory());
             ToggleProfileMenuCommand = new(_ => IsProfileMenuOpen = !IsProfileMenuOpen);

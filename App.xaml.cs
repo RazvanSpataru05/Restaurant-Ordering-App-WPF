@@ -65,6 +65,9 @@ namespace RestaurantOrderingApp
 
                 services.AddTransient<ManageMenuVM>();
                 services.AddTransient<ManageMenuWindow>();
+
+                services.AddTransient<LogoutVM>();
+                services.AddTransient<LogoutWindow>();
             }
             ).Build();
 

@@ -82,15 +82,16 @@
             </ScrollViewer>
 
             <Grid Grid.Row="3" Margin="0,15,0,0">
+                <Button Content="Close" HorizontalAlignment="Left"
+                        Command="{Binding CloseCommand}"
+                        Style="{StaticResource HeaderButtonStyle}"/>
+
                 <TextBlock FontFamily="Georgia" FontSize="14" Foreground="#C9A84C"
-                           VerticalAlignment="Center">
+                           VerticalAlignment="Center" HorizontalAlignment="Right">
                     <Run Text="Total: "/>
                     <Run Text="{Binding OrderDisplayed.Order.TotalPrice, StringFormat={}{0:F2}}"/>
                     <Run Text=" RON"/>
                 </TextBlock>
-                <Button Content="Close" HorizontalAlignment="Right"
-                        Command="{Binding CloseCommand}"
-                        Style="{StaticResource HeaderButtonStyle}"/>
             </Grid>
         </Grid>
     </Border>

@@ -1,5 +1,4 @@
-﻿using RestaurantOrderingApp.Dialog_Service;
-using RestaurantOrderingApp.Layers.BusinessLogicLayer;
+﻿using RestaurantOrderingApp.Layers.BusinessLogicLayer;
 using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
 using System.Windows;
@@ -8,7 +7,6 @@ namespace RestaurantOrderingApp.ViewModels
 {
     public class RegisterVM : BaseViewModel
     {
-        private readonly IDialogService _dialogService;
         private readonly UserBLL _userBLL;
         private readonly Action _onBackToLogin;
 
@@ -26,107 +24,50 @@ namespace RestaurantOrderingApp.ViewModels
         public string FirstName
         {
             get => _firstName;
-            set
-            {
-                if (_firstName != value)
-                {
-                    _firstName = value;
-                    OnPropertyChanged(nameof(FirstName));
-                }
-            }
+            set { _firstName = value; OnPropertyChanged(nameof(FirstName)); }
         }
         public string LastName
         {
             get => _lastName;
-            set
-            {
-                if (_lastName != value)
-                {
-                    _lastName = value;
-                    OnPropertyChanged(nameof(LastName));
-                }
-            }
+            set { _lastName = value; OnPropertyChanged(nameof(LastName)); }
         }
         public string Email
         {
             get => _email;
-            set
-            {
-                if (_email != value)
-                {
-                    _email = value;
-                    OnPropertyChanged(nameof(Email));
-                }
-            }
+            set { _email = value; OnPropertyChanged(nameof(Email)); }
         }
         public string Password
         {
             get => _password;
-            set
-            {
-                if (_password != value)
-                {
-                    _password = value;
-                    OnPropertyChanged(nameof(Password));
-                }
-            }
+            set { _password = value; OnPropertyChanged(nameof(Password)); }
         }
         public string ConfirmPassword
         {
             get => _confirmPassword;
-            set
-            {
-                if (_confirmPassword != value)
-                {
-                    _confirmPassword = value;
-                    OnPropertyChanged(nameof(ConfirmPassword));
-                }
-            }
+            set { _confirmPassword = value; OnPropertyChanged(nameof(ConfirmPassword)); }
         }
 
         public string Phone
         {
             get => _phone;
-            set
-            {
-                if (_phone != value)
-                {
-                    _phone = value;
-                    OnPropertyChanged(nameof(Phone));
-                }
-            }
+            set { _phone = value; OnPropertyChanged(nameof(Phone)); }
         }
         public string DeliveryAddress
         {
             get => _deliveryAddress;
-            set
-            {
-                if (_deliveryAddress != value)
-                {
-                    _deliveryAddress = value;
-                    OnPropertyChanged(nameof(DeliveryAddress));
-                }
-            }
+            set { _deliveryAddress = value; OnPropertyChanged(nameof(DeliveryAddress)); }
         }
         public string ErrorMessage
         {
             get => _errorMessage;
-            set
-            {
-                if (_errorMessage != value)
-                {
-                    _errorMessage = value;
-                    OnPropertyChanged(nameof(ErrorMessage));
-                }
-            }
+            set { _errorMessage = value; OnPropertyChanged(nameof(ErrorMessage)); }
         }
 
         public RelayCommand RegisterCommand { get; set; }
         public RelayCommand BackToLoginCommand { get; set; }
 
-        public RegisterVM(IDialogService dialogService, UserBLL userBLL, Action onBackToLogin)
+        public RegisterVM(UserBLL userBLL, Action onBackToLogin)
         {
-            _dialogService = dialogService;
             _userBLL = userBLL;
             _onBackToLogin = onBackToLogin;
 
@@ -178,7 +119,7 @@ namespace RestaurantOrderingApp.ViewModels
                 MessageBox.Show("Account has been created successfully", "Inforamtion",
                  MessageBoxButton.OK,
                  MessageBoxImage.Information);
-                 ClearFields();
+                ClearFields();
                 _onBackToLogin();
             }
             else

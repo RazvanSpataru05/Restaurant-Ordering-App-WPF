@@ -15,7 +15,6 @@ namespace RestaurantOrderingApp.Utils
             Items = [];
         }
 
-
         public void AddCartItem(Product product, int selectedQuantity)
         {
             var existingItem = Items.FirstOrDefault(p => p.Product.ProductId == product.ProductId);

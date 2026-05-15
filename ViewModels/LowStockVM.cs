@@ -8,8 +8,7 @@ namespace RestaurantOrderingApp.ViewModels
 {
     public class LowStockVM : BaseViewModel
     {
-        private readonly decimal _lowStockPrice = Convert.ToDecimal(ConfigurationManager.AppSettings["LowStockThreshold"]);
-        private readonly IDialogService _dialogService;
+        private readonly decimal _lowStockThreshold = Convert.ToDecimal(ConfigurationManager.AppSettings["LowStockThreshold"]);
         private readonly ProductBLL _productBLL;
 
         private ObservableCollection<Product> _lowStockProducts;
@@ -17,22 +16,14 @@ namespace RestaurantOrderingApp.ViewModels
         public ObservableCollection<Product> LowStockProducts
         {
             get => _lowStockProducts;
-            set
-            {
-                if (_lowStockProducts != value)
-                {
-                    _lowStockProducts = value;
-                    OnPropertyChanged(nameof(LowStockProducts));  
-                }
-            }
+            set { _lowStockProducts = value; OnPropertyChanged(nameof(LowStockProducts)); }
         }
 
-        public LowStockVM(IDialogService dialogService, ProductBLL productBLL)
+        public LowStockVM(ProductBLL productBLL)
         {
-            _dialogService = dialogService;
             _productBLL = productBLL;
 
-            LowStockProducts = _productBLL.GetLowStockProducts(_lowStockPrice);
+            LowStockProducts = _productBLL.GetLowStockProducts(_lowStockThreshold);
         }
     }
 }

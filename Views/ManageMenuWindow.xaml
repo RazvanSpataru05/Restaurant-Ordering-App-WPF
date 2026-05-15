@@ -1,12 +1,141 @@
 ﻿<Window x:Class="RestaurantOrderingApp.Views.ManageMenuWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:RestaurantOrderingApp.Views"
-        mc:Ignorable="d"
-        Title="ManageMenuWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        xmlns:converters="clr-namespace:RestaurantOrderingApp.Converters"
+        Title="Manage Menu"
+        Width="480" Height="620"
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        Background="#1C1C1C"
+        WindowStyle="None"
+        TextElement.Foreground="#E0E0E0"
+        FontFamily="Georgia">
+    <Window.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibility"/>
+    </Window.Resources>
+
+    <Border Background="#1C1C1C" BorderBrush="#C9A84C" 
+            BorderThickness="1" CornerRadius="4">
+        <Grid Margin="36,32,36,28">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                <TextBlock Text="MANAGE MENU"
+                   FontSize="20" FontStyle="Italic"
+                   Foreground="#C9A84C"
+                   HorizontalAlignment="Center"/>
+                <TextBlock Text="· Edit menu composition ·"
+                   FontSize="10" Foreground="#555555"
+                   HorizontalAlignment="Center"
+                   Margin="0,4,0,0"/>
+                <Rectangle Height="1" Fill="#2A2A2A" Margin="0,14,0,0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Margin="0,0,0,16">
+                <TextBlock Text="SELECT MENU" Style="{StaticResource FieldLabelStyle}"/>
+                <ComboBox Style="{StaticResource AdminComboBoxStyle}"
+                  ItemsSource="{Binding Menus}"
+                  SelectedItem="{Binding SelectedMenu, Mode=TwoWay}"
+                  DisplayMemberPath="MenuEntity.Name"
+                  Height="34"/>
+            </StackPanel>
+
+            <Border Grid.Row="2" Background="#181818" BorderBrush="#2A2A2A"
+            BorderThickness="1" CornerRadius="4"
+            Padding="14,10" Margin="0,0,0,16"
+            Visibility="{Binding SelectedMenu, Converter={StaticResource NullToVisibility}}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Calculated Price: " 
+                       Foreground="#888888" FontSize="12"/>
+                    <TextBlock Text="{Binding CalculatedPrice, StringFormat={}{0:F2}}"
+                       Foreground="#C9A84C" FontSize="12" FontWeight="Bold"/>
+                    <TextBlock Text=" RON" Foreground="#C9A84C" FontSize="12"/>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Grid.Row="3" Margin="0,0,0,16">
+                <TextBlock Text="PRODUCTS" Style="{StaticResource FieldLabelStyle}"/>
+                <ScrollViewer Height="320" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Products}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#181818" BorderBrush="#2A2A2A"
+                        BorderThickness="1" CornerRadius="4"
+                        Margin="0,0,0,6" Padding="14,10"
+                        Cursor="Hand">
+                                    <Border.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick"
+                                      Command="{Binding DataContext.ToggleSelectionCommand,
+                                                RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                      CommandParameter="{Binding}"/>
+                                    </Border.InputBindings>
+                                    <Grid>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Product.Name}"
+                                       FontSize="13" Foreground="#E0E0E0"/>
+                                            <TextBlock FontSize="11" Foreground="#888888" Margin="0,2,0,0">
+                                <Run Text="{Binding Product.Price, StringFormat={}{0:F2}}"/>
+                                <Run Text=" RON"/>
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <Border Width="20" Height="20"
+                                BorderBrush="#C9A84C" BorderThickness="1"
+                                CornerRadius="2" HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter Property="Background" Value="#C9A84C"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock Text="✓" Foreground="#1C1C1C"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       FontSize="12">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </StackPanel>
+
+            <Rectangle Grid.Row="4" Height="1" Fill="#2A2A2A" Margin="0,0,0,20"/>
+
+            <Grid Grid.Row="5">
+                <Button Content="Cancel"
+        Style="{StaticResource ToggleButtonStyle}"
+        Command="{Binding CancelCommand}"
+        Width="110" HorizontalAlignment="Left"/>
+
+                <Button Content="✓  Confirm"
+        Style="{StaticResource CartButtonStyle}"
+        Command="{Binding ConfirmCommand}"
+        Width="110" HorizontalAlignment="Right"/>
+            </Grid>
+        </Grid>
+    </Border>
 </Window>

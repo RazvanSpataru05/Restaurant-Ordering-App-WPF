@@ -66,6 +66,7 @@
         <Setter Property="FontFamily" Value="Georgia"/>
         <Setter Property="FontSize" Value="11"/>
         <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="#E0E0E0"/>
         <Style.Triggers>
             <Trigger Property="Text" Value="Recorded">
                 <Setter Property="Foreground" Value="#4A9EDB"/>
@@ -114,12 +115,78 @@
     <Style x:Key="AdminComboBoxStyle" TargetType="ComboBox">
         <Setter Property="Background" Value="#252525"/>
         <Setter Property="Foreground" Value="#E0E0E0"/>
-        <Setter Property="BorderBrush" Value="#333333"/>
+        <Setter Property="BorderBrush" Value="#C9A84C"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="FontFamily" Value="Georgia"/>
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Padding" Value="8,4"/>
         <Setter Property="Height" Value="30"/>
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="2">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="24"/>
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter Grid.Column="0"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              Margin="8,0,0,0"
+                                              VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="▾"
+                                       Foreground="#C9A84C"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="10"/>
+                            </Grid>
+                        </Border>
+                        <Popup x:Name="PART_Popup"
+                           IsOpen="{TemplateBinding IsDropDownOpen}"
+                           AllowsTransparency="True"
+                           Placement="Bottom"
+                           PopupAnimation="Fade">
+                            <Border Background="#252525"
+                                BorderBrush="#C9A84C"
+                                BorderThickness="1"
+                                CornerRadius="2"
+                                MinWidth="{TemplateBinding ActualWidth}">
+                                <ItemsPresenter/>
+                            </Border>
+                        </Popup>
+                        <ToggleButton Background="Transparent"
+                                  BorderThickness="0"
+                                  IsChecked="{Binding IsDropDownOpen, 
+                                              RelativeSource={RelativeSource TemplatedParent}, 
+                                              Mode=TwoWay}"
+                                  Focusable="False"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Resources>
+            <Style TargetType="ComboBoxItem">
+                <Setter Property="Background" Value="#252525"/>
+                <Setter Property="Foreground" Value="#E0E0E0"/>
+                <Setter Property="FontFamily" Value="Georgia"/>
+                <Setter Property="Padding" Value="8,6"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#C9A84C"/>
+                        <Setter Property="Foreground" Value="#1C1C1C"/>
+                    </Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="#333333"/>
+                        <Setter Property="Foreground" Value="#C9A84C"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Style.Resources>
     </Style>
 
     <Style x:Key="HeaderButtonStyle" TargetType="Button">

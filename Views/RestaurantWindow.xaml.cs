@@ -13,7 +13,7 @@ namespace RestaurantOrderingApp.Views
         }
         private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
      

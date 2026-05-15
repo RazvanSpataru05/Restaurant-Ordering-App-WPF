@@ -1,7 +1,7 @@
-﻿using RestaurantOrderingApp.Utils;
+﻿using RestaurantOrderingApp.Layers.EntityLayer;
 using System.Collections.ObjectModel;
 
-namespace RestaurantOrderingApp.Layers.EntityLayer
+namespace RestaurantOrderingApp.Display
 {
     public class CategoryWithProducts
     {

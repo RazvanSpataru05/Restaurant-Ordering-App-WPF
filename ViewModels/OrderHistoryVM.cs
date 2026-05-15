@@ -1,4 +1,5 @@
 ﻿using RestaurantOrderingApp.Dialog_Service;
+using RestaurantOrderingApp.Display;
 using RestaurantOrderingApp.Layers.BusinessLogicLayer;
 using RestaurantOrderingApp.Utils;
 using System.Collections.ObjectModel;
@@ -13,30 +14,16 @@ namespace RestaurantOrderingApp.ViewModels
 
         private ObservableCollection<OrderDisplay> _ordersDisplayed;
         private OrderDisplay? _selectedOrder;
-        
+
         public ObservableCollection<OrderDisplay> OrdersDisplayed
         {
             get => _ordersDisplayed;
-            set
-            {
-                if (_ordersDisplayed != value)
-                {
-                    _ordersDisplayed = value;
-                    OnPropertyChanged(nameof(OrdersDisplayed));
-                }
-            }
+            set { _ordersDisplayed = value; OnPropertyChanged(nameof(OrdersDisplayed)); }
         }
         public OrderDisplay? SelectedOrder
         {
             get => _selectedOrder;
-            set
-            {
-                if (_selectedOrder != value)
-                {
-                    _selectedOrder = value;
-                    OnPropertyChanged(nameof(SelectedOrder));
-                }
-            }
+            set { _selectedOrder = value; OnPropertyChanged(nameof(SelectedOrder)); }
         }
 
         public RelayCommand CloseCommand { get; set; }
@@ -58,11 +45,11 @@ namespace RestaurantOrderingApp.ViewModels
             _orderBLL.UpdateOrderStatus(SelectedOrder.Order.OrderId, "Canceled");
             LoadOrders();
         }
-        private bool CanOrderBeCanceled()
+        private bool CanCancelOrder()
         {
             if (SelectedOrder == null) return false;
 
-            return SelectedOrder.Order.Status == "Recorded";
+            return SelectedOrder.Order.Status.Trim().Equals("Recorded", StringComparison.OrdinalIgnoreCase);
         }
         private void ShowOrderDetails(OrderDisplay? orderDisplay)
         {
@@ -73,24 +60,22 @@ namespace RestaurantOrderingApp.ViewModels
         public void LoadOrders()
         {
             OrdersDisplayed = [];
-            if (_currentUserSession.CurrentUser != null)
+
+            var orders = _orderBLL.GetOrdersByUser(_currentUserSession.CurrentUser!.UserId);
+            foreach (var order in orders)
             {
-                var orders = _orderBLL.GetOrdersByUser(_currentUserSession.CurrentUser.UserId);
-                foreach (var order in orders)
+                OrdersDisplayed.Add(new OrderDisplay
                 {
-                    OrdersDisplayed.Add(new OrderDisplay
-                    {
-                        Order = order,
-                        Items = _orderBLL.GetOrderItems(order.OrderId)
-                    });
-                }
+                    Order = order,
+                    Items = _orderBLL.GetOrderItems(order.OrderId)
+                });
             }
         }
         private void InitializeCommands()
         {
             CloseCommand = new(_ => _dialogService.ShowWelcomeView());
-            CancelOrderCommand = new(_ => CancelOrder(), _ => CanOrderBeCanceled());
+            CancelOrderCommand = new(_ => CancelOrder(), _ => CanCancelOrder());
             ShowOrderDetailsCommand = new(param => ShowOrderDetails(param as OrderDisplay));
         }
-    }    
+    }
 }

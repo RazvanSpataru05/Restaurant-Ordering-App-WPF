@@ -1,7 +1,7 @@
 ﻿using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.ViewModels;
 
-namespace RestaurantOrderingApp.Utils
+namespace RestaurantOrderingApp.Display
 {
     public class ProductDisplay : BaseViewModel
     {

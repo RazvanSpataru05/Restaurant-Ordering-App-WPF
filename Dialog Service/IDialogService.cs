@@ -1,4 +1,4 @@
-﻿using RestaurantOrderingApp.Utils;
+﻿using RestaurantOrderingApp.Display;
 
 namespace RestaurantOrderingApp.Dialog_Service
 {
@@ -21,5 +21,7 @@ namespace RestaurantOrderingApp.Dialog_Service
         void CloseAddProductWindow();
         void ShowManageMenuWindow();
         void CloseManageMenuWindow();
+        void ShowLogoutWindow();
+        void CloseLogoutWindow();
     }
 }

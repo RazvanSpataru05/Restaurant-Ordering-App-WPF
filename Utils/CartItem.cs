@@ -37,7 +37,7 @@ namespace RestaurantOrderingApp.Utils
                 }
             }
         }
-       
+
         public string? DisplayName => Product?.Name ?? Menu?.Name;
 
         public CartItem(Product product, int quantity, decimal unitPrice)
@@ -56,11 +56,11 @@ namespace RestaurantOrderingApp.Utils
         }
         public void UpdatePrice()
         {
-           TotalPrice = _unitPrice * Quantity;
+            TotalPrice = _unitPrice * Quantity;
         }
         private void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));  
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

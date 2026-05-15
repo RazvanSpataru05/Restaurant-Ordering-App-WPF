@@ -1,4 +1,5 @@
 ﻿using RestaurantOrderingApp.Dialog_Service;
+using RestaurantOrderingApp.Display;
 using RestaurantOrderingApp.Layers.BusinessLogicLayer;
 using RestaurantOrderingApp.Utils;
 using System.Collections.ObjectModel;
@@ -44,6 +45,7 @@ namespace RestaurantOrderingApp.ViewModels
         public RelayCommand ShowDetailsCommand { get; set; }
         public RelayCommand ShowLowStockCommand { get; set; } 
         public RelayCommand AddProductCommand { get; set; }
+        public RelayCommand ManageMenusCommand { get; set; }
         public RelayCommand CloseCommand { get; set; }
         public AdminPanelVM(IDialogService dialogService, OrderBLL orderBLL, LowStockVM lowStockVM)
         {
@@ -106,6 +108,7 @@ namespace RestaurantOrderingApp.ViewModels
                 ActiveView = "LowStock";
             });
             AddProductCommand = new(_ => _dialogService.ShowAddProductWindow());
+            ManageMenusCommand = new(_ => _dialogService.ShowManageMenuWindow());
             CloseCommand = new(_ => _dialogService.ShowWelcomeView());
         }
         public void LoadOrders()

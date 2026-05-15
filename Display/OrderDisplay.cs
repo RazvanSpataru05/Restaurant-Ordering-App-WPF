@@ -1,7 +1,7 @@
 ﻿using RestaurantOrderingApp.Layers.EntityLayer;
 using System.Collections.ObjectModel;
 
-namespace RestaurantOrderingApp.Utils
+namespace RestaurantOrderingApp.Display
 {
     public class OrderDisplay
     {

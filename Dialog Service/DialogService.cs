@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using RestaurantOrderingApp.Display;
 using RestaurantOrderingApp.Layers.BusinessLogicLayer;
 using RestaurantOrderingApp.Utils;
 using RestaurantOrderingApp.ViewModels;
@@ -52,6 +53,18 @@ namespace RestaurantOrderingApp.Dialog_Service
             }
         }
 
+        public void CloseLogoutWindow()
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is LogoutWindow)
+                {
+                    window.Close();
+                    return;
+                }
+            }
+        }
+
         public void CloseManageMenuWindow()
         {
             foreach (Window window in Application.Current.Windows)
@@ -71,7 +84,7 @@ namespace RestaurantOrderingApp.Dialog_Service
                 if (window is OrderConfirmationWindow)
                 {
                     window.Close();
-                    break;
+                    return;
                 }
             }
         }
@@ -83,7 +96,7 @@ namespace RestaurantOrderingApp.Dialog_Service
                 if (window is OrderDetailsWindow)
                 {
                     window.Close();
-                    break;
+                    return;
                 }
             }
         }
@@ -95,7 +108,7 @@ namespace RestaurantOrderingApp.Dialog_Service
                 if (window is RestaurantWindow)
                 {
                     window.Close();
-                    break;
+                    return;
                 }
             }
         }
@@ -133,6 +146,17 @@ namespace RestaurantOrderingApp.Dialog_Service
             var vm = _serviceProvider.GetRequiredService<LoginVM>();
             var window = new LoginWindow(vm);
             window.Show();
+        }
+
+        public void ShowLogoutWindow()
+        {
+            var cartService = _serviceProvider.GetRequiredService<CartService>();
+            var vm = new LogoutVM(_serviceProvider.GetRequiredService<IDialogService>());
+            vm.InfoMessage = cartService.Items.Count > 0 ?
+                "You have items in your cart. Are you sure you want to log out? Your cart will be cleared." :
+                "Are you sure you want to log out?";
+            var window = new LogoutWindow(vm);
+            window.ShowDialog();
         }
 
         public void ShowManageMenuWindow()

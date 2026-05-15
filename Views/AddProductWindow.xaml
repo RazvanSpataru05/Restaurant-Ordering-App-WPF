@@ -4,65 +4,69 @@
         Title="Add Product"
         Width="420" SizeToContent="Height"
         WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
         ShowInTaskbar="False"
         ResizeMode="NoResize"
         Background="#1C1C1C"
         TextElement.Foreground="#E0E0E0"
         FontFamily="Georgia">
 
-    <StackPanel Margin="36,32,36,28">
+    <Border Background="#1C1C1C" BorderBrush="#C9A84C"
+            BorderThickness="1" CornerRadius="4">
+            <StackPanel Margin="36,32,36,28">
 
-        <TextBlock Text="ADD PRODUCT"
-                   FontSize="20" FontStyle="Italic"
-                   Foreground="#C9A84C"
-                   HorizontalAlignment="Center"/>
-        <TextBlock Text="· New menu item ·"
-                   FontSize="10" Foreground="#555555"
-                   HorizontalAlignment="Center"
-                   Margin="0,4,0,0"/>
-        <Rectangle Height="1" Fill="#2A2A2A" Margin="0,14,0,20"/>
+            <TextBlock Text="ADD PRODUCT"
+               FontSize="20" FontStyle="Italic"
+               Foreground="#C9A84C"
+               HorizontalAlignment="Center"/>
+            <TextBlock Text="· New menu item ·"
+               FontSize="10" Foreground="#555555"
+               HorizontalAlignment="Center"
+               Margin="0,4,0,0"/>
+            <Rectangle Height="1" Fill="#2A2A2A" Margin="0,14,0,20"/>
 
-        <TextBlock Text="PRODUCT NAME" Style="{StaticResource FieldLabelStyle}"/>
-        <TextBox Style="{StaticResource FieldBoxStyle}"
-                 Text="{Binding ProductName, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="0,0,0,14"/>
-        
-        <TextBlock Text="CATEGORY" Style="{StaticResource FieldLabelStyle}"/>
-        <ComboBox Style="{StaticResource AdminComboBoxStyle}"
-                  ItemsSource="{Binding Categories}"
-                  SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
-                  DisplayMemberPath="Name"
-                  Margin="0,0,0,14"
-                  Height="34"/>
+            <TextBlock Text="PRODUCT NAME" Style="{StaticResource FieldLabelStyle}"/>
+            <TextBox Style="{StaticResource FieldBoxStyle}"
+             Text="{Binding ProductName, UpdateSourceTrigger=PropertyChanged}"
+             Margin="0,0,0,14"/>
 
-        <TextBlock Text="PORTION QUANTITY" Style="{StaticResource FieldLabelStyle}"/>
-        <TextBox Style="{StaticResource FieldBoxStyle}"
-                 Text="{Binding PortionQuantity, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="0,0,0,14"/>
+            <TextBlock Text="CATEGORY" Style="{StaticResource FieldLabelStyle}"/>
+            <ComboBox Style="{StaticResource AdminComboBoxStyle}"
+              ItemsSource="{Binding Categories}"
+              SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
+              DisplayMemberPath="Name"
+              Margin="0,0,0,14"
+              Height="34"/>
 
-        <TextBlock Text="TOTAL QUANTITY" Style="{StaticResource FieldLabelStyle}"/>
-        <TextBox Style="{StaticResource FieldBoxStyle}"
-                 Text="{Binding TotalQuantity, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="0,0,0,14"/>
+            <TextBlock Text="PORTION QUANTITY" Style="{StaticResource FieldLabelStyle}"/>
+            <TextBox Style="{StaticResource FieldBoxStyle}"
+             Text="{Binding PortionQuantity, UpdateSourceTrigger=PropertyChanged}"
+             Margin="0,0,0,14"/>
 
-        <TextBlock Text="PRICE (RON)" Style="{StaticResource FieldLabelStyle}"/>
-        <TextBox Style="{StaticResource FieldBoxStyle}"
-                 Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="0,0,0,24"/>
+            <TextBlock Text="TOTAL QUANTITY" Style="{StaticResource FieldLabelStyle}"/>
+            <TextBox Style="{StaticResource FieldBoxStyle}"
+             Text="{Binding TotalQuantity, UpdateSourceTrigger=PropertyChanged}"
+             Margin="0,0,0,14"/>
 
-        <Rectangle Height="1" Fill="#2A2A2A" Margin="0,0,0,20"/>
+            <TextBlock Text="PRICE (RON)" Style="{StaticResource FieldLabelStyle}"/>
+            <TextBox Style="{StaticResource FieldBoxStyle}"
+             Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}"
+             Margin="0,0,0,24"/>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Cancel"
-                    Style="{StaticResource ToggleButtonStyle}"
-                    Command="{Binding CancelCommand}"
-                    Width="90"
-                    Margin="0,0,10,0"/>
-            <Button Content="✓  Confirm"
-                    Style="{StaticResource CartButtonStyle}"
-                    Command="{Binding ConfirmCommand}"
-                    Width="110"/>
+            <Rectangle Height="1" Fill="#2A2A2A" Margin="0,0,0,20"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancel"
+                Style="{StaticResource ToggleButtonStyle}"
+                Command="{Binding CancelCommand}"
+                Width="90"
+                Margin="0,0,10,0"/>
+                <Button Content="✓  Confirm"
+                Style="{StaticResource CartButtonStyle}"
+                Command="{Binding ConfirmCommand}"
+                Width="110"/>
+            </StackPanel>
+
         </StackPanel>
-
-    </StackPanel>
+    </Border>
 </Window>

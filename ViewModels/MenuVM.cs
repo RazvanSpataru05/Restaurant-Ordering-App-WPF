@@ -1,4 +1,5 @@
 ﻿using RestaurantOrderingApp.Dialog_Service;
+using RestaurantOrderingApp.Display;
 using RestaurantOrderingApp.Layers.BusinessLogicLayer;
 using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;

@@ -8,7 +8,7 @@ namespace RestaurantOrderingApp.ViewModels
     public class LoginVM : BaseViewModel
     {
         private readonly UserBLL _userBLL;
-        private readonly CurrentUserSession _session;
+        private readonly CurrentUserSession _currentUserSession;
         private readonly IDialogService _dialogService;
 
         private bool _isLoginVisible;
@@ -22,79 +22,46 @@ namespace RestaurantOrderingApp.ViewModels
             get => _isLoginVisible;
             set
             {
-                if (_isLoginVisible != value)
-                {
-                    _isLoginVisible = value;
-                    OnPropertyChanged(nameof(IsLoginVisible));
-                    OnPropertyChanged(nameof(IsRegisterVisible));
-                }
+                _isLoginVisible = value;
+                OnPropertyChanged(nameof(IsLoginVisible));
+                OnPropertyChanged(nameof(IsRegisterVisible));
             }
         }
         public bool IsRegisterVisible => !IsLoginVisible;
         public string Email
         {
             get => _email;
-            set
-            {
-                if (_email != value)
-                {
-                    _email = value;
-                    OnPropertyChanged(nameof(Email));
-                }
-            }
+            set { _email = value; OnPropertyChanged(nameof(Email)); }
         }
         public string Password
         {
             get => _password;
-            set
-            {
-                if (_password != value)
-                {
-                    _password = value;
-                    OnPropertyChanged(nameof(Password));
-                }
-            }
+            set { _password = value; OnPropertyChanged(nameof(Password)); }
         }
         public string ErrorMessage
         {
-            get => _errorMessage; 
-            set
-            {
-                if (_errorMessage != value)
-                {
-                    _errorMessage = value;
-                    OnPropertyChanged(nameof(ErrorMessage)); 
-                }
-            }
+            get => _errorMessage;
+            set { _errorMessage = value; OnPropertyChanged(nameof(ErrorMessage)); }
         }
         public RegisterVM RegisterVM
         {
             get => _registerVM;
-            set
-            {
-                if (_registerVM != value)
-                {
-                    _registerVM = value;
-                    OnPropertyChanged(nameof(RegisterVM));
-                }
-            }
+            set { _registerVM = value; OnPropertyChanged(nameof(RegisterVM)); }
         }
 
         public RelayCommand LoginCommand { get; set; }
         public RelayCommand GuestCommand { get; set; }
         public RelayCommand NavigateToRegisterCommand { get; set; }
 
-        public LoginVM(UserBLL userBll, CurrentUserSession session, IDialogService dialogService)
+        public LoginVM(UserBLL userBll, CurrentUserSession currentUserSession, IDialogService dialogService)
         {
             _userBLL = userBll;
-            _session = session;
+            _currentUserSession = currentUserSession;
             _dialogService = dialogService;
-            _registerVM = new(_dialogService, _userBLL, () => IsLoginVisible = true);
+            _registerVM = new(_userBLL, () => IsLoginVisible = true);
             IsLoginVisible = true;
 
-            LoginCommand = new(_ => Login());
-            GuestCommand = new(_ => Guest());
-            NavigateToRegisterCommand = new(_ => NavigateToRegister());
+            InitializeCommands();
         }
 
         private void Login()
@@ -106,16 +73,16 @@ namespace RestaurantOrderingApp.ViewModels
             }
             User? user = _userBLL.AuthenticateUser(Email, Password);
             if (user == null)
-            { 
+            {
                 ErrorMessage = "Email or password are incorrect";
                 return;
             }
-            _session.CurrentUser = user;
+            _currentUserSession.CurrentUser = user;
             HandleLogin();
         }
-        private void Guest()    
+        private void Guest()
         {
-            _session.CurrentUser = null;
+            _currentUserSession.CurrentUser = null;
             HandleLogin();
         }
         private void NavigateToRegister()
@@ -126,6 +93,12 @@ namespace RestaurantOrderingApp.ViewModels
         {
             _dialogService.ShowRestaurantWindow();
             _dialogService.CloseLoginWindow();
+        }
+        private void InitializeCommands()
+        {
+            LoginCommand = new(_ => Login());
+            GuestCommand = new(_ => Guest());
+            NavigateToRegisterCommand = new(_ => NavigateToRegister());
         }
     }
 }
