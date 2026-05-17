@@ -1,6 +1,7 @@
 ﻿using RestaurantOrderingApp.Dialog_Service;
 using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
+using System.Windows;
 
 namespace RestaurantOrderingApp.ViewModels
 {
@@ -40,6 +41,7 @@ namespace RestaurantOrderingApp.ViewModels
         public RelayCommand OpenOrderHistoryCommand { get; set; }
         public RelayCommand ToggleProfileMenuCommand { get; set; }
         public RelayCommand OpenAdminCommand { get; set; }
+        public RelayCommand CloseCommand { get; set; }
 
         public RestaurantVM(CurrentUserSession currentUserSession, IDialogService dialogService, MenuVM menuVM,
             CartVM cartVM, OrderHistoryVM orderHistoryVM)
@@ -82,6 +84,7 @@ namespace RestaurantOrderingApp.ViewModels
             OpenAdminCommand = new(_ => _dialogService.ShowAdminView());
             OpenOrderHistoryCommand = new(_ => OpenOrderHistory());
             ToggleProfileMenuCommand = new(_ => IsProfileMenuOpen = !IsProfileMenuOpen);
+            CloseCommand = new(_ => _dialogService.ShowLogoutWindow());
         }
     }
 }

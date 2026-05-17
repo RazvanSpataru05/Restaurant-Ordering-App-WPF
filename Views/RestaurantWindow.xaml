@@ -9,13 +9,9 @@
         Title="Sapori d'Italia"
         Background="#1C1C1C">
     <Window.InputBindings>
-        <KeyBinding Key="Esc" Command="ApplicationCommands.Close"/>
+        <KeyBinding Key="Esc" Command ="{Binding CloseCommand}"/>
     </Window.InputBindings>
 
-    <Window.CommandBindings>
-        <CommandBinding Command="ApplicationCommands.Close"
-                        Executed="CloseCommand_Executed"/>
-    </Window.CommandBindings>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>

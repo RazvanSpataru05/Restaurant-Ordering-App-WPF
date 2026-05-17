@@ -1,6 +1,5 @@
 ﻿using RestaurantOrderingApp.ViewModels;
 using System.Windows;
-using System.Windows.Input;
 
 namespace RestaurantOrderingApp.Views
 {
@@ -10,10 +9,6 @@ namespace RestaurantOrderingApp.Views
         {
             InitializeComponent();
             DataContext = restaurantVM;
-        }
-        private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            Close();
         }
     }
      

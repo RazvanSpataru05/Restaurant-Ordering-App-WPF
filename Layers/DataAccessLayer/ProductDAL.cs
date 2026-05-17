@@ -29,7 +29,8 @@ namespace RestaurantOrderingApp.Layers.DataAccessLayer
                             TotalQuantity = (decimal)reader["TotalQuantity"],
                             CategoryId = (int)reader["CategoryId"],
                             IsAvailable = (bool)reader["IsAvailable"],
-                            CategoryName = (string)reader["CategoryName"]
+                            CategoryName = (string)reader["CategoryName"],
+                            ImagePath = (string)reader["ImagePath"]
                         }
                     );
                 }

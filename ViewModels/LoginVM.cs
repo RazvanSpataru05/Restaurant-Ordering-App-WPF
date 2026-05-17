@@ -2,6 +2,7 @@
 using RestaurantOrderingApp.Utils;
 using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Dialog_Service;
+using System.Windows;
 
 namespace RestaurantOrderingApp.ViewModels
 {
@@ -52,6 +53,7 @@ namespace RestaurantOrderingApp.ViewModels
         public RelayCommand LoginCommand { get; set; }
         public RelayCommand GuestCommand { get; set; }
         public RelayCommand NavigateToRegisterCommand { get; set; }
+        public RelayCommand CloseCommand { get; set; }
 
         public LoginVM(UserBLL userBll, CurrentUserSession currentUserSession, IDialogService dialogService)
         {
@@ -99,6 +101,7 @@ namespace RestaurantOrderingApp.ViewModels
             LoginCommand = new(_ => Login());
             GuestCommand = new(_ => Guest());
             NavigateToRegisterCommand = new(_ => NavigateToRegister());
+            CloseCommand = new(_ => Application.Current.Shutdown());
         }
     }
 }

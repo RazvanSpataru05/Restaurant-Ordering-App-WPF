@@ -77,5 +77,29 @@ namespace RestaurantOrderingApp.Layers.DataAccessLayer
             con.Open();
             cmd.ExecuteNonQuery();
         }
+        public Dictionary<int, ObservableCollection<MenuItemDetail>> GetAllMenuItems()
+        {
+            using SqlConnection con = DALHelper.Connection;
+            SqlCommand cmd = new("sp_GetAllMenuItems", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            con.Open();
+            Dictionary<int, ObservableCollection<MenuItemDetail>> result = [];
+            using SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                int menuId = (int)reader["MenuId"];
+                if (!result.TryGetValue(menuId, out ObservableCollection<MenuItemDetail>? list))
+                {
+                    list = [];
+                    result[menuId] = list;
+                }
+                list.Add(new MenuItemDetail
+                {
+                    ProductName = (string)reader["ProductName"],
+                    PortionQuantity = (string)reader["PortionQuantity"]
+                });
+            }
+            return result;
+        }
     }
 }

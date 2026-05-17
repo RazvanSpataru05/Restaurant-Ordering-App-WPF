@@ -10,7 +10,7 @@ namespace RestaurantOrderingApp.Layers.EntityLayer
         public string PortionQuantity { get; set; }
         public decimal TotalQuantity { get; set; }
         public int CategoryId { get; set; }
-        public bool IsAvailable { get; set; }
+        public bool IsAvailable { get; set; }   
         public string CategoryName { get; set; }
         public string? ImagePath { get; set; }
         public ObservableCollection<Allergen> Allergens { get; set; }

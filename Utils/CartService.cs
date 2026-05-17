@@ -1,4 +1,5 @@
-﻿using RestaurantOrderingApp.Layers.BusinessLogicLayer;
+﻿using RestaurantOrderingApp.Display;
+using RestaurantOrderingApp.Layers.BusinessLogicLayer;
 using RestaurantOrderingApp.Layers.EntityLayer;
 using System.Collections.ObjectModel;
 
@@ -17,7 +18,7 @@ namespace RestaurantOrderingApp.Utils
 
         public void AddCartItem(Product product, int selectedQuantity)
         {
-            var existingItem = Items.FirstOrDefault(p => p.Product.ProductId == product.ProductId);
+            var existingItem = Items.FirstOrDefault(p => p.Product?.ProductId == product.ProductId);
             if (existingItem != null)
             {
                 existingItem.Quantity += selectedQuantity;
@@ -26,6 +27,19 @@ namespace RestaurantOrderingApp.Utils
             else
             {
                 Items.Add(new CartItem(product, selectedQuantity, product.Price));
+            }
+        }
+        public void AddCartItem(MenuDisplay menu, int selectedQuantity)
+        {
+            var existingItem = Items.FirstOrDefault(i => i.Menu?.MenuId == menu.MenuEntity.MenuId);
+            if (existingItem != null)
+            {
+                existingItem.Quantity += selectedQuantity;
+                existingItem.UpdatePrice();
+            }
+            else
+            {
+                Items.Add(new CartItem(menu.MenuEntity, selectedQuantity, menu.CalculatedPrice));
             }
         }
         public int GetAvailablePortions(Product product, CartItem? excludeItem = null)

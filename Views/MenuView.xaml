@@ -3,108 +3,605 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="#1C1C1C"
              Foreground="#E0E0E0">
+
+    <UserControl.Resources>
+
+        <RadialGradientBrush x:Key="ParchmentBackground"
+                             Center="0.5,0.4" GradientOrigin="0.5,0.4"
+                             RadiusX="0.9" RadiusY="0.9">
+            <GradientStop Color="#F2E6C8" Offset="0"/>
+            <GradientStop Color="#E5D3A8" Offset="0.55"/>
+            <GradientStop Color="#C9AE7C" Offset="1"/>
+        </RadialGradientBrush>
+
+        <LinearGradientBrush x:Key="LeftSpineShadow" StartPoint="1,0" EndPoint="0,0">
+            <GradientStop Color="#55000000" Offset="0"/>
+            <GradientStop Color="#00000000" Offset="0.08"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="RightSpineShadow" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#55000000" Offset="0"/>
+            <GradientStop Color="#00000000" Offset="0.08"/>
+        </LinearGradientBrush>
+
+        <DataTemplate x:Key="MenuItemTemplate">
+            <Grid Margin="0,0,0,18">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Width="90" Height="90" Margin="0,0,14,0"
+                            VerticalAlignment="Top"
+                            BorderBrush="#8B6F47" BorderThickness="1">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding MenuEntity.ImagePath}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <Image Source="{Binding MenuEntity.ImagePath}" Stretch="UniformToFill"/>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding MenuEntity.Name}"
+                                   FontFamily="Palatino Linotype" FontSize="18"
+                                   FontWeight="Bold" FontStyle="Italic" Foreground="#2C1810"/>
+                        <TextBlock FontFamily="Palatino Linotype" FontStyle="Italic"
+                                   FontSize="11" Foreground="#8B4513" Margin="0,2,0,0">
+                            <Run Text="✦ Sconto del "/>
+                            <Run Text="{Binding MenuEntity.DiscountPercent, StringFormat={}{0:F0}%}"/>
+                        </TextBlock>
+                        <TextBlock FontFamily="Palatino Linotype" FontStyle="Italic"
+                                   FontSize="13" FontWeight="Bold" Foreground="#2C1810" Margin="0,4,0,0">
+                            <Run Text="{Binding CalculatedPrice, StringFormat={}{0:F2}}"/>
+                            <Run Text=" RON"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+
+                <Path Grid.Row="1" Data="M0,5 C20,0 40,10 60,5 C80,0 100,10 120,5"
+                      Stroke="#8B6F47" StrokeThickness="1"
+                      HorizontalAlignment="Center" Margin="0,12,0,8"/>
+
+                <ItemsControl Grid.Row="2" ItemsSource="{Binding Items}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock FontFamily="Palatino Linotype" FontStyle="Italic"
+                                       FontSize="11" Foreground="#3D2817" Margin="0,2,0,2">
+                                <Run Text="·  "/>
+                                <Run Text="{Binding ProductName}" FontWeight="Bold"/>
+                                <Run Text="  ·  "/>
+                                <Run Text="{Binding PortionQuantity}" Foreground="#8B6F47"/>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <Grid Grid.Row="3" Margin="0,12,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Content="−"
+                            Command="{Binding DataContext.DecreaseMenuCommand,
+                                      RelativeSource={RelativeSource AncestorType=ItemsControl, AncestorLevel=2}}"
+                            CommandParameter="{Binding}"
+                            Style="{StaticResource MenuQtyButtonStyle}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding SelectedQuantity}"
+                               VerticalAlignment="Center" HorizontalAlignment="Center"
+                               Width="26" TextAlignment="Center"
+                               FontFamily="Palatino Linotype" FontSize="12" Foreground="#2C1810"/>
+                    <Button Grid.Column="2" Content="+"
+                            Command="{Binding DataContext.IncreaseMenuCommand,
+                                      RelativeSource={RelativeSource AncestorType=ItemsControl, AncestorLevel=2}}"
+                            CommandParameter="{Binding}"
+                            Style="{StaticResource MenuQtyButtonStyle}"/>
+
+                    <Button Grid.Column="4"
+                            Command="{Binding DataContext.AddToMenuCartCommand,
+                                      RelativeSource={RelativeSource AncestorType=ItemsControl, AncestorLevel=2}}"
+                            CommandParameter="{Binding}"
+                            Style="{StaticResource MenuAddButtonStyle}">
+                        <TextBlock FontFamily="Palatino Linotype" FontSize="11" FontStyle="Italic">
+                            <Run Text="✦ Add to Cart · "/>
+                            <Run Text="{Binding CalculatedPrice, StringFormat={}{0:F2}}"/>
+                        </TextBlock>
+                    </Button>
+                </Grid>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ProductItemTemplate">
+            <Grid Margin="0,0,0,18">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Width="68" Height="68" Margin="0,2,12,0"
+                        VerticalAlignment="Top"
+                        BorderBrush="#8B6F47" BorderThickness="1">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Product.ImagePath}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Image Source="{Binding Product.ImagePath}" Stretch="UniformToFill"/>
+                </Border>
+
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding Product.Name}" Style="{StaticResource ProductNameStyle}"/>
+
+                    <TextBlock Style="{StaticResource ProductMetaStyle}" Margin="0,1,0,2">
+                        <Run Text="{Binding Product.PortionQuantity}"/>
+                        <Run Text=" · "/>
+                        <Run Text="{Binding Product.Price, StringFormat={}{0:F2}}"/>
+                        <Run Text=" RON"/>
+                    </TextBlock>
+
+                    <TextBlock Style="{StaticResource AllergenTextStyle}" Margin="0,0,0,6">
+                        <Run Text="⚠ contains: "/>
+                        <Run Text="{Binding AllergensText}"/>
+                    </TextBlock>
+
+                    <Grid Margin="0,2,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0" Content="−"
+                                Command="{Binding DataContext.DecreaseProductCommand,
+                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                CommandParameter="{Binding}"
+                                Style="{StaticResource MenuQtyButtonStyle}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding SelectedQuantity}"
+                                   VerticalAlignment="Center" HorizontalAlignment="Center"
+                                   Width="26" TextAlignment="Center"
+                                   FontFamily="Palatino Linotype" FontSize="12" Foreground="#2C1810"/>
+                        <Button Grid.Column="2" Content="+"
+                                Command="{Binding DataContext.IncreaseProductCommand,
+                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                CommandParameter="{Binding}"
+                                Style="{StaticResource MenuQtyButtonStyle}"/>
+
+                        <Button Grid.Column="4"
+                                Command="{Binding DataContext.AddToCartCommand,
+                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                CommandParameter="{Binding}"
+                                Style="{StaticResource MenuAddButtonStyle}">
+                            <TextBlock FontFamily="Palatino Linotype" FontSize="10" FontStyle="Italic">
+                                <Run Text="✦ Add to Cart · "/>
+                                <Run Text="{Binding TotalPrice, StringFormat={}{0:F2}}"/>
+                            </TextBlock>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+    </UserControl.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="220"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0">
-            <TextBlock Text="Search "/>
-            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                     Margin="0 5">
-            </TextBox>
-            <CheckBox Content="With Allergens"
-                      Command="{Binding ToggleWithCommand}">
-            </CheckBox>
-            <CheckBox Content="Without Allergens"
-                      Command="{Binding ToggleWithoutCommand}">
-            </CheckBox>
-            <ItemsControl ItemsSource="{Binding AllAllergens}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button Content="{Binding Name}"
-                                Command="{Binding DataContext.ToggleAllergenCommand,
-                                         RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                CommandParameter="{Binding}"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+        <!-- ===== SIDEBAR ===== -->
+        <Border Grid.Column="0" Background="#111111" BorderBrush="#2A2A2A" BorderThickness="0,0,1,0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="20,30,20,20">
+                    <TextBlock Text="Sapori d'Italia"
+                               FontFamily="Georgia" FontStyle="Italic"
+                               FontSize="16" Foreground="#C9A84C"
+                               HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                    <TextBlock Text="· Cucina Autentica ·"
+                               FontFamily="Georgia" FontSize="9"
+                               Foreground="#555555" HorizontalAlignment="Center"
+                               Margin="0,0,0,20"/>
+                    <Rectangle Height="1" Fill="#2A2A2A" Margin="0,0,0,16"/>
 
-            <ItemsControl ItemsSource="{Binding AllCategories}" Margin="0 20 0 0">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button Content="{Binding Name}"
-                                Command="{Binding DataContext.NavigateToCategoryCommand,
-                            RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                CommandParameter="{Binding}">
-                        </Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            
-            <TextBlock Text="{Binding LeftPageNumber, StringFormat='Left page number: {0}'}" Foreground="#E0E0E0"/>
-            <TextBlock Text="{Binding RightPageNumber, StringFormat='Right page number: {0}'}" Foreground="#E0E0E0"/>
-            <TextBlock Text="{Binding CurrentPage, StringFormat='Current page: {0}'}" Foreground="#E0E0E0"/>
-            <Button Content="Next Page" Command="{Binding NextPageCommand}" IsEnabled="{Binding CanGoNext}"/>
-            <Button Content="Prev Page" Command="{Binding PrevPageCommand}" IsEnabled="{Binding CanGoPrev}"/>
+                    <TextBlock Text="SEARCH" FontFamily="Georgia" FontSize="10"
+                               Foreground="#888888" Margin="0,0,0,6"/>
+                    <Border Background="#181818" BorderBrush="#333333" BorderThickness="1" CornerRadius="2">
+                        <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="Transparent" BorderThickness="0"
+                                 Foreground="#E0E0E0" FontFamily="Georgia" FontSize="12"
+                                 Padding="8,6" CaretBrush="#C9A84C"/>
+                    </Border>
 
-        </StackPanel>
+                    <Rectangle Height="1" Fill="#2A2A2A" Margin="0,16,0,16"/>
 
-        <ScrollViewer Grid.Column="1">
-            <ItemsControl ItemsSource="{Binding LeftPageProducts}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <TextBlock Text="{Binding Product.Name}"/>
-                            <TextBlock Text="{Binding Product.Price}"/>
-                            <TextBlock Text="{Binding Product.PortionQuantity}"/>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="&lt;" Command="{Binding DataContext.DecreaseCommand, 
-                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                        CommandParameter="{Binding}"/>
-                                <TextBlock Text="{Binding SelectedQuantity}" 
-                                        VerticalAlignment="Center" Margin="5,0"/>
-                                <Button Content="&gt;" Command="{Binding DataContext.IncreaseCommand, 
-                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                        CommandParameter="{Binding}"/>
-                            </StackPanel>
-                            <Button Content="Add to Cart" Command="{Binding DataContext.AddToCartCommand, 
-                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                    CommandParameter="{Binding}"/>
+                    <TextBlock Text="ALLERGENS" FontFamily="Georgia" FontSize="10"
+                               Foreground="#888888" Margin="0,0,0,10"/>
+                    <Button Command="{Binding ToggleWithCommand}" Margin="0,0,0,6">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource ToggleButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding AllergenFilter}" Value="With">
+                                        <Setter Property="Foreground" Value="#C9A84C"/>
+                                        <Setter Property="BorderBrush" Value="#C9A84C"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <TextBlock Text="✓  With Allergens" FontFamily="Georgia" FontSize="11"/>
+                    </Button>
+                    <Button Command="{Binding ToggleWithoutCommand}" Margin="0,0,0,12">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource ToggleButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding AllergenFilter}" Value="Without">
+                                        <Setter Property="Foreground" Value="#C9A84C"/>
+                                        <Setter Property="BorderBrush" Value="#C9A84C"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <TextBlock Text="✗  Without Allergens" FontFamily="Georgia" FontSize="11"/>
+                    </Button>
+
+                    <ItemsControl ItemsSource="{Binding AllAllergens}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding DataContext.ToggleAllergenCommand,
+                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"
+                                        Content="{Binding Name}"
+                                        FontFamily="Georgia" FontSize="11"
+                                        Margin="0,0,0,4">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource ToggleButtonStyle}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                    <Setter Property="Foreground" Value="#C9A84C"/>
+                                                    <Setter Property="BorderBrush" Value="#C9A84C"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Rectangle Height="1" Fill="#2A2A2A" Margin="0,16,0,16"/>
+
+                    <TextBlock Text="CATEGORY" FontFamily="Georgia" FontSize="10"
+                               Foreground="#888888" Margin="0,0,0,10"/>
+                    <ItemsControl ItemsSource="{Binding AllCategories}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding DataContext.NavigateToCategoryCommand,
+                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource ToggleButtonStyle}"
+                                        FontFamily="Georgia" FontSize="11"
+                                        Margin="0,0,0,4">
+                                    <TextBlock>
+                                        <Run Text="{Binding Icon}"/>
+                                        <Run Text="  "/>
+                                        <Run Text="{Binding Name}"/>
+                                    </TextBlock>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Rectangle Height="1" Fill="#2A2A2A" Margin="0,16,0,16"/>
+
+                    <Button Command="{Binding NavigateToMenusCommand}" Margin="0,0,0,4">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource ToggleButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsMenusMode}" Value="True">
+                                        <Setter Property="Foreground" Value="#C9A84C"/>
+                                        <Setter Property="BorderBrush" Value="#C9A84C"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <TextBlock Text="🍽  I Nostri Menù" FontFamily="Georgia" FontSize="11"/>
+                    </Button>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- ===== BOOK ===== -->
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ===== LEFT PAGE ===== -->
+            <Border Grid.Column="0" Background="{StaticResource ParchmentBackground}"
+                    Margin="30,20,4,20">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" Opacity="0.45" BlurRadius="14" ShadowDepth="3" Direction="315"/>
+                </Border.Effect>
+                <Grid ClipToBounds="True">
+
+                    <!-- Cover -->
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="30">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsFirstPage}" Value="True"/>
+                                            <Condition Binding="{Binding IsMenusMode}" Value="False"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock Text="Sapori d'Italia"
+                                   FontFamily="Palatino Linotype" FontStyle="Italic"
+                                   FontSize="32" Foreground="#2C1810"
+                                   HorizontalAlignment="Center"/>
+                        <Rectangle Height="1" Fill="#8B6F47" Margin="20,12,20,12"/>
+                        <TextBlock Text="· Cucina Autentica Italiana ·"
+                                   FontFamily="Georgia" FontSize="12"
+                                   Foreground="#6B5234" HorizontalAlignment="Center"
+                                   Margin="0,0,0,30"/>
+                        <TextBlock Text="&quot;A tavola non si invecchia.&quot;"
+                                   FontFamily="Palatino Linotype" FontStyle="Italic"
+                                   FontSize="14" Foreground="#4A3520"
+                                   HorizontalAlignment="Center" TextAlignment="Center"/>
+                        <TextBlock Text="— Proverbio Italiano"
+                                   FontFamily="Georgia" FontSize="10"
+                                   Foreground="#8B6F47" HorizontalAlignment="Center"
+                                   Margin="0,6,0,0"/>
+                    </StackPanel>
+
+                    <!-- Products content -->
+                    <DockPanel LastChildFill="True">
+                        <DockPanel.Style>
+                            <Style TargetType="DockPanel">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsFirstPage}" Value="False"/>
+                                            <Condition Binding="{Binding IsMenusMode}" Value="False"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+
+                        <StackPanel DockPanel.Dock="Top" Margin="30,28,30,8">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding LeftPageHeader}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBlock Text="{Binding LeftPageHeader}" Style="{StaticResource MenuCategoryHeaderStyle}"/>
+                            <Path Data="M0,5 C20,0 40,10 60,5 C80,0 100,10 120,5"
+                                  Stroke="#8B6F47" StrokeThickness="1.2"
+                                  HorizontalAlignment="Center" Margin="0,2,0,8"/>
                         </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
 
-        <ScrollViewer Grid.Column="2">
-            <ItemsControl ItemsSource="{Binding RightPageProducts}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <TextBlock Text="{Binding Product.Name}"/>
-                            <TextBlock Text="{Binding Product.Price}"/>
-                            <TextBlock Text="{Binding Product.PortionQuantity}"/>
-                            <StackPanel Orientation="Horizontal">
-                            <Button Content="&lt;" Command="{Binding DataContext.DecreaseCommand, 
-                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                     CommandParameter="{Binding}"/>
-                            <TextBlock Text="{Binding SelectedQuantity}" 
-                                        VerticalAlignment="Center" Margin="5,0"/>
-                            <Button Content="&gt;" Command="{Binding DataContext.IncreaseCommand, 
-                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                    CommandParameter="{Binding}"/>
-                            </StackPanel>
-                            <Button Content="Add to Cart" Command="{Binding DataContext.AddToCartCommand, 
-                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                    CommandParameter="{Binding}"/>
+                        <ScrollViewer VerticalScrollBarVisibility="Hidden" Padding="30,4,30,40">
+                            <ItemsControl ItemsSource="{Binding LeftPageProducts}"
+                                          ItemTemplate="{StaticResource ProductItemTemplate}"/>
+                        </ScrollViewer>
+                    </DockPanel>
+
+                    <!-- Menus content -->
+                    <DockPanel LastChildFill="True">
+                        <DockPanel.Style>
+                            <Style TargetType="DockPanel">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsMenusMode}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+
+                        <StackPanel DockPanel.Dock="Top" Margin="30,28,30,8">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding LeftPageHeader}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBlock Text="{Binding LeftPageHeader}" Style="{StaticResource MenuCategoryHeaderStyle}"/>
+                            <Path Data="M0,5 C20,0 40,10 60,5 C80,0 100,10 120,5"
+                                  Stroke="#8B6F47" StrokeThickness="1.2"
+                                  HorizontalAlignment="Center" Margin="0,2,0,8"/>
                         </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+
+                        <ScrollViewer VerticalScrollBarVisibility="Hidden" Padding="30,4,30,40">
+                            <ItemsControl ItemsSource="{Binding LeftPageMenus}"
+                                          ItemTemplate="{StaticResource MenuItemTemplate}"/>
+                        </ScrollViewer>
+                    </DockPanel>
+
+                    <!-- Spine shadow -->
+                    <Rectangle Fill="{StaticResource LeftSpineShadow}" Width="40"
+                               HorizontalAlignment="Right" IsHitTestVisible="False"/>
+
+                    <!-- Page number + prev arrow -->
+                    <TextBlock Text="{Binding LeftPageNumber}"
+                               FontFamily="Palatino Linotype" FontStyle="Italic"
+                               FontSize="14" Foreground="#8B6F47"
+                               HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                               Margin="0,0,0,12">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsFirstPage}" Value="True"/>
+                                            <Condition Binding="{Binding IsMenusMode}" Value="False"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <Button Content="←" Command="{Binding PrevPageCommand}"
+                            Style="{StaticResource PageArrowStyle}"
+                            HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                            Margin="14,0,0,8">
+                        <Button.Visibility>
+                            <Binding Path="CanGoPrev">
+                                <Binding.Converter>
+                                    <BooleanToVisibilityConverter/>
+                                </Binding.Converter>
+                            </Binding>
+                        </Button.Visibility>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- ===== RIGHT PAGE ===== -->
+            <Border Grid.Column="1" Background="{StaticResource ParchmentBackground}"
+                    Margin="4,20,30,20">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" Opacity="0.45" BlurRadius="14" ShadowDepth="3" Direction="225"/>
+                </Border.Effect>
+                <Grid ClipToBounds="True">
+
+                    <!-- Products content -->
+                    <DockPanel LastChildFill="True">
+                        <DockPanel.Style>
+                            <Style TargetType="DockPanel">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsMenusMode}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+
+                        <StackPanel DockPanel.Dock="Top" Margin="30,28,30,8">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RightPageHeader}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBlock Text="{Binding RightPageHeader}" Style="{StaticResource MenuCategoryHeaderStyle}"/>
+                            <Path Data="M0,5 C20,0 40,10 60,5 C80,0 100,10 120,5"
+                                  Stroke="#8B6F47" StrokeThickness="1.2"
+                                  HorizontalAlignment="Center" Margin="0,2,0,8"/>
+                        </StackPanel>
+
+                        <ScrollViewer VerticalScrollBarVisibility="Hidden" Padding="30,4,30,40">
+                            <ItemsControl ItemsSource="{Binding RightPageProducts}"
+                                          ItemTemplate="{StaticResource ProductItemTemplate}"/>
+                        </ScrollViewer>
+                    </DockPanel>
+
+                    <!-- Menus content -->
+                    <DockPanel LastChildFill="True">
+                        <DockPanel.Style>
+                            <Style TargetType="DockPanel">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsMenusMode}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+
+                        <StackPanel DockPanel.Dock="Top" Margin="30,28,30,8">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RightPageHeader}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBlock Text="{Binding RightPageHeader}" Style="{StaticResource MenuCategoryHeaderStyle}"/>
+                            <Path Data="M0,5 C20,0 40,10 60,5 C80,0 100,10 120,5"
+                                  Stroke="#8B6F47" StrokeThickness="1.2"
+                                  HorizontalAlignment="Center" Margin="0,2,0,8"/>
+                        </StackPanel>
+
+                        <ScrollViewer VerticalScrollBarVisibility="Hidden" Padding="30,4,30,40">
+                            <ItemsControl ItemsSource="{Binding RightPageMenus}"
+                                          ItemTemplate="{StaticResource MenuItemTemplate}"/>
+                        </ScrollViewer>
+                    </DockPanel>
+
+                    <!-- Spine shadow -->
+                    <Rectangle Fill="{StaticResource RightSpineShadow}" Width="40"
+                               HorizontalAlignment="Left" IsHitTestVisible="False"/>
+
+                    <!-- Page number + next arrow -->
+                    <TextBlock Text="{Binding RightPageNumber}"
+                               FontFamily="Palatino Linotype" FontStyle="Italic"
+                               FontSize="14" Foreground="#8B6F47"
+                               HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                               Margin="0,0,0,12"/>
+                    <Button Content="→" Command="{Binding NextPageCommand}"
+                            Style="{StaticResource PageArrowStyle}"
+                            HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                            Margin="0,0,14,8">
+                        <Button.Visibility>
+                            <Binding Path="CanGoNext">
+                                <Binding.Converter>
+                                    <BooleanToVisibilityConverter/>
+                                </Binding.Converter>
+                            </Binding>
+                        </Button.Visibility>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>
-    

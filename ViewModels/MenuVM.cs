@@ -5,6 +5,8 @@ using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Reflection.Metadata;
+
 public enum AllergenFilter
 {
     None,
@@ -16,6 +18,16 @@ namespace RestaurantOrderingApp.ViewModels
 {
     public class MenuVM : BaseViewModel
     {
+        private const int MENUS_PER_PAGE = 1;
+
+        private record MenuBookPage(string? CategoryHeader, List<MenuDisplay> Menus);
+        private List<MenuBookPage> _menuPages = [];
+
+        private bool _isMenusMode;
+        private record MenuPage(string? CategoryHeader, List<ProductDisplay> Products);
+        private List<MenuPage> _pages = [];
+
+
         private readonly int PRODUCTS_PER_PAGE = 3;
         private readonly CurrentUserSession _currentUserSession;
         private readonly IDialogService _dialogService;
@@ -29,12 +41,14 @@ namespace RestaurantOrderingApp.ViewModels
         private string _searchText;
         private ObservableCollection<CategoryWithProducts> _fullMenu;
         private ObservableCollection<CategoryWithProducts> _filteredMenu;
-        private ObservableCollection<Allergen> _allAlergens;
-        private ObservableCollection<Allergen> _selectedAllergens;
+        private ObservableCollection<MenuDisplay> _menus;
+        private ObservableCollection<AllergenDisplay> _allAlergens;
 
         private int _currentPage;
         private int _leftPageNumber;
         private int _rightPageNumber;
+        private string? _leftPageHeader;
+        private string? _rightPageHeader;
 
         private ObservableCollection<ProductDisplay> _leftPageProducts;
         private ObservableCollection<ProductDisplay> _rightPageProducts;
@@ -42,17 +56,29 @@ namespace RestaurantOrderingApp.ViewModels
         private bool _canGoNext;
         private bool _canGoPrev;
 
+        private ObservableCollection<MenuDisplay> _leftPageMenus = [];
+        private ObservableCollection<MenuDisplay> _rightPageMenus = [];
+
+        public bool IsMenusMode
+        {
+            get => _isMenusMode;
+            set { _isMenusMode = value; OnPropertyChanged(nameof(IsMenusMode)); }
+        }
+        public ObservableCollection<MenuDisplay> LeftPageMenus
+        {
+            get => _leftPageMenus;
+            set { _leftPageMenus = value; OnPropertyChanged(nameof(LeftPageMenus)); }
+        }
+        public ObservableCollection<MenuDisplay> RightPageMenus
+        {
+            get => _rightPageMenus;
+            set { _rightPageMenus = value; OnPropertyChanged(nameof(RightPageMenus)); }
+        }
+
         public AllergenFilter AllergenFilter
         {
             get => _allergenFilter;
-            set
-            {
-                if (_allergenFilter != value)
-                {
-                    _allergenFilter = value;
-                    OnPropertyChanged(nameof(AllergenFilter));
-                }
-            }
+            set { _allergenFilter = value; OnPropertyChanged(nameof(AllergenFilter)); }
         }
 
         public string SearchText
@@ -60,157 +86,82 @@ namespace RestaurantOrderingApp.ViewModels
             get => _searchText;
             set
             {
-                if (_searchText != value)
-                {
-                    _searchText = value;
-                    OnPropertyChanged(nameof(SearchText));
-                    Search();
-                }
+                if (_searchText == value) return;
+                _searchText = value;
+                OnPropertyChanged(nameof(SearchText));
+                Search();
             }
         }
         public ObservableCollection<CategoryWithProducts> FullMenu
         {
-            get { return _fullMenu; }
-            set
-            {
-                if (_fullMenu != value)
-                {
-                    _fullMenu = value;
-                    OnPropertyChanged(nameof(FullMenu));
-                }
-            }
+            get => _fullMenu;
+            set { _fullMenu = value; OnPropertyChanged(nameof(FullMenu)); }
         }
         public ObservableCollection<CategoryWithProducts> FilteredMenu
         {
-            get { return _filteredMenu; }
-            set
-            {
-                if (_filteredMenu != value)
-                {
-                    _filteredMenu = value;
-                    OnPropertyChanged(nameof(FilteredMenu));
-                }
-            }
+            get => _filteredMenu;
+            set { _filteredMenu = value; OnPropertyChanged(nameof(FilteredMenu)); }
         }
-        public ObservableCollection<Allergen> AllAllergens
+        public ObservableCollection<MenuDisplay> Menus
+        {
+            get => _menus;
+            set { _menus = value; OnPropertyChanged(nameof(Menus)); }
+        }
+        public ObservableCollection<Display.AllergenDisplay> AllAllergens
         {
             get => _allAlergens;
-            set
-            {
-                if (_allAlergens != value)
-                {
-                    _allAlergens = value;
-                    OnPropertyChanged(nameof(AllAllergens));
-                }
-            }
-        }
-        public ObservableCollection<Allergen> SelectedAllergens
-        {
-            get => _selectedAllergens;
-            set
-            {
-                if (_selectedAllergens != value)
-                {
-                    _selectedAllergens = value;
-                    OnPropertyChanged(nameof(SelectedAllergens));
-                }
-            }
+            set { _allAlergens = value; OnPropertyChanged(nameof(AllAllergens)); }
         }
         public int CurrentPage
         {
             get => _currentPage;
-            set
-            {
-                if (_currentPage != value)
-                {
-                    _currentPage = value;
-                    OnPropertyChanged(nameof(CurrentPage));
-                }
-            }
+            set { _currentPage = value; OnPropertyChanged(nameof(CurrentPage)); }
         }
         public int LeftPageNumber
         {
             get => _leftPageNumber;
-            set
-            {
-                if (_leftPageNumber != value)
-                {
-                    _leftPageNumber = value;
-                    OnPropertyChanged(nameof(LeftPageNumber));
-                }
-            }
+            set { _leftPageNumber = value; OnPropertyChanged(nameof(LeftPageNumber)); }
         }
         public int RightPageNumber
         {
             get => _rightPageNumber;
-            set
-            {
-                if (_rightPageNumber != value)
-                {
-                    _rightPageNumber = value;
-                    OnPropertyChanged(nameof(RightPageNumber));
-                }
-            }
+            set { _rightPageNumber = value; OnPropertyChanged(nameof(RightPageNumber)); }
         }
+        public string? LeftPageHeader
+        {
+            get => _leftPageHeader;
+            set { _leftPageHeader = value; OnPropertyChanged(nameof(LeftPageHeader)); }
+        }
+        public string? RightPageHeader
+        {
+            get => _rightPageHeader;
+            set { _rightPageHeader = value; OnPropertyChanged(nameof(RightPageHeader)); }
+        }
+
         public ObservableCollection<ProductDisplay> LeftPageProducts
         {
             get => _leftPageProducts;
-            set
-            {
-                if (_leftPageProducts != value)
-                {
-                    _leftPageProducts = value;
-                    OnPropertyChanged(nameof(LeftPageProducts));
-                }
-            }
+            set { _leftPageProducts = value; OnPropertyChanged(nameof(LeftPageProducts)); }
         }
         public ObservableCollection<ProductDisplay> RightPageProducts
         {
             get => _rightPageProducts;
-            set
-            {
-                if (_rightPageProducts != value)
-                {
-                    _rightPageProducts = value;
-                    OnPropertyChanged(nameof(RightPageProducts));
-                }
-            }
+            set { _rightPageProducts = value; OnPropertyChanged(nameof(RightPageProducts)); }
         }
         public bool IsFirstPage
         {
             get => _isFirstPage;
-            set
-            {
-                if (_isFirstPage != value)
-                {
-                    _isFirstPage = value;
-                    OnPropertyChanged(nameof(IsFirstPage));
-                }
-            }
+            set { _isFirstPage = value; OnPropertyChanged(nameof(IsFirstPage)); }
         }
         public bool CanGoNext
         {
             get => _canGoNext;
-            set
-            {
-                if (_canGoNext != value)
-                {
-                    _canGoNext = value;
-                    OnPropertyChanged(nameof(CanGoNext));
-                }
-            }
+            set { _canGoNext = value; OnPropertyChanged(nameof(CanGoNext)); }
         }
         public bool CanGoPrev
         {
             get => _canGoPrev;
-            set
-            {
-                if (_canGoPrev != value)
-                {
-                    _canGoPrev = value;
-                    OnPropertyChanged(nameof(CanGoPrev));
-                }
-            }
+            set { _canGoPrev = value; OnPropertyChanged(nameof(CanGoPrev)); }
         }
 
         public int TotalPages { get; set; }
@@ -220,14 +171,19 @@ namespace RestaurantOrderingApp.ViewModels
         public RelayCommand ToggleWithCommand { get; set; }
         public RelayCommand ToggleWithoutCommand { get; set; }
         public RelayCommand ToggleAllergenCommand { get; set; }
-        public RelayCommand AddToCartCommand { get; set; }
+        public RelayCommand AddProductToCartCommand { get; set; }
         public RelayCommand NextPageCommand { get; set; }
         public RelayCommand PrevPageCommand { get; set; }
         public RelayCommand NavigateToCategoryCommand { get; set; }
-        public RelayCommand IncreaseCommand { get; set; }
-        public RelayCommand DecreaseCommand { get; set; }
+        public RelayCommand NavigateToMenusCommand { get; set; }
+        public RelayCommand IncreaseProductCommand { get; set; }
+        public RelayCommand DecreaseProductCommand { get; set; }
+        public RelayCommand AddToMenuCartCommand { get; set; }
+        public RelayCommand IncreaseMenuCommand { get; set; }
+        public RelayCommand DecreaseMenuCommand { get; set; }
 
-        public MenuVM(ProductBLL productBLL, CategoryBLL categoryBLL, AllergenBLL allergenBLL, 
+
+        public MenuVM(ProductBLL productBLL, CategoryBLL categoryBLL, AllergenBLL allergenBLL,
             MenuBLL menuBLL, CartService cartService, CurrentUserSession currentUserSession,
             IDialogService dialogService)
         {
@@ -241,9 +197,9 @@ namespace RestaurantOrderingApp.ViewModels
 
             FullMenu = [];
             FilteredMenu = [];
-            AllAllergens = _allergenBLL.GetAllAllergens();
+            Menus = [];
+            AllAllergens = new(_allergenBLL.GetAllAllergens().Select(a => new AllergenDisplay(a)));
             AllCategories = _categoryBLL.GetAllCategories();
-            SelectedAllergens = [];
 
             CurrentPage = 1;
             IsFirstPage = true;
@@ -257,70 +213,73 @@ namespace RestaurantOrderingApp.ViewModels
         }
         private void Search()
         {
-            if (string.IsNullOrEmpty(SearchText))
+            var selected = AllAllergens.Where(a => a.IsSelected).Select(a => a.Allergen).ToList();
+            var term = SearchText?.Trim() ?? string.Empty;
+            bool allergenFilterActive = AllergenFilter != AllergenFilter.None && selected.Count > 0;
+
+            if (term.Length == 0 && !allergenFilterActive)
             {
                 FilteredMenu = new(FullMenu);
-                return;
             }
-
-            SearchText = SearchText.Trim();
-            var result = new ObservableCollection<CategoryWithProducts>();
-            foreach (var category in _fullMenu)
+            else
             {
-                var filteredProducts = category.Products
-                    .Where(p => p.Product.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
-
-                if (SelectedAllergens.Any())
+                var result = new ObservableCollection<CategoryWithProducts>();
+                foreach (var category in _fullMenu)
                 {
-                    if (AllergenFilter == AllergenFilter.With)
-                    {
-                        filteredProducts = Enumerable.Where(filteredProducts, p => p.Product.Allergens != null &&
-                            SelectedAllergens.All(a => p.Product.Allergens.Any(pa => pa.AllergenId == a.AllergenId)));
-                    }
-                    else if (AllergenFilter == AllergenFilter.Without)
-                    {
-                        filteredProducts = Enumerable.Where(filteredProducts, p => p.Product.Allergens == null ||
-                            SelectedAllergens.Any(a => p.Product.Allergens.Any(pa => pa.AllergenId == a.AllergenId)));
-                    }
-                }
+                    IEnumerable<ProductDisplay> filtered = category.Products;
 
-                if (filteredProducts.Any())
-                {
-                    result.Add(new CategoryWithProducts(category.Category, new(filteredProducts)));
+                    if (term.Length > 0)
+                    {
+                        filtered = filtered.Where(p =>
+                            p.Product.Name.Contains(term, StringComparison.OrdinalIgnoreCase));
+                    }
+
+                    if (allergenFilterActive)
+                    {
+                        if (AllergenFilter == AllergenFilter.With)
+                        {
+                            filtered = filtered.Where(p =>
+                                p.Product.Allergens != null &&
+                                selected.All(a => p.Product.Allergens.Any(pa => pa.AllergenId == a.AllergenId)));
+                        }
+                        else
+                        {
+                            filtered = filtered.Where(p =>
+                                p.Product.Allergens == null ||
+                                selected.All(a => !p.Product.Allergens.Any(pa => pa.AllergenId == a.AllergenId)));
+                        }
+                    }
+
+                    if (filtered.Any())
+                        result.Add(new(category.Category, new(filtered)));
                 }
+                FilteredMenu = result;
             }
-            FilteredMenu = result;
+
+            if (term.Length > 0 || allergenFilterActive) IsMenusMode = false;
+            CurrentPage = 1;
             GeneratePages();
         }
         private void ToggleWith()
         {
-            if (AllergenFilter == AllergenFilter.With)
-                AllergenFilter = AllergenFilter.None;
-            else
-                AllergenFilter = AllergenFilter.With;
+            if (AllergenFilter == AllergenFilter.With) AllergenFilter = AllergenFilter.None;
+            else AllergenFilter = AllergenFilter.With;
             Search();
         }
         private void ToggleWithout()
         {
-            if (AllergenFilter == AllergenFilter.Without)
-                AllergenFilter = AllergenFilter.None;
-            else
-                AllergenFilter = AllergenFilter.Without;
+            if (AllergenFilter == AllergenFilter.Without) AllergenFilter = AllergenFilter.None;
+            else AllergenFilter = AllergenFilter.Without;
             Search();
         }
-        private void ToggleAllergen(Allergen? allergen)
+        private void ToggleAllergen(AllergenDisplay? display)
         {
-            if (allergen == null) return;
+            if (display == null) return;
 
-            if (SelectedAllergens.Contains(allergen))
-            {
-                SelectedAllergens.Remove(allergen);
-            }
-            else
-                SelectedAllergens.Add(allergen);
+            display.IsSelected = !display.IsSelected;
             Search();
         }
-        private void AddToCart(ProductDisplay? productDisplay)
+        private void AddProductToCart(ProductDisplay? productDisplay)
         {
             if (productDisplay == null) return;
             if (_currentUserSession.CurrentUser == null)
@@ -332,7 +291,27 @@ namespace RestaurantOrderingApp.ViewModels
             _cartService.AddCartItem(productDisplay.Product, productDisplay.SelectedQuantity);
             productDisplay.SelectedQuantity = 1;
         }
-        private bool CanAddToCart(ProductDisplay? productDisplay)
+        private void AddMenuToCart(MenuDisplay? menu)
+        {
+            if (menu == null) return;
+            if (_currentUserSession.CurrentUser == null)
+            {
+                _dialogService.ShowGuestWarningWindow("You must be logged in to add menus to your cart!");
+                return;
+            }
+            _cartService.AddCartItem(menu, menu.SelectedQuantity);
+            menu.SelectedQuantity = 1;
+        }
+        private void IncreaseMenu(MenuDisplay? menu)
+        {
+            if (menu != null) menu.SelectedQuantity++;
+        }
+        private void DecreaseMenu(MenuDisplay? menu)
+        {
+            if (menu != null && menu.SelectedQuantity > 1) menu.SelectedQuantity--;
+        }
+
+        private bool CanAddProductToCart(ProductDisplay? productDisplay)
         {
             if (productDisplay == null) return false;
 
@@ -341,55 +320,139 @@ namespace RestaurantOrderingApp.ViewModels
         private void NextPage()
         {
             if (!CanGoNext) return;
-
             CurrentPage += 1;
-            GeneratePages();
+            RenderCurrentSpread();
         }
         private void PrevPage()
         {
             if (!CanGoPrev) return;
-
             CurrentPage -= 1;
-            GeneratePages();
+            RenderCurrentSpread();
         }
         private void GeneratePages()
         {
+            BuildPages();
+            RenderCurrentSpread();
+        }
+        private void BuildPages()
+        {
+            if (IsMenusMode) BuildMenuPages();
+            else BuildProductPages();
+        }
+        private void BuildProductPages()
+        {
+            _pages = [];
+            foreach (var categoryGroup in FilteredMenu)
+            {
+                for (int i = 0; i < categoryGroup.Products.Count; i += PRODUCTS_PER_PAGE)
+                {
+                    var slice = categoryGroup.Products
+                        .Skip(i).Take(PRODUCTS_PER_PAGE).ToList();
+                    string? header = i == 0 ? categoryGroup.Category.Name : null;
+                    _pages.Add(new(header, slice));
+                }
+            }
+            TotalPages = _pages.Count;
+        }
+        private void BuildMenuPages()
+        {
+            _menuPages = [];
+            var grouped = Menus
+                .GroupBy(m => m.MenuEntity.CategoryId)
+                .Select(g => new
+                {
+                    Category = AllCategories.FirstOrDefault(c => c.CategoryId == g.Key),
+                    Menus = g.ToList()
+                }).Where(g => g.Category != null);
+
+            foreach (var group in grouped)
+            {
+                for (int i = 0; i < group.Menus.Count; i += MENUS_PER_PAGE)
+                {
+                    var slice = group.Menus.Skip(i).Take(MENUS_PER_PAGE).ToList();
+                    string? header = i == 0 ? group.Category!.Name : null;
+                    _menuPages.Add(new(header, slice));
+                }
+            }
+            TotalPages = _menuPages.Count;
+        }
+        private void RenderCurrentSpread()
+        {
             LeftPageProducts = [];
             RightPageProducts = [];
+            LeftPageMenus = [];
+            RightPageMenus = [];
+            LeftPageHeader = null;
+            RightPageHeader = null;
+
             LeftPageNumber = (CurrentPage * 2) - 1;
             RightPageNumber = CurrentPage * 2;
-            CanGoNext = RightPageNumber < TotalPages / 2 + TotalPages % 2;
-            CanGoPrev = CurrentPage > 1;
             IsFirstPage = CurrentPage == 1;
+            CanGoPrev = CurrentPage > 1;
 
-            int startIndex = (LeftPageNumber - 1) * PRODUCTS_PER_PAGE;
-            var allProducts = FilteredMenu.SelectMany(c => c.Products).ToList();
+            if (IsMenusMode) RenderMenuSpread();
+            else RenderProductSpread();
+        }
+        private void RenderProductSpread()
+        {
+            CanGoNext = _pages.Count >= 2 * CurrentPage;
 
-            if (!IsFirstPage)
+            if (IsFirstPage)
             {
-                for (int index = startIndex; index < startIndex + PRODUCTS_PER_PAGE && index < allProducts.Count; index++)
+                if (_pages.Count > 0)
                 {
-                    LeftPageProducts.Add(allProducts[index]);
+                    RightPageProducts = new(_pages[0].Products);
+                    RightPageHeader = _pages[0].CategoryHeader;
                 }
-                startIndex += PRODUCTS_PER_PAGE;
-            }    
+                return;
+            }
 
-            for (int index = startIndex; index < startIndex + PRODUCTS_PER_PAGE && index < allProducts.Count; index++)
+            int leftIndex = 2 * CurrentPage - 3;
+            int rightIndex = 2 * CurrentPage - 2;
+
+            if (leftIndex >= 0 && leftIndex < _pages.Count)
             {
-                RightPageProducts.Add(allProducts[index]);
+                LeftPageProducts = new(_pages[leftIndex].Products);
+                LeftPageHeader = _pages[leftIndex].CategoryHeader;
+            }
+            if (rightIndex >= 0 && rightIndex < _pages.Count)
+            {
+                RightPageProducts = new(_pages[rightIndex].Products);
+                RightPageHeader = _pages[rightIndex].CategoryHeader;
+            }
+        }
+        private void RenderMenuSpread()
+        {
+            int leftIndex = 2 * (CurrentPage - 1);
+            int rightIndex = leftIndex + 1;
+            CanGoNext = _menuPages.Count > 2 * CurrentPage;
+
+            if (leftIndex >= 0 && leftIndex < _menuPages.Count)
+            {
+                LeftPageMenus = new(_menuPages[leftIndex].Menus);
+                LeftPageHeader = _menuPages[leftIndex].CategoryHeader;
+            }
+            if (rightIndex >= 0 && rightIndex < _menuPages.Count)
+            {
+                RightPageMenus = new(_menuPages[rightIndex].Menus);
+                RightPageHeader = _menuPages[rightIndex].CategoryHeader;
             }
         }
         private void NavigateToCategory(Category? category)
         {
             if (category == null) return;
 
-            var allProducts = FullMenu.SelectMany(p => p.Products).ToList();
-            var firstProduct = FilteredMenu.FirstOrDefault(c => c.Category.CategoryId == category.CategoryId)?.Products.FirstOrDefault();
-            if (firstProduct == null) return;
+            if (IsMenusMode)
+            {
+                IsMenusMode = false;
+                BuildProductPages();
+            }
 
-            int productIndex = allProducts.IndexOf(firstProduct);
-            CurrentPage = productIndex / (PRODUCTS_PER_PAGE * 2) + 1;
-            GeneratePages();
+            int pageIndex = _pages.FindIndex(p => p.CategoryHeader == category.Name);
+            if (pageIndex < 0) return;
+
+            CurrentPage = pageIndex == 0 ? 1 : ((pageIndex - 1) / 2) + 2;
+            RenderCurrentSpread();
         }
         private void Increase(ProductDisplay? productDisplay)
         {
@@ -401,7 +464,7 @@ namespace RestaurantOrderingApp.ViewModels
             if (productDisplay == null) return false;
             return productDisplay.SelectedQuantity < _cartService.GetAvailablePortions(productDisplay.Product);
         }
-        private void Decrease(ProductDisplay? productDisplay) 
+        private void Decrease(ProductDisplay? productDisplay)
         {
             if (productDisplay == null) return;
             productDisplay.SelectedQuantity--;
@@ -414,16 +477,35 @@ namespace RestaurantOrderingApp.ViewModels
         private void InitializeMenu()
         {
             var allProducts = _productBLL.GetAllProucts();
-            TotalPages = (int)Math.Ceiling(allProducts.Count / (double)(PRODUCTS_PER_PAGE) * 2);
 
             var grouped = allProducts
                 .GroupBy(p => p.CategoryId)
-                .Select(g => new CategoryWithProducts(
-                    category: AllCategories.First(c => c.CategoryId == g.Key),
-                    products: new(g.Select(p => new ProductDisplay(p)))));
+                .Select(g =>
+                {
+                    var products = g.Select((p, i) => new ProductDisplay(p)
+                    {
+                        CategoryName = i == 0 ? AllCategories.First(c => c.CategoryId == g.Key).Name : null
+                    });
+                    return new CategoryWithProducts(
+                        AllCategories.First(c => c.CategoryId == g.Key),
+                        new(products));
+                });
 
             FullMenu = new(grouped);
             FilteredMenu = FullMenu;
+            Menus = _menuBLL.GetAllMenus();
+
+            var menuItemsMap = _menuBLL.GetAllMenuItems();
+            foreach (var menu in Menus)
+            {
+                if (menuItemsMap.TryGetValue(menu.MenuEntity.MenuId, out var items)) menu.Items = items;
+            }
+        }
+        private void NavigateToMenus()
+        {
+            IsMenusMode = !IsMenusMode;
+            CurrentPage = 1;
+            GeneratePages();
         }
         private void InitializeAllergens()
         {
@@ -444,13 +526,22 @@ namespace RestaurantOrderingApp.ViewModels
             SearchCommand = new(_ => Search());
             ToggleWithCommand = new(_ => ToggleWith());
             ToggleWithoutCommand = new(_ => ToggleWithout());
-            ToggleAllergenCommand = new(param => ToggleAllergen(param as Allergen));
-            AddToCartCommand = new(param => AddToCart(param as ProductDisplay), param => CanAddToCart(param as ProductDisplay));
+            ToggleAllergenCommand = new(param => ToggleAllergen(param as AllergenDisplay));
+            AddProductToCartCommand = new(param => AddProductToCart(param as ProductDisplay),
+                param => CanAddProductToCart(param as ProductDisplay));
+
             NextPageCommand = new(_ => NextPage());
             PrevPageCommand = new(_ => PrevPage());
             NavigateToCategoryCommand = new(param => NavigateToCategory(param as Category));
-            IncreaseCommand = new(param => Increase(param as ProductDisplay), param => CanInrease(param as ProductDisplay));
-            DecreaseCommand = new(param => Decrease(param as ProductDisplay), param => CanDecrease(param as ProductDisplay));
+            IncreaseProductCommand = new(param => Increase(param as ProductDisplay),
+                param => CanInrease(param as ProductDisplay));
+            DecreaseProductCommand = new(param => Decrease(param as ProductDisplay),
+                param => CanDecrease(param as ProductDisplay));
+            NavigateToMenusCommand = new(_ => NavigateToMenus());
+
+            AddToMenuCartCommand = new(param => AddMenuToCart(param as MenuDisplay));
+            IncreaseMenuCommand = new(param => IncreaseMenu(param as MenuDisplay));
+            DecreaseMenuCommand = new(param => DecreaseMenu(param as MenuDisplay));
         }
     }
 }

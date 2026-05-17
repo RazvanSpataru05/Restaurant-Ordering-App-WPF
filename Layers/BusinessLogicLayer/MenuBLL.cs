@@ -25,5 +25,9 @@ namespace RestaurantOrderingApp.Layers.BusinessLogicLayer
         {
             _menuDAL.AddMenuProduct(menuId, productId, portionQuantity);
         }
+        public Dictionary<int, ObservableCollection<MenuItemDetail>> GetAllMenuItems()
+        {
+            return _menuDAL.GetAllMenuItems();
+        }
     }
 }
