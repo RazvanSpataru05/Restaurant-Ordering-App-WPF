@@ -9,8 +9,87 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Images\acqua_frizzante.png" />
+    <None Remove="Assets\Images\acqua_naturale.png" />
+    <None Remove="Assets\Images\acqua_naturalle.png" />
+    <None Remove="Assets\Images\aperol_spritz.png" />
+    <None Remove="Assets\Images\baked_lasagna.png" />
+    <None Remove="Assets\Images\baked_sea_bass.png" />
+    <None Remove="Assets\Images\beef_carpaccio.png" />
+    <None Remove="Assets\Images\beef_carpacio.png" />
+    <None Remove="Assets\Images\berry_cheesecake.png" />
+    <None Remove="Assets\Images\birra_moretti.png" />
+    <None Remove="Assets\Images\campari_orange.png" />
+    <None Remove="Assets\Images\cappuccino_italiano.png" />
+    <None Remove="Assets\Images\capuccino_italiano.png" />
+    <None Remove="Assets\Images\carbonara_pasta.png" />
+    <None Remove="Assets\Images\chianti_classico_wine.png" />
+    <None Remove="Assets\Images\chocolate_cake.png" />
+    <None Remove="Assets\Images\chocolate_profiteroles.png" />
     <None Remove="Assets\Images\default_product.png" />
     <None Remove="Assets\Images\default_product_image.png" />
+    <None Remove="Assets\Images\duck_with_orange_sauce.png" />
+    <None Remove="Assets\Images\espresso_cofee.png" />
+    <None Remove="Assets\Images\espresso_coffee.png" />
+    <None Remove="Assets\Images\espresso_with_ice_cream.png" />
+    <None Remove="Assets\Images\fettuccine_alfredo.png" />
+    <None Remove="Assets\Images\fetuccine_alfredo.png" />
+    <None Remove="Assets\Images\florentine_steak.png" />
+    <None Remove="Assets\Images\fresh_orange_juice.png" />
+    <None Remove="Assets\Images\fried_calamari.png" />
+    <None Remove="Assets\Images\fried_mozzarella_sandwich.png" />
+    <None Remove="Assets\Images\grilled_vegetables.png" />
+    <None Remove="Assets\Images\herb_rice.png" />
+    <None Remove="Assets\Images\house_red_wine.png" />
+    <None Remove="Assets\Images\insalata_caesar.png" />
+    <None Remove="Assets\Images\insalata_rucola_e_parmigiano.png" />
+    <None Remove="Assets\Images\italian_appetizer_edition.png" />
+    <None Remove="Assets\Images\italian_beer.png" />
+    <None Remove="Assets\Images\italian_ice_cream.png" />
+    <None Remove="Assets\Images\latte_machiatto.png" />
+    <None Remove="Assets\Images\lemon_chicken.png" />
+    <None Remove="Assets\Images\lemon_salmon_fillet.png" />
+    <None Remove="Assets\Images\mashed_potatoes.png" />
+    <None Remove="Assets\Images\milanese_veal_milanese.png" />
+    <None Remove="Assets\Images\mixed_salad.png" />
+    <None Remove="Assets\Images\mozzarella_tomato_salad.png" />
+    <None Remove="Assets\Images\mushroom_risotto.png" />
+    <None Remove="Assets\Images\negroni_cocktail.png" />
+    <None Remove="Assets\Images\osso_buco_alla_milanese.png" />
+    <None Remove="Assets\Images\panna_cotta.png" />
+    <None Remove="Assets\Images\parmesan_chicken.png" />
+    <None Remove="Assets\Images\pesto_gnocchi.png" />
+    <None Remove="Assets\Images\pizza_capricciosa.png" />
+    <None Remove="Assets\Images\pizza_diavola.png" />
+    <None Remove="Assets\Images\pizza_margherita.png" />
+    <None Remove="Assets\Images\pizza_prosciutto_e_funghi.png" />
+    <None Remove="Assets\Images\pizza_quattro_formaggi.png" />
+    <None Remove="Assets\Images\prosecco_wine.png" />
+    <None Remove="Assets\Images\ricotta_spinach_ravioli.png" />
+    <None Remove="Assets\Images\rosemary_focaccia.png" />
+    <None Remove="Assets\Images\rosemary_potatoes.png" />
+    <None Remove="Assets\Images\salmon_languine.png" />
+    <None Remove="Assets\Images\salmon_linguine.png" />
+    <None Remove="Assets\Images\saltimbocca_alla_romana.png" />
+    <None Remove="Assets\Images\sauteed_muhsroom.png" />
+    <None Remove="Assets\Images\sauteed_muhsrooms.png" />
+    <None Remove="Assets\Images\sauteed_spinach.png" />
+    <None Remove="Assets\Images\seafood_tagliatelle.png" />
+    <None Remove="Assets\Images\sicilian_cream_pastry.png" />
+    <None Remove="Assets\Images\spicy_tomato_salad.png" />
+    <None Remove="Assets\Images\tiramisu.png" />
+    <None Remove="Assets\Images\tomato_bruschetta.png" />
+    <None Remove="Assets\Images\truffle_bruschetta.png" />
+    <None Remove="Assets\Images\vegetarian_lasagna.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Images\acqua_naturale.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\aperol_spritz.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -19,7 +98,190 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Images\acqua_frizzante.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\baked_lasagna.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\baked_sea_bass.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\beef_carpaccio.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\berry_cheesecake.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\birra_moretti.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\campari_orange.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\cappuccino_italiano.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\carbonara_pasta.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\chianti_classico_wine.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\chocolate_cake.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\chocolate_profiteroles.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\Images\default_product.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\duck_with_orange_sauce.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\espresso_coffee.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\espresso_with_ice_cream.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\fettuccine_alfredo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\florentine_steak.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\fresh_orange_juice.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\fried_calamari.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\fried_mozzarella_sandwich.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\grilled_vegetables.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\herb_rice.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\house_red_wine.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\insalata_caesar.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\insalata_rucola_e_parmigiano.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\italian_appetizer_edition.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\italian_beer.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\italian_ice_cream.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\latte_machiatto.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\lemon_chicken.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\lemon_salmon_fillet.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\mashed_potatoes.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\milanese_veal_milanese.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\mixed_salad.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\mozzarella_tomato_salad.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\mushroom_risotto.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\negroni_cocktail.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\osso_buco_alla_milanese.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\panna_cotta.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\parmesan_chicken.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\pesto_gnocchi.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\pizza_capricciosa.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\pizza_diavola.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\pizza_margherita.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\pizza_prosciutto_e_funghi.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\pizza_quattro_formaggi.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\prosecco_wine.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\ricotta_spinach_ravioli.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\rosemary_focaccia.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\rosemary_potatoes.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\salmon_linguine.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\saltimbocca_alla_romana.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\sauteed_muhsrooms.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\sauteed_spinach.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\seafood_tagliatelle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\sicilian_cream_pastry.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\spicy_tomato_salad.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\tiramisu.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\tomato_bruschetta.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\truffle_bruschetta.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\vegetarian_lasagna.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

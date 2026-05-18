@@ -68,27 +68,22 @@
                        StaysOpen="False">
                     <Border Background="#141414" BorderBrush="#C9A84C" BorderThickness="1">
                         <StackPanel>
-                            <Button Content="View Cart" Command="{Binding OpenCartCommand}"
+                            <Button Content="🛒 View Cart" Command="{Binding OpenCartCommand}"
                                     Style="{StaticResource HeaderButtonStyle}"
                                     Visibility="{Binding IsLoggedIn, Converter={StaticResource BoolToVisibilityConverter}}"
                                     BorderThickness="0"/>
-                            
-                            <Button Content="View My Orders" Command="{Binding OpenOrderHistoryCommand}"
+
+                            <Button Content="📋 View My Orders" Command="{Binding OpenOrderHistoryCommand}"
                                     Style="{StaticResource HeaderButtonStyle}"
                                     Visibility="{Binding IsLoggedIn, Converter={StaticResource BoolToVisibilityConverter}}"
                                     BorderThickness="0"/>
-                            
-                            <Button Content="Settings" Command="{Binding OpenSettingsCommand}"
-                                    Style="{StaticResource HeaderButtonStyle}"
-                                    Visibility="{Binding IsLoggedIn, Converter={StaticResource BoolToVisibilityConverter}}"
-                                    BorderThickness="0"/>
-                            
-                            <Button Content="Admin" Command="{Binding OpenAdminCommand}"
+
+                            <Button Content="⚙ Admin" Command="{Binding OpenAdminCommand}"
                                     Style="{StaticResource HeaderButtonStyle}"
                                     BorderThickness="0"
                                     Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                            
-                            <Button Content="Log out" Command="{Binding OpenLogoutCommand}"
+
+                            <Button Content="⏻ Log out" Command="{Binding OpenLogoutCommand}"
                                     Style="{StaticResource HeaderButtonStyle}"
                                     Visibility="{Binding IsLoggedIn, Converter={StaticResource BoolToVisibilityConverter}}"
                                     BorderThickness="0"/>

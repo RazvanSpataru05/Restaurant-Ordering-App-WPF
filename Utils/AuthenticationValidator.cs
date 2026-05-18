@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace RestaurantOrderingApp.Utils
 {
@@ -11,21 +6,26 @@ namespace RestaurantOrderingApp.Utils
     {
         public static bool IsEmailValid(string email)
         {
+            if (email == null) return false;
             return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         }
-        public static bool IsPasswordValid(string password)
+        public static string IsPasswordValid(string password)
         {
-            return password.Length >= 8 &&
-                password.Any(char.IsUpper) &&
-                password.Any(char.IsLower) &&
-                password.Any(c => char.IsAsciiLetterOrDigit(c) == false);
+            if (password == null) return "Password cannot be empty!";
+            if (password.Length < 8) return "Password must contain at least 8 characters!";
+            if (!password.Any(char.IsLower)) return "Password must contain at least a lowercase character!";
+            if (!password.Any(char.IsUpper)) return "Passowrd must contain at least an uppercase character!";
+            if (!password.Any(c => char.IsAsciiLetterOrDigit(c) == false)) return "Password must contain at least a special character!";
+            return "Valid";
         }
         public static bool IsPhoneValid(string phone)
         {
+            if (phone == null) return false;
             return Regex.IsMatch(phone, @"^\+?[0-9]{10,13}$");
         }
         public static bool IsDeliveryAddressValid(string deliveryAddress)
         {
+            if (deliveryAddress == null) return false;
             return deliveryAddress.Length >= 15;
         }
     }

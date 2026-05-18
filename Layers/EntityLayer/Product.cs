@@ -14,5 +14,6 @@ namespace RestaurantOrderingApp.Layers.EntityLayer
         public string CategoryName { get; set; }
         public string? ImagePath { get; set; }
         public ObservableCollection<Allergen> Allergens { get; set; }
+        public string Description { get; set; }
     }
 }

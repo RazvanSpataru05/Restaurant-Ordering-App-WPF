@@ -1,4 +1,6 @@
 ﻿using RestaurantOrderingApp.Display;
+using System.Security.Cryptography;
+using System.Windows.Automation;
 
 namespace RestaurantOrderingApp.Dialog_Service
 {
@@ -23,5 +25,7 @@ namespace RestaurantOrderingApp.Dialog_Service
         void CloseManageMenuWindow();
         void ShowLogoutWindow();
         void CloseLogoutWindow();
+        void ShowProductDetailWindow(ProductDisplay? productDisplay);
+        void CloseProductDetailWindow();
     }
 }

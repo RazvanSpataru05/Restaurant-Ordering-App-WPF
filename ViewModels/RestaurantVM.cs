@@ -1,13 +1,11 @@
 ﻿using RestaurantOrderingApp.Dialog_Service;
-using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
-using System.Windows;
 
 namespace RestaurantOrderingApp.ViewModels
 {
     public class RestaurantVM : BaseViewModel
     {
-        private CurrentUserSession _currentUserSession;
+        private readonly CurrentUserSession _currentUserSession;
         private readonly IDialogService _dialogService;
         private readonly MenuVM _menuVM;
         private readonly CartVM _cartVM;

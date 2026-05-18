@@ -5,7 +5,6 @@ using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Reflection.Metadata;
 
 public enum AllergenFilter
 {
@@ -19,6 +18,7 @@ namespace RestaurantOrderingApp.ViewModels
     public class MenuVM : BaseViewModel
     {
         private const int MENUS_PER_PAGE = 1;
+        private const int PRODUCTS_PER_PAGE = 3;
 
         private record MenuBookPage(string? CategoryHeader, List<MenuDisplay> Menus);
         private List<MenuBookPage> _menuPages = [];
@@ -27,8 +27,6 @@ namespace RestaurantOrderingApp.ViewModels
         private record MenuPage(string? CategoryHeader, List<ProductDisplay> Products);
         private List<MenuPage> _pages = [];
 
-
-        private readonly int PRODUCTS_PER_PAGE = 3;
         private readonly CurrentUserSession _currentUserSession;
         private readonly IDialogService _dialogService;
         private readonly ProductBLL _productBLL;
@@ -41,7 +39,7 @@ namespace RestaurantOrderingApp.ViewModels
         private string _searchText;
         private ObservableCollection<CategoryWithProducts> _fullMenu;
         private ObservableCollection<CategoryWithProducts> _filteredMenu;
-        private ObservableCollection<MenuDisplay> _menus;
+        private ObservableCollection<MenuDisplay> _allMenus;
         private ObservableCollection<AllergenDisplay> _allAlergens;
 
         private int _currentPage;
@@ -104,8 +102,8 @@ namespace RestaurantOrderingApp.ViewModels
         }
         public ObservableCollection<MenuDisplay> Menus
         {
-            get => _menus;
-            set { _menus = value; OnPropertyChanged(nameof(Menus)); }
+            get => _allMenus;
+            set { _allMenus = value; OnPropertyChanged(nameof(Menus)); }
         }
         public ObservableCollection<Display.AllergenDisplay> AllAllergens
         {
@@ -178,10 +176,10 @@ namespace RestaurantOrderingApp.ViewModels
         public RelayCommand NavigateToMenusCommand { get; set; }
         public RelayCommand IncreaseProductCommand { get; set; }
         public RelayCommand DecreaseProductCommand { get; set; }
-        public RelayCommand AddToMenuCartCommand { get; set; }
+        public RelayCommand AddMenuToCartCommand { get; set; }
         public RelayCommand IncreaseMenuCommand { get; set; }
         public RelayCommand DecreaseMenuCommand { get; set; }
-
+        public RelayCommand OpenProductDetailCommand { get; set; }
 
         public MenuVM(ProductBLL productBLL, CategoryBLL categoryBLL, AllergenBLL allergenBLL,
             MenuBLL menuBLL, CartService cartService, CurrentUserSession currentUserSession,
@@ -210,6 +208,8 @@ namespace RestaurantOrderingApp.ViewModels
             InitializeAllergens();
             InitializeCommands();
             GeneratePages();
+            RefreshAllStatus();
+            _cartService.Items.CollectionChanged += (_, _) => RefreshAllStatus();
         }
         private void Search()
         {
@@ -290,25 +290,42 @@ namespace RestaurantOrderingApp.ViewModels
 
             _cartService.AddCartItem(productDisplay.Product, productDisplay.SelectedQuantity);
             productDisplay.SelectedQuantity = 1;
+            RefreshAllStatus();
         }
         private void AddMenuToCart(MenuDisplay? menu)
         {
-            if (menu == null) return;
             if (_currentUserSession.CurrentUser == null)
             {
                 _dialogService.ShowGuestWarningWindow("You must be logged in to add menus to your cart!");
                 return;
             }
+            if (menu == null) return;
+
             _cartService.AddCartItem(menu, menu.SelectedQuantity);
             menu.SelectedQuantity = 1;
+            RefreshAllStatus();
         }
         private void IncreaseMenu(MenuDisplay? menu)
         {
-            if (menu != null) menu.SelectedQuantity++;
+            if (menu == null) return;
+            menu.SelectedQuantity++;
+            UpdateMenuStatus(menu);
+        }
+        private bool CanIncreaseMenu(MenuDisplay? menu)
+        {
+            if (menu == null) return false;
+            return menu.SelectedQuantity < _cartService.GetAvailablePortions(menu.MenuEntity);
         }
         private void DecreaseMenu(MenuDisplay? menu)
         {
-            if (menu != null && menu.SelectedQuantity > 1) menu.SelectedQuantity--;
+            if (menu == null) return;
+            menu.SelectedQuantity--;
+            UpdateMenuStatus(menu);
+        }
+        private bool CanDecreaseMenu(MenuDisplay? menu)
+        {
+            if (menu == null) return false;
+            return menu.SelectedQuantity > 1;
         }
 
         private bool CanAddProductToCart(ProductDisplay? productDisplay)
@@ -316,6 +333,11 @@ namespace RestaurantOrderingApp.ViewModels
             if (productDisplay == null) return false;
 
             return _cartService.GetAvailablePortions(productDisplay.Product) > 0;
+        }
+        private bool CanAddMenuToCart(MenuDisplay? menu)
+        {
+            if (menu == null) return false;
+            return _cartService.GetAvailablePortions(menu.MenuEntity) > 0;
         }
         private void NextPage()
         {
@@ -336,7 +358,11 @@ namespace RestaurantOrderingApp.ViewModels
         }
         private void BuildPages()
         {
-            if (IsMenusMode) BuildMenuPages();
+            if (IsMenusMode)
+            {
+                BuildMenuPages();
+                ResetProducts();
+            }
             else BuildProductPages();
         }
         private void BuildProductPages()
@@ -445,6 +471,7 @@ namespace RestaurantOrderingApp.ViewModels
             if (IsMenusMode)
             {
                 IsMenusMode = false;
+                ResetMenus();
                 BuildProductPages();
             }
 
@@ -454,22 +481,24 @@ namespace RestaurantOrderingApp.ViewModels
             CurrentPage = pageIndex == 0 ? 1 : ((pageIndex - 1) / 2) + 2;
             RenderCurrentSpread();
         }
-        private void Increase(ProductDisplay? productDisplay)
+        private void IncreaseProduct(ProductDisplay? productDisplay)
         {
             if (productDisplay == null) return;
             productDisplay.SelectedQuantity++;
+            UpdateProductStatus(productDisplay);
         }
-        private bool CanInrease(ProductDisplay? productDisplay)
+        private bool CanInreaseProduct(ProductDisplay? productDisplay)
         {
             if (productDisplay == null) return false;
             return productDisplay.SelectedQuantity < _cartService.GetAvailablePortions(productDisplay.Product);
         }
-        private void Decrease(ProductDisplay? productDisplay)
+        private void DecreaseProduct(ProductDisplay? productDisplay)
         {
             if (productDisplay == null) return;
             productDisplay.SelectedQuantity--;
+            UpdateProductStatus(productDisplay);
         }
-        private bool CanDecrease(ProductDisplay? productDisplay)
+        private bool CanDecreaseProduct(ProductDisplay? productDisplay)
         {
             if (productDisplay == null) return false;
             return productDisplay.SelectedQuantity > 1;
@@ -477,7 +506,6 @@ namespace RestaurantOrderingApp.ViewModels
         private void InitializeMenu()
         {
             var allProducts = _productBLL.GetAllProucts();
-
             var grouped = allProducts
                 .GroupBy(p => p.CategoryId)
                 .Select(g =>
@@ -504,6 +532,8 @@ namespace RestaurantOrderingApp.ViewModels
         private void NavigateToMenus()
         {
             IsMenusMode = !IsMenusMode;
+            if (IsMenusMode) ResetProducts();
+            else ResetMenus();
             CurrentPage = 1;
             GeneratePages();
         }
@@ -521,6 +551,53 @@ namespace RestaurantOrderingApp.ViewModels
                 }
             }
         }
+        private void ResetMenus()
+        {
+            foreach (var menu in _allMenus)
+            {
+                menu.SelectedQuantity = 1;
+                UpdateMenuStatus(menu);
+            }
+        }
+        private void ResetProducts()
+        {
+            foreach (var menuItem in FullMenu)
+            {
+                foreach (var product in menuItem.Products)
+                {
+                    product.SelectedQuantity = 1;
+                }
+            }
+        }
+        private void UpdateProductStatus(ProductDisplay productDisplay)
+        {
+            int available = _cartService.GetAvailablePortions(productDisplay.Product);
+            if (available == 0) productDisplay.StatusText = "Unavailable";
+            else if (productDisplay.SelectedQuantity >= available) productDisplay.StatusText = "Maximum quantity reached";
+            else productDisplay.StatusText = null;
+        }
+        private void UpdateMenuStatus(MenuDisplay menuDisplay)
+        {
+            int available = _cartService.GetAvailablePortions(menuDisplay.MenuEntity);
+            if (available == 0) menuDisplay.StatusText = "Unavailable";
+            else if (menuDisplay.SelectedQuantity >= available) menuDisplay.StatusText = "Maximum quantity reached";
+            else menuDisplay.StatusText = null;
+        }
+        private void RefreshAllStatus()
+        {
+            foreach (var category in FullMenu)
+            {
+                foreach (var product in category.Products)
+                {
+                    UpdateProductStatus(product);
+                }
+            }
+            foreach (var menu in _allMenus)
+            {
+                UpdateMenuStatus(menu);
+            }
+        }
+
         private void InitializeCommands()
         {
             SearchCommand = new(_ => Search());
@@ -533,15 +610,19 @@ namespace RestaurantOrderingApp.ViewModels
             NextPageCommand = new(_ => NextPage());
             PrevPageCommand = new(_ => PrevPage());
             NavigateToCategoryCommand = new(param => NavigateToCategory(param as Category));
-            IncreaseProductCommand = new(param => Increase(param as ProductDisplay),
-                param => CanInrease(param as ProductDisplay));
-            DecreaseProductCommand = new(param => Decrease(param as ProductDisplay),
-                param => CanDecrease(param as ProductDisplay));
+            IncreaseProductCommand = new(param => IncreaseProduct(param as ProductDisplay),
+                param => CanInreaseProduct(param as ProductDisplay));
+            DecreaseProductCommand = new(param => DecreaseProduct(param as ProductDisplay),
+                param => CanDecreaseProduct(param as ProductDisplay));
             NavigateToMenusCommand = new(_ => NavigateToMenus());
 
-            AddToMenuCartCommand = new(param => AddMenuToCart(param as MenuDisplay));
-            IncreaseMenuCommand = new(param => IncreaseMenu(param as MenuDisplay));
-            DecreaseMenuCommand = new(param => DecreaseMenu(param as MenuDisplay));
+            AddMenuToCartCommand = new(param => AddMenuToCart(param as MenuDisplay),
+                param => CanAddMenuToCart(param as MenuDisplay));
+            IncreaseMenuCommand = new(param => IncreaseMenu(param as MenuDisplay),
+                param => CanIncreaseMenu(param as MenuDisplay));
+            DecreaseMenuCommand = new(param => DecreaseMenu(param as MenuDisplay),
+                param => CanDecreaseMenu(param as MenuDisplay));
+            OpenProductDetailCommand = new(param => _dialogService.ShowProductDetailWindow(param as ProductDisplay));
         }
     }
 }

@@ -1,0 +1,64 @@
+﻿<Window x:Class="RestaurantOrderingApp.Views.ProductDetailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="" Height="600" Width="900"
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="False"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="#1C1C1C">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1.5*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Imaginea sus -->
+        <Image Grid.Row="0"
+           Source="{Binding ImagePath}"
+           Stretch="UniformToFill"
+           RenderOptions.BitmapScalingMode="HighQuality"/>
+
+        <!-- Gradient jos pe imagine -->
+        <Rectangle Grid.Row="0">
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
+                    <GradientStop Color="#CC1C1C1C" Offset="0"/>
+                    <GradientStop Color="#001C1C1C" Offset="0.6"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <!-- Continut jos -->
+        <Grid Grid.Row="1" Margin="30,20,30,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" VerticalAlignment="Center">
+                <TextBlock Text="SAPORI D'ITALIA"
+                       FontFamily="Georgia" FontSize="9"
+                       Foreground="#C9A84C" Margin="0,0,0,12"/>
+                <TextBlock Text="{Binding Name}"
+                       FontFamily="Palatino Linotype" FontStyle="Italic"
+                       FontSize="26" Foreground="#E0E0E0"
+                       TextWrapping="Wrap" Margin="0,0,0,8"/>
+                <Rectangle Height="1" Fill="#C9A84C" Margin="0,8,60,16"/>
+                <TextBlock FontFamily="Georgia" FontSize="12" Foreground="#888888">
+                <Run Text="{Binding PortionQuantity}"/>
+                <Run Text="  ·  "/>
+                <Run Text="{Binding Price}" Foreground="#C9A84C"/>
+                </TextBlock>
+                <TextBlock Text="{Binding Description}"
+                       FontFamily="Georgia" FontStyle="Italic"
+                       FontSize="13" Foreground="#AAAAAA"
+                       TextWrapping="Wrap" LineHeight="22"
+                       Margin="0,16,0,0"/>
+            </StackPanel>
+            <Button Grid.Row="1" Content="← Close"
+                Command="{Binding CloseCommand}"
+                HorizontalAlignment="Left"
+                Style="{StaticResource HeaderButtonStyle}"/>
+        </Grid>
+    </Grid>
+</Window>

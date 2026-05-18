@@ -101,6 +101,18 @@ namespace RestaurantOrderingApp.Dialog_Service
             }
         }
 
+        public void CloseProductDetailWindow()
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is ProductDetailWindow)
+                {
+                    window.Close();
+                    return;
+                }
+            }
+        }
+
         public void CloseRestaurantWindow()
         {
             foreach (Window window in Application.Current.Windows)
@@ -190,6 +202,14 @@ namespace RestaurantOrderingApp.Dialog_Service
                 _serviceProvider.GetRequiredService<OrderBLL>(), _serviceProvider.GetRequiredService<IDialogService>());
             orderHistoryVM.LoadOrders();
             restaurantVM.CurrentView = orderHistoryVM;
+        }
+
+        public void ShowProductDetailWindow(ProductDisplay? productDisplay)
+        {
+            if (productDisplay == null) return;
+            var vm = new ProductDetailVM(_serviceProvider.GetRequiredService<IDialogService>(), productDisplay);
+            var window = new ProductDetailWindow(vm);
+            window.ShowDialog();
         }
 
         public void ShowRestaurantWindow()

@@ -1,4 +1,5 @@
-﻿using RestaurantOrderingApp.Layers.BusinessLogicLayer;
+﻿using Microsoft.Extensions.Options;
+using RestaurantOrderingApp.Layers.BusinessLogicLayer;
 using RestaurantOrderingApp.Layers.EntityLayer;
 using RestaurantOrderingApp.Utils;
 using System.Windows;
@@ -86,9 +87,10 @@ namespace RestaurantOrderingApp.ViewModels
                 ErrorMessage = "Email format is not valid.";
                 return;
             }
-            if (!AuthenticationValidator.IsPasswordValid(Password))
+            string validator = AuthenticationValidator.IsPasswordValid(Password);
+            if (validator != "Valid")
             {
-                ErrorMessage = "Password is not strong enough.";
+                ErrorMessage = validator;
                 return;
             }
             if (Password != ConfirmPassword)

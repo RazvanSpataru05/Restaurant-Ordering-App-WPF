@@ -1,6 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
 using RestaurantOrderingApp.Layers.EntityLayer;
-using RestaurantOrderingApp.Views;
 using System.Collections.ObjectModel;
 using System.Data;
 
@@ -30,7 +29,8 @@ namespace RestaurantOrderingApp.Layers.DataAccessLayer
                             CategoryId = (int)reader["CategoryId"],
                             IsAvailable = (bool)reader["IsAvailable"],
                             CategoryName = (string)reader["CategoryName"],
-                            ImagePath = (string)reader["ImagePath"]
+                            ImagePath = (string)reader["ImagePath"],
+                            Description = (string)reader["Description"]
                         }
                     );
                 }

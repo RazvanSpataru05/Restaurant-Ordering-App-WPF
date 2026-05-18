@@ -1,11 +1,10 @@
 ﻿using RestaurantOrderingApp.Layers.EntityLayer;
-using System.ComponentModel;
+using RestaurantOrderingApp.ViewModels;
 
 namespace RestaurantOrderingApp.Utils
 {
-    public class CartItem : INotifyPropertyChanged
+    public class CartItem : BaseViewModel
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
         private readonly decimal _unitPrice;
 
         private int _quantity;
@@ -16,29 +15,18 @@ namespace RestaurantOrderingApp.Utils
         public int Quantity
         {
             get => _quantity;
-            set
-            {
-                if (_quantity != value)
-                {
-                    _quantity = value;
-                    OnPropertyChanged(nameof(Quantity));
-                }
-            }
+            set { _quantity = value; OnPropertyChanged(nameof(Quantity)); }
         }
         public decimal TotalPrice
         {
             get => _totalPrice;
-            set
-            {
-                if (_totalPrice != value)
-                {
-                    _totalPrice = value;
-                    OnPropertyChanged(nameof(TotalPrice));
-                }
-            }
+            set { _totalPrice = value; OnPropertyChanged(nameof(TotalPrice)); }
         }
 
         public string? DisplayName => Product?.Name ?? Menu?.Name;
+        public string? DisplaySubtitle => Product != null
+                    ? $"{Product.PortionQuantity} · {Product.Price:F2} RON"
+                    : $"Discount {Menu!.DiscountPercent:F0}% · {_unitPrice:F2} RON";
 
         public CartItem(Product product, int quantity, decimal unitPrice)
         {
@@ -57,10 +45,6 @@ namespace RestaurantOrderingApp.Utils
         public void UpdatePrice()
         {
             TotalPrice = _unitPrice * Quantity;
-        }
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

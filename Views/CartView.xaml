@@ -62,22 +62,16 @@
                                     <TextBlock FontFamily="Georgia"
                                                FontSize="14"
                                                Foreground="#E0E0E0">
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="{}{0}">
-                                                <Binding Path="Product.Name"/>
-                                            </MultiBinding>
-                                        </TextBlock.Text>
+                                    <TextBlock FontFamily="Georgia" FontSize="14" Foreground="#E0E0E0"
+                                               Text="{Binding DisplayName}"/>
                                     </TextBlock>
                                     <TextBlock FontFamily="Georgia"
                                                FontSize="12"
                                                Foreground="#888888"
                                                Margin="0 4 0 0">
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="{}{0} · {1} RON">
-                                                <Binding Path="Product.PortionQuantity"/>
-                                                <Binding Path="Product.Price"/>
-                                            </MultiBinding>
-                                        </TextBlock.Text>
+                                    <TextBlock FontFamily="Georgia" FontSize="12" Foreground="#888888"
+                                               Margin="0 4 0 0"
+                                               Text="{Binding DisplaySubtitle}"/>
                                     </TextBlock>
                                     <TextBlock FontFamily="Georgia"
                                                FontSize="13"

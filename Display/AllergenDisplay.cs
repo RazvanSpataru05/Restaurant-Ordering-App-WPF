@@ -1,5 +1,4 @@
-﻿
-using RestaurantOrderingApp.Layers.EntityLayer;
+﻿using RestaurantOrderingApp.Layers.EntityLayer;
 using System.ComponentModel;
 
 
@@ -7,6 +6,8 @@ namespace RestaurantOrderingApp.Display
 {
     public class AllergenDisplay : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         private bool _isSelected;
         public Allergen Allergen { get; }
         public string Name => Allergen.Name;
@@ -16,8 +17,6 @@ namespace RestaurantOrderingApp.Display
             get => _isSelected;
             set { _isSelected = value; OnPropertyChanged(nameof(IsSelected)); }
         }
-        public event PropertyChangedEventHandler? PropertyChanged;
-
 
         public AllergenDisplay(Allergen allergen)
         {

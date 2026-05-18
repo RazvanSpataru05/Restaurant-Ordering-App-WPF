@@ -87,7 +87,7 @@ namespace RestaurantOrderingApp.Utils
         {
             int number = 0;
             int index = 0;
-            while (char.IsDigit(portionQuantity[index]))
+            while (index < portionQuantity.Length && char.IsDigit(portionQuantity[index])) 
             {
                 number = number * 10 + (portionQuantity[index] - '0');
                 ++index;
