@@ -112,7 +112,8 @@
 
         <ScrollViewer Grid.Row="2"
                       Visibility="{Binding CurrentAdminView, Converter={StaticResource NullToVisibility}, ConverterParameter=invert}"
-                      VerticalScrollBarVisibility="Auto">
+                      VerticalScrollBarVisibility="Auto"
+                      Style="{StaticResource DarkScrollViewerStyle}">
             <ItemsControl ItemsSource="{Binding DisplayedOrders}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>

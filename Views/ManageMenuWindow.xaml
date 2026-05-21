@@ -44,7 +44,6 @@
                 <ComboBox Style="{StaticResource AdminComboBoxStyle}"
                   ItemsSource="{Binding Menus}"
                   SelectedItem="{Binding SelectedMenu, Mode=TwoWay}"
-                  DisplayMemberPath="MenuEntity.Name"
                   Height="34"/>
             </StackPanel>
 

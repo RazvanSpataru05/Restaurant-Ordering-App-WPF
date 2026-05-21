@@ -10,7 +10,6 @@ namespace RestaurantOrderingApp.ViewModels
 {
     public class CartVM : BaseViewModel
     {
-        private readonly decimal _menuDiscount = Convert.ToDecimal(ConfigurationManager.AppSettings["MenuDiscount"]);
         private readonly int _orderDiscountThreshold = Convert.ToInt32(ConfigurationManager.AppSettings["OrderDiscountThreshold"]);
         private readonly int _frequencyDays = Convert.ToInt32(ConfigurationManager.AppSettings["FrequencyDays"]);
         private readonly int _frequencyOrderCount = Convert.ToInt32(ConfigurationManager.AppSettings["FrequencyOrderCount"]);

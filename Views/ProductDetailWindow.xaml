@@ -13,13 +13,11 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Imaginea sus -->
         <Image Grid.Row="0"
            Source="{Binding ImagePath}"
            Stretch="UniformToFill"
            RenderOptions.BitmapScalingMode="HighQuality"/>
 
-        <!-- Gradient jos pe imagine -->
         <Rectangle Grid.Row="0">
             <Rectangle.Fill>
                 <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
@@ -29,7 +27,6 @@
             </Rectangle.Fill>
         </Rectangle>
 
-        <!-- Continut jos -->
         <Grid Grid.Row="1" Margin="30,20,30,20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>

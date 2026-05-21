@@ -311,7 +311,6 @@
         </Style.Triggers>
     </Style>
 
-    <!-- ===== BUTOANE ÎN PAGINĂ ===== -->
     <Style x:Key="MenuQtyButtonStyle" TargetType="Button">
         <Setter Property="Width" Value="20"/>
         <Setter Property="Height" Value="20"/>
@@ -421,6 +420,70 @@
                 <Setter Property="Foreground" Value="#8B4513"/>
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <Style x:Key="DarkScrollBarThumb" TargetType="Thumb">
+        <Setter Property="Background" Value="#C9A84C"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Border Background="{TemplateBinding Background}"
+                        CornerRadius="2" Opacity="0.6"/>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" Value="1"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DarkScrollBarStyle" TargetType="ScrollBar">
+        <Setter Property="Width" Value="4"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ScrollBar">
+                    <Grid>
+                        <Border Background="#2A2A2A" CornerRadius="2" Width="4"
+                            HorizontalAlignment="Center"/>
+                        <Track Name="PART_Track" IsDirectionReversed="True">
+                            <Track.Thumb>
+                                <Thumb Style="{StaticResource DarkScrollBarThumb}"/>
+                            </Track.Thumb>
+                        </Track>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DarkScrollViewerStyle" TargetType="ScrollViewer">
+        <Setter Property="Margin" Value="0,8,0,0"/>
+        <Setter Property="Padding" Value="0,0,8,0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ScrollViewer">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ScrollContentPresenter Grid.Column="0"
+                                            Margin="{TemplateBinding Padding}"/>
+                        <ScrollBar Grid.Column="1"
+                               Name="PART_VerticalScrollBar"
+                               Style="{StaticResource DarkScrollBarStyle}"
+                               Value="{TemplateBinding VerticalOffset}"
+                               Maximum="{TemplateBinding ScrollableHeight}"
+                               ViewportSize="{TemplateBinding ViewportHeight}"
+                               Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                               Margin="6,0,0,0"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>

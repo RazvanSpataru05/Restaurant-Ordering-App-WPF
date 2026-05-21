@@ -47,7 +47,7 @@
                 </TextBlock>
             </StackPanel>
 
-            <ScrollViewer Grid.Row="2">
+            <ScrollViewer Grid.Row="2" Style="{StaticResource DarkScrollViewerStyle}">
                 <ItemsControl ItemsSource="{Binding OrderDisplayed.Items}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>

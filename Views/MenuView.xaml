@@ -347,14 +347,12 @@
             </ScrollViewer>
         </Border>
 
-        <!-- ===== BOOK ===== -->
         <Grid Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- ===== LEFT PAGE ===== -->
             <Border Grid.Column="0" Background="{StaticResource ParchmentBackground}"
                     Margin="30,20,4,20">
                 <Border.Effect>
@@ -362,7 +360,6 @@
                 </Border.Effect>
                 <Grid ClipToBounds="True">
 
-                    <!-- Cover -->
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="30">
                         <StackPanel.Style>
                             <Style TargetType="StackPanel">
@@ -397,7 +394,6 @@
                                    Margin="0,6,0,0"/>
                     </StackPanel>
 
-                    <!-- Products content -->
                     <DockPanel LastChildFill="True">
                         <DockPanel.Style>
                             <Style TargetType="DockPanel">
@@ -439,7 +435,6 @@
                         </ScrollViewer>
                     </DockPanel>
 
-                    <!-- Menus content -->
                     <DockPanel LastChildFill="True">
                         <DockPanel.Style>
                             <Style TargetType="DockPanel">
@@ -477,11 +472,9 @@
                         </ScrollViewer>
                     </DockPanel>
 
-                    <!-- Spine shadow -->
                     <Rectangle Fill="{StaticResource LeftSpineShadow}" Width="40"
                                HorizontalAlignment="Right" IsHitTestVisible="False"/>
 
-                    <!-- Page number + prev arrow -->
                     <TextBlock Text="{Binding LeftPageNumber}"
                                FontFamily="Palatino Linotype" FontStyle="Italic"
                                FontSize="14" Foreground="#8B6F47"
@@ -517,7 +510,6 @@
                 </Grid>
             </Border>
 
-            <!-- ===== RIGHT PAGE ===== -->
             <Border Grid.Column="1" Background="{StaticResource ParchmentBackground}"
                     Margin="4,20,30,20">
                 <Border.Effect>
@@ -525,7 +517,6 @@
                 </Border.Effect>
                 <Grid ClipToBounds="True">
 
-                    <!-- Products content -->
                     <DockPanel LastChildFill="True">
                         <DockPanel.Style>
                             <Style TargetType="DockPanel">
@@ -563,7 +554,6 @@
                         </ScrollViewer>
                     </DockPanel>
 
-                    <!-- Menus content -->
                     <DockPanel LastChildFill="True">
                         <DockPanel.Style>
                             <Style TargetType="DockPanel">
@@ -601,11 +591,9 @@
                         </ScrollViewer>
                     </DockPanel>
 
-                    <!-- Spine shadow -->
                     <Rectangle Fill="{StaticResource RightSpineShadow}" Width="40"
                                HorizontalAlignment="Left" IsHitTestVisible="False"/>
 
-                    <!-- Page number + next arrow -->
                     <TextBlock Text="{Binding RightPageNumber}"
                                FontFamily="Palatino Linotype" FontStyle="Italic"
                                FontSize="14" Foreground="#8B6F47"

@@ -11,7 +11,7 @@ namespace RestaurantOrderingApp.Display
         public Menu MenuEntity { get; set; }
         public decimal CalculatedPrice { get; set; }
         public ObservableCollection<MenuItemDetail> Items { get; set; }
-        
+
         public int SelectedQuantity
         {
             get => _selectedQuantity;
@@ -24,5 +24,10 @@ namespace RestaurantOrderingApp.Display
         }
 
         public decimal TotalPrice => CalculatedPrice * SelectedQuantity;
+
+        public override string ToString()
+        {
+            return MenuEntity?.Name ?? "-";
+        }
     }
 }

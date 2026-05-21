@@ -1,6 +1,4 @@
 ﻿using RestaurantOrderingApp.Display;
-using System.Security.Cryptography;
-using System.Windows.Automation;
 
 namespace RestaurantOrderingApp.Dialog_Service
 {

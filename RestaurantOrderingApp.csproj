@@ -40,6 +40,7 @@
     <None Remove="Assets\Images\fried_mozzarella_sandwich.png" />
     <None Remove="Assets\Images\grilled_vegetables.png" />
     <None Remove="Assets\Images\herb_rice.png" />
+    <None Remove="Assets\Images\house_lemonade.png" />
     <None Remove="Assets\Images\house_red_wine.png" />
     <None Remove="Assets\Images\insalata_caesar.png" />
     <None Remove="Assets\Images\insalata_rucola_e_parmigiano.png" />

@@ -33,9 +33,9 @@
                    Foreground="#555555"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"/>
-        
+
         <ScrollViewer Grid.Row="1" 
-                      VerticalScrollBarVisibility="Auto">
+                      VerticalScrollBarVisibility="Auto" Style="{StaticResource DarkScrollViewerStyle}">
             <ItemsControl ItemsSource="{Binding CartItems}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
